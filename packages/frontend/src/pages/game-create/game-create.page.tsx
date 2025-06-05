@@ -36,6 +36,7 @@ export function GameCreatePage(): JSX.Element {
       rounds: [defaultRound],
     },
   });
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
