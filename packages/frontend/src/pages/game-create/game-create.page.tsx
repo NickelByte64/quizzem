@@ -25,13 +25,14 @@ import {
 import { Button, Headline, Layout } from "~/components";
 import { AddButton } from "~/pages/game-create/components/add-button";
 import { GameRoundContainer } from "~/pages/game-create/components/game-round-container";
-import { defaultRound } from "~/pages/game-create/utils/form-values";
+import { defaultRound, GameRound } from "~/pages/game-create/utils/form-values";
 
 export function GameCreatePage(): JSX.Element {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const form = useForm({
+  const form = useForm<{ rounds: GameRound[] }>({
+    mode: "onBlur",
     defaultValues: {
       rounds: [defaultRound],
     },

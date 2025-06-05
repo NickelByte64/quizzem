@@ -4,8 +4,18 @@ export const defaultAction = {
   id: "",
 };
 
+export type GameRound = {
+  type: EGameRoundType;
+  name: string;
+  timeLimit: number;
+  questionCount: number;
+  actions: { id: string }[];
+};
+
 export const defaultRound = {
   type: EGameRoundType.STANDARD_QUIZ_ROUND,
+  name: "",
+  timeLimit: 30,
   questionCount: 1,
   actions: [defaultAction],
 };

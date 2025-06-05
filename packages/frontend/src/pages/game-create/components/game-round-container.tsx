@@ -3,10 +3,13 @@ import { CSS } from "@dnd-kit/utilities";
 import clsx from "clsx";
 import { JSX } from "react";
 import { UseFieldArrayRemove, useFormContext, useWatch } from "react-hook-form";
-import { LabelInput, Select } from "~/components";
+import { Input, InputError, LabelInput, Select } from "~/components";
 import { CardTitle } from "~/pages/game-create/components/card-title";
 import { RenderGameRound } from "~/pages/game-create/components/game-rounds/render-game-round";
-import { selectTypeOfRoundOptions } from "~/pages/game-create/utils/form-values";
+import {
+  GameRound,
+  selectTypeOfRoundOptions,
+} from "~/pages/game-create/utils/form-values";
 
 type GameRoundContainerProps = {
   index: number;
@@ -21,7 +24,9 @@ export function GameRoundContainer(
 ): JSX.Element {
   const { index, remove, fields, id, overlay = false } = props;
 
-  const { register, control } = useFormContext();
+  const { register, control, formState } = useFormContext<{
+    rounds: GameRound[];
+  }>();
   const gameRoundType = useWatch({
     control,
     name: `rounds.${index}.type`,
@@ -44,7 +49,7 @@ export function GameRoundContainer(
       className={clsx(
         overlay && "opacity-50",
         "rounded-xl shadow-xl w-full bg-base-200 border",
-        getAlternatingBgClass(index)
+        getAlternatingBorders(index)
       )}
     >
       <CardTitle
@@ -57,13 +62,45 @@ export function GameRoundContainer(
 
       <div className="p-4 flex flex-col gap-4">
         <LabelInput label="Art der Runde">
-          <Select className="bg-base-200" {...register(`rounds.${index}.type`)}>
+          <Select {...register(`rounds.${index}.type`)}>
             {selectTypeOfRoundOptions.map((option) => (
               <option key={option.type} value={option.type}>
                 {option.label}
               </option>
             ))}
           </Select>
+        </LabelInput>
+        <LabelInput label="Name der Runde">
+          <Input
+            placeholder="Standardrunde"
+            {...register(`rounds.${index}.name`, {
+              required: "Der Name der Runde ist erforderlich.",
+              minLength: {
+                value: 3,
+                message:
+                  "Der Name der Runde muss mindestens 3 Zeichen lang sein.",
+              },
+            })}
+          />
+          <InputError
+            message={formState.errors.rounds?.[index]?.name?.message}
+          />
+        </LabelInput>
+        <LabelInput label="Zeit pro Frage (in Sekunden)">
+          <Input
+            {...register(`rounds.${index}.timeLimit`, {
+              valueAsNumber: true,
+              required: "Die Zeit pro Frage ist erforderlich.",
+              min: {
+                value: 1,
+                message:
+                  "Die Zeit pro Frage muss mindestens 1 Sekunde betragen.",
+              },
+            })}
+          />
+          <InputError
+            message={formState.errors.rounds?.[index]?.timeLimit?.message}
+          />
         </LabelInput>
 
         <RenderGameRound index={index} gameRound={gameRoundType} />
@@ -72,12 +109,8 @@ export function GameRoundContainer(
   );
 }
 
-function getAlternatingBgClass(index: number): string {
-  const backgroundClasses = [
-    "border-primary",
-    "border-secondary",
-    "border-accent",
-  ];
+function getAlternatingBorders(index: number): string {
+  const borderClasses = ["border-primary", "border-secondary", "border-accent"];
 
-  return backgroundClasses[index % backgroundClasses.length];
+  return borderClasses[index % borderClasses.length];
 }
