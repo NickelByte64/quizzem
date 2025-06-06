@@ -7,3 +7,15 @@ export enum EGameRoundType {
   BUZZ_ROUND = "BUZZ_ROUND",
   // CUSTOM_ROUND = "CUSTOM_ROUND",
 }
+
+export type GameRound = {
+  type: EGameRoundType;
+  name: string;
+  timeLimit: number;
+  count: number;
+};
+
+export type GameRoundFormValues = {
+  name: string;
+  rounds: GameRound[];
+};

@@ -1,23 +1,19 @@
-import { EGameRoundType } from "~/pages/game-create/utils/game-create.types";
+import {
+  EGameRoundType,
+  GameRound,
+  GameRoundFormValues,
+} from "~/pages/game-create/utils/game-create.types";
 
-export const defaultAction = {
-  id: "",
-};
-
-export type GameRound = {
-  type: EGameRoundType;
-  name: string;
-  timeLimit: number;
-  questionCount: number;
-  actions: { id: string }[];
-};
-
-export const defaultRound = {
+export const defaultRound: GameRound = {
   type: EGameRoundType.STANDARD_QUIZ_ROUND,
   name: "",
   timeLimit: 30,
-  questionCount: 1,
-  actions: [defaultAction],
+  count: 1,
+};
+
+export const defaultGame: GameRoundFormValues = {
+  name: "",
+  rounds: [defaultRound],
 };
 
 export const selectTypeOfRoundOptions: {
