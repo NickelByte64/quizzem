@@ -1,5 +1,6 @@
 import { JSX } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import {
   Button,
   Headline,
@@ -11,8 +12,11 @@ import {
 import { GameRounds } from "~/pages/game-create/components/game-rounds/game-rounds";
 import { defaultGame } from "~/pages/game-create/utils/form-values";
 import { GameRoundFormValues } from "~/pages/game-create/utils/game-create.types";
+import { usePostRemote } from "~/utils";
 
 export function GameCreatePage(): JSX.Element {
+  const navigate = useNavigate();
+  const { mutate } = usePostRemote("game");
   const form = useForm<GameRoundFormValues>({
     mode: "onBlur",
     defaultValues: defaultGame,
@@ -25,7 +29,15 @@ export function GameCreatePage(): JSX.Element {
   } = form;
 
   const onSubmit: SubmitHandler<GameRoundFormValues> = (data) => {
-    console.log(data); // TODO send to backend
+    mutate(data, {
+      onSuccess(data) {
+        navigate(`/game-manager/${data}`);
+      },
+      onError(error) {
+        // TODO
+        console.error("Error creating game:", error);
+      },
+    });
   };
 
   return (

@@ -17,6 +17,7 @@ import { RedisModule } from './redis/redis.module';
 import { SessionModule } from './session/session.module';
 import { UserModule } from './user/user.module';
 import { GameRoundActionModule } from './game-round-action/game-round-action.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { GameRoundActionModule } from './game-round-action/game-round-action.mod
     CategoryModule,
     AuthModule,
     GameRoundActionModule,
+    GameModule,
   ],
 })
 export class AppModule implements NestModule, OnModuleInit {
