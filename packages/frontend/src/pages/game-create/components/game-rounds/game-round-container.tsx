@@ -2,7 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import clsx from "clsx";
 import { JSX, useState } from "react";
-import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
+import { UseFieldArrayRemove, useFormContext, useWatch } from "react-hook-form";
 import { Input, InputError, LabelInput, Range, Select } from "~/components";
 import { CardTitle } from "~/pages/game-create/components/game-rounds/card-title";
 import { selectTypeOfRoundOptions } from "~/pages/game-create/utils/form-values";
@@ -15,12 +15,14 @@ type GameRoundContainerProps = {
   index: number;
   id: string;
   overlay?: boolean;
+  remove: UseFieldArrayRemove;
+  fields: GameRoundFormValues["rounds"];
 };
 
 export function GameRoundContainer(
   props: Readonly<GameRoundContainerProps>
 ): JSX.Element {
-  const { index, id, overlay = false } = props;
+  const { index, id, overlay = false, remove, fields } = props;
 
   const [rangeValue, setRangeValue] = useState(1);
 
@@ -29,11 +31,6 @@ export function GameRoundContainer(
     control,
     formState: { errors },
   } = useFormContext<GameRoundFormValues>();
-
-  const { remove, fields } = useFieldArray({
-    name: "rounds",
-    control,
-  });
 
   const gameRoundType: EGameRoundType = useWatch({
     control,

@@ -36,7 +36,7 @@ export function GameRounds(): JSX.Element {
     })
   );
 
-  const { append, fields, move } = useFieldArray({
+  const { append, fields, move, remove } = useFieldArray({
     name: "rounds",
     control,
   });
@@ -80,7 +80,7 @@ export function GameRounds(): JSX.Element {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={fields.map((f) => f.id)}
+          items={fields.map((field) => field.id)}
           strategy={verticalListSortingStrategy}
         >
           <div className={clsx("flex flex-col gap-4")}>
@@ -90,6 +90,8 @@ export function GameRounds(): JSX.Element {
                 id={field.id}
                 index={i}
                 overlay={activeId === field.id}
+                fields={fields}
+                remove={remove}
               />
             ))}
 
@@ -98,6 +100,8 @@ export function GameRounds(): JSX.Element {
                 <GameRoundContainer
                   id={activeId}
                   index={fields.findIndex((field) => field.id === activeId)}
+                  fields={fields}
+                  remove={remove}
                 />
               ) : null}
             </DragOverlay>

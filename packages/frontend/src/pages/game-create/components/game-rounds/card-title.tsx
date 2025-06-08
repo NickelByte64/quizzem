@@ -33,9 +33,7 @@ export function CardTitle(props: Readonly<CardTitleProps>): JSX.Element {
           disabled={disableRemove}
           variant="accent"
           className="btn-ghost"
-          onClick={() => {
-            remove(index);
-          }}
+          onClick={() => remove(index)}
         >
           <RiCloseLine />
         </IconButton>

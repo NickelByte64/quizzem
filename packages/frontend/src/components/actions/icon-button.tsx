@@ -15,7 +15,13 @@ type IconButtonProps = DetailedHTMLProps<
   };
 
 export function IconButton(props: Readonly<IconButtonProps>): JSX.Element {
-  const { children, variant = "outline", className, ...rest } = props;
+  const {
+    children,
+    variant = "outline",
+    className,
+    type = "button",
+    ...rest
+  } = props;
 
   return (
     <button
@@ -24,6 +30,7 @@ export function IconButton(props: Readonly<IconButtonProps>): JSX.Element {
         buttonStyles[variant],
         className
       )}
+      type={type}
       {...rest}
     >
       {children}
