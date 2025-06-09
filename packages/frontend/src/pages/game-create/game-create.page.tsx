@@ -1,3 +1,5 @@
+import { CreateGameDto } from "@quizzem/common";
+import { UUID } from "crypto";
 import { JSX } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
@@ -16,7 +18,7 @@ import { usePostRemote } from "~/utils";
 
 export function GameCreatePage(): JSX.Element {
   const navigate = useNavigate();
-  const { mutate } = usePostRemote("game");
+  const { mutate } = usePostRemote<CreateGameDto, UUID>("game");
   const form = useForm<GameRoundFormValues>({
     mode: "onBlur",
     defaultValues: defaultGame,
