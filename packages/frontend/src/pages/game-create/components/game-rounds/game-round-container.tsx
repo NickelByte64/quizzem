@@ -1,15 +1,13 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { EGameRoundType } from "@quizzem/common";
 import clsx from "clsx";
 import { JSX, useState } from "react";
 import { UseFieldArrayRemove, useFormContext, useWatch } from "react-hook-form";
 import { Input, InputError, LabelInput, Range, Select } from "~/components";
 import { CardTitle } from "~/pages/game-create/components/game-rounds/card-title";
 import { selectTypeOfRoundOptions } from "~/pages/game-create/utils/form-values";
-import {
-  EGameRoundType,
-  GameRoundFormValues,
-} from "~/pages/game-create/utils/game-create.types";
+import { GameRoundFormValues } from "~/pages/game-create/utils/game-create.types";
 
 type GameRoundContainerProps = {
   index: number;

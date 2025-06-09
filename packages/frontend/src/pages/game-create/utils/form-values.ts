@@ -1,5 +1,5 @@
+import { EGameRoundType } from "@quizzem/common";
 import {
-  EGameRoundType,
   GameRound,
   GameRoundFormValues,
 } from "~/pages/game-create/utils/game-create.types";
