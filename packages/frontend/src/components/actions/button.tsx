@@ -11,7 +11,7 @@ type ButtonProps = DetailedHTMLProps<
   HTMLButtonElement
 > &
   PropsWithChildren & {
-    variant?: "primary" | "secondary" | "accent" | "neutral";
+    variant?: "primary" | "secondary" | "accent" | "neutral" | "error";
     outline?: boolean;
   };
 
@@ -44,4 +44,5 @@ const buttonStyles = {
   primary: "btn-primary",
   secondary: "btn-secondary",
   accent: "btn-accent",
+  error: "btn-error",
 };
