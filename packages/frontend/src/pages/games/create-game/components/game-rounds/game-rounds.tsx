@@ -18,10 +18,10 @@ import clsx from "clsx";
 import { JSX, useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Headline } from "~/components";
-import { AddButton } from "~/pages/game-create/components/game-rounds/add-button";
-import { GameRoundContainer } from "~/pages/game-create/components/game-rounds/game-round-container";
-import { defaultRound } from "~/pages/game-create/utils/form-values";
-import { GameRoundFormValues } from "~/pages/game-create/utils/game-create.types";
+import { AddButton } from "~/pages/games/create-game/components/game-rounds/add-button";
+import { GameRoundContainer } from "~/pages/games/create-game/components/game-rounds/game-round-container";
+import { defaultRound } from "~/pages/games/create-game/utils/form-values";
+import { GameRoundFormValues } from "~/pages/games/create-game/utils/game-create.types";
 
 export function GameRounds(): JSX.Element {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
@@ -69,9 +69,10 @@ export function GameRounds(): JSX.Element {
 
   return (
     <>
-      <Headline as="h3">Runden</Headline>
-
-      <p className="text-right mb-4">Gesamt: {fields.length} Runden</p>
+      <div className="flex flex-row items-center justify-between mb-4">
+        <Headline as="h3">Runden</Headline>
+        <p className="text-right">Gesamt: {fields.length}</p>
+      </div>
 
       <DndContext
         sensors={sensors}

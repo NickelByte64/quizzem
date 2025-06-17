@@ -2,7 +2,7 @@ import { EGameRoundType } from "@quizzem/common";
 import {
   GameRound,
   GameRoundFormValues,
-} from "~/pages/game-create/utils/game-create.types";
+} from "~/pages/games/create-game/utils/game-create.types";
 
 export const defaultRound: GameRound = {
   type: EGameRoundType.STANDARD_QUIZ_ROUND,
@@ -16,7 +16,7 @@ export const defaultGame: GameRoundFormValues = {
   rounds: [defaultRound],
 };
 
-export const selectTypeOfRoundOptions: {
+export const SELECT_TYPE_OF_ROUND_OPTIONS: {
   type: EGameRoundType;
   label: string;
 }[] = [

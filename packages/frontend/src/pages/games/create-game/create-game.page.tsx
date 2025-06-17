@@ -11,12 +11,12 @@ import {
   LabelInput,
   Layout,
 } from "~/components";
-import { GameRounds } from "~/pages/game-create/components/game-rounds/game-rounds";
-import { defaultGame } from "~/pages/game-create/utils/form-values";
-import { GameRoundFormValues } from "~/pages/game-create/utils/game-create.types";
+import { GameRounds } from "~/pages/games/create-game/components/game-rounds/game-rounds";
+import { defaultGame } from "~/pages/games/create-game/utils/form-values";
+import { GameRoundFormValues } from "~/pages/games/create-game/utils/game-create.types";
 import { usePostRemote } from "~/utils";
 
-export function GameCreatePage(): JSX.Element {
+export function CreateGamePage(): JSX.Element {
   const navigate = useNavigate();
   const { mutate } = usePostRemote<CreateGameDto, UUID>("game");
   const form = useForm<GameRoundFormValues>({
@@ -48,7 +48,7 @@ export function GameCreatePage(): JSX.Element {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Headline>Spiel erstellen</Headline>
 
-          <div className="flex flex-col mb-4 gap-2">
+          <div className="flex flex-col mb-4 gap-4">
             <Button className="w-fit">Spiel erstellen</Button>
             <p className="text-sm">
               Mit Klick auf Spiel erstellen legst du das Spiel fest. Alles
