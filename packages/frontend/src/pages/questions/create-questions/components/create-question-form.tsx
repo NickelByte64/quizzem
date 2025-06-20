@@ -1,14 +1,14 @@
 import { EGameRoundType } from "@quizzem/common";
 import clsx from "clsx";
 import { Fragment, JSX } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { Headline, Input, LabelInput, Select } from "~/components";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { Button, Headline, Input, LabelInput, Select } from "~/components";
 import { AddButton } from "~/components/actions/add-button";
 import { CardTitle } from "~/pages/games/create-game/components/game-rounds/card-title";
 import { SELECT_TYPE_OF_ROUND_OPTIONS } from "~/pages/games/create-game/utils/form-values";
 
 export function CreateQuestionForm(): JSX.Element {
-  const { control, register } = useForm({
+  const { control, register, handleSubmit } = useForm({
     mode: "onBlur",
     defaultValues: {
       questions: [DEFAULT_QUESTION],
@@ -20,11 +20,17 @@ export function CreateQuestionForm(): JSX.Element {
     control,
   });
 
+  const onSubmit: SubmitHandler<{}> = (data) => {
+    console.log("Submitted data:", data);
+  };
+
   return (
     <>
       <Headline as={"h3"}>Fragen erstellen</Headline>
-      <form>
-        <div className={clsx("flex flex-col gap-4")}>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Button className="mb-4">Fragen erstellen</Button>
+        <div className={"flex flex-col gap-4"}>
           {fields.map((field, index) => (
             <Fragment key={field.id}>
               <div
@@ -51,16 +57,28 @@ export function CreateQuestionForm(): JSX.Element {
                     </Select>
                   </LabelInput>
                   <LabelInput label="Kategorie">
-                    <Input placeholder="Wie heißt die Hauptstadt von Frankreich?" />
+                    <Input
+                      placeholder="Naturwissenschaften"
+                      {...register(`questions.${index}.category`)}
+                    />
                   </LabelInput>
                   <LabelInput label="Frage">
-                    <Input placeholder="Wie heißt die Hauptstadt von Frankreich?" />
+                    <Input
+                      placeholder="Wie heißt die Hauptstadt von Frankreich?"
+                      {...register(`questions.${index}.question`)}
+                    />
                   </LabelInput>
                   <LabelInput label="Richtige Antwort">
-                    <Input placeholder="Paris" />
+                    <Input
+                      placeholder="Paris"
+                      {...register(`questions.${index}.correctAnswer`)}
+                    />
                   </LabelInput>
                   <LabelInput label="Antwortmöglichkeiten">
-                    <Input placeholder="Lyon" />
+                    <Input
+                      placeholder="Lyon"
+                      {...register(`questions.${index}.answers`)}
+                    />
                   </LabelInput>
                 </div>
               </div>

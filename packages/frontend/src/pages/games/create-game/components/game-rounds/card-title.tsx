@@ -35,7 +35,7 @@ export function CardTitle(props: Readonly<CardTitleProps>): JSX.Element {
       <div className="flex items-center gap-2">
         <IconButton
           disabled={disableRemove}
-          variant="accent"
+          variant={getAlternatingVariant(index)}
           className="btn-ghost"
           onClick={() => remove(index)}
         >
@@ -49,4 +49,11 @@ export function CardTitle(props: Readonly<CardTitleProps>): JSX.Element {
       </div>
     </div>
   );
+}
+
+function getAlternatingVariant(
+  index: number
+): "primary" | "secondary" | "accent" {
+  const borderClasses = ["primary", "secondary", "accent"] as const;
+  return borderClasses[index % borderClasses.length];
 }
