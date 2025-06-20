@@ -7,6 +7,7 @@ import { CreateGamePage } from "~/pages/games/create-game/create-game.page";
 import { GameManagerPage } from "~/pages/games/game-manager/game-manager.page";
 import { HomePage } from "~/pages/home/home.page";
 import { PrepareGameRound } from "~/pages/prepare-game-round/prepare-game-round";
+import { CreateQuestionsPage } from "~/pages/questions/create-questions/create-questions.page";
 import { QuestionsPage } from "~/pages/questions/questions.page";
 
 export function Router(): JSX.Element {
@@ -16,6 +17,7 @@ export function Router(): JSX.Element {
         <Route path="/" element={<HomePage />} />
         <Route element={<BasePage />}>
           <Route path="/questions" element={<QuestionsPage />} />
+          <Route path="/questions/create" element={<CreateQuestionsPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/game-manager" element={<GameManagerListPage />} />
           <Route path="/game-manager/:id" element={<GameManagerPage />} />

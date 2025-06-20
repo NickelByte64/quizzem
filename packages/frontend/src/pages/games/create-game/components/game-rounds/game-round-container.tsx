@@ -52,6 +52,8 @@ export function GameRoundContainer(
       )}
     >
       <CardTitle
+        label="Runde"
+        draggable
         disableRemove={fields.length === 1}
         index={index}
         remove={remove}

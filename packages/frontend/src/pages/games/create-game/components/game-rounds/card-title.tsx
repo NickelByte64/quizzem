@@ -6,18 +6,22 @@ import { UseFieldArrayRemove } from "react-hook-form";
 import { Headline, IconButton } from "~/components";
 
 type CardTitleProps = {
+  label: string;
   index: number;
   remove: UseFieldArrayRemove;
   disableRemove?: boolean;
-  dragAttributes: DraggableAttributes;
-  dragListeners: SyntheticListenerMap | undefined;
+  draggable?: boolean;
+  dragAttributes?: DraggableAttributes;
+  dragListeners?: SyntheticListenerMap;
 };
 
 export function CardTitle(props: Readonly<CardTitleProps>): JSX.Element {
   const {
+    label,
     index,
     remove,
     disableRemove = false,
+    draggable = false,
     dragAttributes,
     dragListeners,
   } = props;
@@ -25,7 +29,7 @@ export function CardTitle(props: Readonly<CardTitleProps>): JSX.Element {
   return (
     <div className="bg-base-300 rounded-t-xl w-full p-4 flex items-center justify-between">
       <Headline as="h4" defaultMargin={false}>
-        Runde {index + 1}
+        {label} {index + 1}
       </Headline>
 
       <div className="flex items-center gap-2">
@@ -37,9 +41,11 @@ export function CardTitle(props: Readonly<CardTitleProps>): JSX.Element {
         >
           <RiCloseLine />
         </IconButton>
-        <button type="button" {...dragAttributes} {...dragListeners}>
-          <RiDraggable className="hover:cursor-pointer" />
-        </button>
+        {draggable && (
+          <button type="button" {...dragAttributes} {...dragListeners}>
+            <RiDraggable className="hover:cursor-pointer" />
+          </button>
+        )}
       </div>
     </div>
   );

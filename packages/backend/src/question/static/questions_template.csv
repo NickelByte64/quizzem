@@ -1,0 +1,7 @@
+question,question_type,correct_answer,answers
+Was ist die Hauptstadt von Frankreich?,MULTIPLE_CHOICE,Paris,Paris;London;Berlin;Rom
+Ist Wasser nass?,TRUE_FALSE,TRUE,
+_ ist das größte Säugetier der Welt.,FILL_IN_THE_BLANK,Blauwal,
+Ordne die Planeten nach ihrer Entfernung zur Sonne.,ORDERING,Merkur;Venus;Erde;Mars,Merkur;Venus;Erde;Mars
+Wie viele Einwohner hat Deutschland (ungefähr)?,ESTIMATE,83000000,
+Wieviel ist 7 mal 8?,NUMERIC,56,

@@ -18,7 +18,7 @@ import clsx from "clsx";
 import { JSX, useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Headline } from "~/components";
-import { AddButton } from "~/pages/games/create-game/components/game-rounds/add-button";
+import { AddButton } from "~/components/actions/add-button";
 import { GameRoundContainer } from "~/pages/games/create-game/components/game-rounds/game-round-container";
 import { defaultRound } from "~/pages/games/create-game/utils/form-values";
 import { GameRoundFormValues } from "~/pages/games/create-game/utils/game-create.types";

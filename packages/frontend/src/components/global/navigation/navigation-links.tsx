@@ -58,7 +58,12 @@ export const NAVIGATION_LINKS: GroupedNavigationLink[] = [
       {
         identifier: "QUESTIONS_LIST",
         to: "/questions",
-        label: "Questions List",
+        label: "Fragenkatalog",
+      },
+      {
+        identifier: "CREATE_QUESTIONS",
+        to: "/questions/create",
+        label: "Fragen erstellen",
       },
     ],
   },
