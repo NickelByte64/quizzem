@@ -1,21 +1,16 @@
 import { JSX } from "react";
-import { Button, Headline, Layout } from "~/components";
+import { Divider, Headline, Layout } from "~/components";
+import { CreateQuestionDescription } from "~/pages/questions/create-questions/components/create-question-description";
 import { CreateQuestionForm } from "~/pages/questions/create-questions/components/create-question-form";
+import { UploadQuestion } from "~/pages/questions/create-questions/components/upload-question";
 
 export function CreateQuestionsPage(): JSX.Element {
   return (
     <Layout>
       <Headline as={"h1"}>Fragen erstellen</Headline>
-
-      <Headline as={"h3"}>Fragen hochladen</Headline>
-      <div className="border border-dashed p-4 rounded-xl flex flex-col items-center justify-center">
-        <p>Drag files to upload</p>
-        <div className="divider">ODER</div>
-        <Button>Browse files</Button>
-      </div>
-
-      <div className="divider">ODER</div>
-
+      <CreateQuestionDescription />
+      <UploadQuestion />
+      <Divider withText text="oder" />
       <CreateQuestionForm />
     </Layout>
   );

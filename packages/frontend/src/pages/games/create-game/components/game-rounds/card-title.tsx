@@ -36,7 +36,6 @@ export function CardTitle(props: Readonly<CardTitleProps>): JSX.Element {
         <IconButton
           disabled={disableRemove}
           variant={getAlternatingVariant(index)}
-          className="btn-ghost"
           onClick={() => remove(index)}
         >
           <RiCloseLine />
@@ -53,7 +52,7 @@ export function CardTitle(props: Readonly<CardTitleProps>): JSX.Element {
 
 function getAlternatingVariant(
   index: number
-): "primary" | "secondary" | "accent" {
-  const borderClasses = ["primary", "secondary", "accent"] as const;
+): "neutral" | "secondary" | "accent" {
+  const borderClasses = ["neutral", "secondary", "accent"] as const;
   return borderClasses[index % borderClasses.length];
 }

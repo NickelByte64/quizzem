@@ -49,7 +49,6 @@ export function CreateGamePage(): JSX.Element {
           <Headline>Spiel erstellen</Headline>
 
           <div className="flex flex-col mb-4 gap-4">
-            <Button className="w-fit">Spiel erstellen</Button>
             <p className="text-sm">
               Mit Klick auf Spiel erstellen legst du das Spiel fest. Alles
               Weitere wie Kategorien, Fragen, etc. kannst du dann im Game
@@ -71,6 +70,8 @@ export function CreateGamePage(): JSX.Element {
           </div>
 
           <GameRounds />
+
+          <Button className="w-full mt-4">Spiel erstellen</Button>
         </form>
       </FormProvider>
     </Layout>

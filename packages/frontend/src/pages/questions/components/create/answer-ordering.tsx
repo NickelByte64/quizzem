@@ -1,6 +1,6 @@
 import { JSX } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { Button, Headline, Input, LabelInput } from "~/components";
+import { Button, Divider, Headline, Input, LabelInput } from "~/components";
 
 export function AnswerOrdering(): JSX.Element {
   const { register, control } = useFormContext();
@@ -16,7 +16,7 @@ export function AnswerOrdering(): JSX.Element {
       <div className="flex flex-col gap-4">
         {fields.map((field, i) => (
           <div key={field.id}>
-            {i > 0 && <div className="divider" />}
+            {i > 0 && <Divider />}
             <LabelInput label={`Antwortstelle ${i + 1}`}>
               <Input {...register(`${fieldName}.${i}.value`)} />
             </LabelInput>

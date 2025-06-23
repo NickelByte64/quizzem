@@ -11,13 +11,19 @@ type IconButtonProps = DetailedHTMLProps<
   HTMLButtonElement
 > &
   PropsWithChildren & {
-    variant?: "primary" | "secondary" | "accent" | "outline" | "error";
+    variant?:
+      | "primary"
+      | "secondary"
+      | "accent"
+      | "outline"
+      | "error"
+      | "neutral";
   };
 
 export function IconButton(props: Readonly<IconButtonProps>): JSX.Element {
   const {
     children,
-    variant = "outline",
+    variant = "neutral",
     className,
     type = "button",
     ...rest
@@ -39,6 +45,7 @@ export function IconButton(props: Readonly<IconButtonProps>): JSX.Element {
 }
 
 const buttonStyles = {
+  neutral: "btn-neutral",
   primary: "btn-primary",
   secondary: "btn-secondary",
   accent: "btn-accent",

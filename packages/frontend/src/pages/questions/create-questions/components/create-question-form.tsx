@@ -6,6 +6,7 @@ import { Button, Headline, Input, LabelInput, Select } from "~/components";
 import { AddButton } from "~/components/actions/add-button";
 import { CardTitle } from "~/pages/games/create-game/components/game-rounds/card-title";
 import { SELECT_TYPE_OF_ROUND_OPTIONS } from "~/pages/games/create-game/utils/form-values";
+import { getAlternatingBorders } from "~/utils";
 
 export function CreateQuestionForm(): JSX.Element {
   const { control, register, handleSubmit } = useForm({
@@ -29,7 +30,6 @@ export function CreateQuestionForm(): JSX.Element {
       <Headline as={"h3"}>Fragen erstellen</Headline>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Button className="mb-4">Fragen erstellen</Button>
         <div className={"flex flex-col gap-4"}>
           {fields.map((field, index) => (
             <Fragment key={field.id}>
@@ -87,6 +87,8 @@ export function CreateQuestionForm(): JSX.Element {
 
           <AddButton onClick={() => append(DEFAULT_QUESTION)} />
         </div>
+
+        <Button className="mt-4 w-full">Fragen erstellen</Button>
       </form>
     </>
   );
@@ -99,8 +101,3 @@ const DEFAULT_QUESTION = {
   answers: "",
   type: EGameRoundType.STANDARD_QUIZ_ROUND,
 };
-
-function getAlternatingBorders(index: number): string {
-  const borderClasses = ["border-primary", "border-secondary", "border-accent"];
-  return borderClasses[index % borderClasses.length];
-}

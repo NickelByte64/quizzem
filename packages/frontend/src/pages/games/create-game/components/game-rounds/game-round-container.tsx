@@ -10,6 +10,7 @@ import { TimeLimitInput } from "~/pages/games/components/inputs/time-limit";
 import { TypeOfRoundInput } from "~/pages/games/components/inputs/type-of-round";
 import { CardTitle } from "~/pages/games/create-game/components/game-rounds/card-title";
 import { GameRoundFormValues } from "~/pages/games/create-game/utils/game-create.types";
+import { getAlternatingBorders } from "~/utils";
 
 type GameRoundContainerProps = {
   index: number;
@@ -68,9 +69,4 @@ export function GameRoundContainer(
       </div>
     </div>
   );
-}
-
-function getAlternatingBorders(index: number): string {
-  const borderClasses = ["border-primary", "border-secondary", "border-accent"];
-  return borderClasses[index % borderClasses.length];
 }

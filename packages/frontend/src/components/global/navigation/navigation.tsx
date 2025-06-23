@@ -1,6 +1,7 @@
 import { RiExternalLinkFill } from "@remixicon/react";
 import { JSX } from "react";
 import { Link } from "react-router";
+import { Divider } from "~/components";
 import { NavigationAction } from "~/components/global/navigation/navigation-action";
 import { NavigationDrawer } from "~/components/global/navigation/navigation-drawer";
 import { NAVIGATION_LINKS } from "~/components/global/navigation/navigation-links";
@@ -20,7 +21,7 @@ export function Navigation(): JSX.Element {
               </span>
               <span className="font-bold">{label}</span>
             </div>
-            <div className="divider m-0 w-full"></div>
+            <Divider className="m-0 w-full" />
             <ul className="flex flex-col gap-2">
               {links.map(({ identifier, label, to, external }) => (
                 <li
