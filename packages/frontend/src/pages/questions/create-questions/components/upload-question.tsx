@@ -1,38 +1,62 @@
-import { UseMutateFunction } from "@tanstack/react-query";
-import { JSX } from "react";
-import { DropzoneOptions, useDropzone } from "react-dropzone";
+import clsx from "clsx";
+import { JSX, useCallback, useState } from "react";
+import {
+  DropzoneOptions,
+  FileRejection,
+  FileWithPath,
+  useDropzone,
+} from "react-dropzone";
 import { Button, Divider, Headline, InlineLink } from "~/components";
 import { UploadFilesAlert } from "~/pages/questions/create-questions/components/upload-files-alert";
 import { usePostRemote } from "~/utils";
 
-/**
- * Handles the drop event for the dropzone.
- * This function creates a FormData object, appends the accepted files to it
- * and submits it using the provided mutate function.
- *
- * @returns {DropzoneOptions["onDrop"]} A function that handles the drop event.
- */
-function onDrop(
-  mutate: UseMutateFunction<void, unknown, FormData>
-): DropzoneOptions["onDrop"] {
-  return (acceptedFiles, fileRejections) => {
-    if (fileRejections.length > 0) {
-      console.error("File rejections:", fileRejections);
-      return;
-    }
-
-    const formData = new FormData();
-    acceptedFiles.forEach((file) => {
-      formData.append("files", file);
-    });
-
-    mutate(formData);
-  };
-}
-
 export function UploadQuestion(): JSX.Element {
-  const { mutate, isSuccess, isError } = usePostRemote<FormData, void>(
-    "questions/upload"
+  const [status, setStatus] = useState<"success" | "error" | "warning" | null>(
+    null
+  );
+
+  const resetStatus = () => setTimeout(() => setStatus(null), 5000);
+
+  const { mutate } = usePostRemote<FormData, void>("questions/upload");
+
+  /**
+   * Handles the drop event for the dropzone.
+   * This function creates a FormData object, appends the accepted files to it
+   * and submits it using the provided mutate function.
+   *
+   * @returns {DropzoneOptions["onDrop"]} A function that handles the drop event.
+   */
+  const onDrop = useCallback(
+    (acceptedFiles: FileWithPath[], fileRejections: FileRejection[]) => {
+      // Reset status before processing files
+      setStatus(null);
+
+      // If there are file rejections, log them and set status to error
+      if (fileRejections.length > 0 || acceptedFiles.length === 0) {
+        console.error("File rejections:", fileRejections);
+        setStatus("error");
+        resetStatus();
+        return;
+      }
+
+      // Create FormData and append accepted files
+      const formData = new FormData();
+      acceptedFiles.forEach((file) => {
+        formData.append("files", file);
+      });
+
+      mutate(formData, {
+        onSuccess: () => {
+          setStatus("success");
+          resetStatus();
+        },
+        onError: () => {
+          setStatus("error");
+          resetStatus();
+        },
+      });
+    },
+    [mutate]
   );
 
   const {
@@ -43,7 +67,7 @@ export function UploadQuestion(): JSX.Element {
     acceptedFiles,
     fileRejections,
   } = useDropzone({
-    onDrop: onDrop(mutate),
+    onDrop,
     noClick: true,
     noKeyboard: true,
     accept: {
@@ -53,6 +77,7 @@ export function UploadQuestion(): JSX.Element {
     maxSize: 5 * 1024 * 1024, // 5 MB
     multiple: true,
     maxFiles: 2,
+    disabled: !!status,
   });
 
   return (
@@ -73,36 +98,46 @@ export function UploadQuestion(): JSX.Element {
       </p>
 
       <UploadFilesAlert
-        isError={isError}
-        isSuccess={isSuccess}
+        status={status}
         acceptedFiles={acceptedFiles}
         fileRejections={fileRejections}
       />
 
       <div
         {...getRootProps()}
-        className="my-8 border border-dashed rounded-xl p-8 flex flex-col items-center justify-center gap-4"
+        className={clsx(
+          "my-8 border border-dashed rounded-xl p-8 bg-base-200",
+          status === "error" && "border-error",
+          status === "success" && "border-success"
+        )}
       >
-        <div className="text-center">
-          {isDragActive ? (
-            <p>Dateien hier ablegen ...</p>
-          ) : (
-            <>
-              <p className="font-semibold">
-                Ziehe deine Datei hierher oder klicke zum Auswählen
-              </p>
-              <p className="text-sm text-neutral-content">
-                Unterstützt werden <code>.json</code> und <code>.csv</code> –
-                Max. 5 MB pro Datei
-              </p>
-            </>
+        <div
+          className={clsx(
+            "flex flex-col items-center gap-4",
+            !!status && "opacity-50 cursor-not-allowed pointer-events-none"
           )}
+        >
+          <div className="text-center">
+            {isDragActive ? (
+              <p>Dateien hier ablegen ...</p>
+            ) : (
+              <>
+                <p className="font-semibold">
+                  Ziehe deine Datei hierher oder klicke zum Auswählen
+                </p>
+                <p className="text-sm mt-2">
+                  Unterstützt werden <code>.json</code> und <code>.csv</code> –
+                  Max. 5 MB pro Datei
+                </p>
+              </>
+            )}
+          </div>
+          <input {...getInputProps()} />
+
+          <Divider withText text="oder" />
+
+          <Button onClick={open}>Durchsuchen</Button>
         </div>
-        <input {...getInputProps()} />
-
-        <Divider withText text="oder" />
-
-        <Button onClick={open}>Durchsuchen</Button>
       </div>
     </>
   );

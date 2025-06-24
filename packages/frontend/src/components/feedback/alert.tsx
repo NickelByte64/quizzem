@@ -1,38 +1,19 @@
 import clsx from "clsx";
 import { AnimatePresence, HTMLMotionProps, motion } from "motion/react";
-import { JSX, PropsWithChildren, useEffect, useState } from "react";
+import { JSX, PropsWithChildren } from "react";
 
 type AlertProps = PropsWithChildren &
   HTMLMotionProps<"div"> & {
     variant: "success" | "error" | "info" | "warning";
     show: boolean;
-    duration?: number;
   };
 
 export function Alert(props: Readonly<AlertProps>): JSX.Element {
-  const {
-    show = false,
-    children,
-    variant,
-    className,
-    duration = 10000, // Default duration is 10 seconds
-    ...rest
-  } = props;
-
-  const [showAlert, setShowAlert] = useState(show);
-
-  useEffect(() => {
-    setShowAlert(show);
-
-    if (show && duration > 0) {
-      const timeout = setTimeout(() => setShowAlert(false), duration);
-      return () => clearTimeout(timeout);
-    }
-  }, [duration, show]);
+  const { show = false, children, variant, className, ...rest } = props;
 
   return (
     <AnimatePresence>
-      {showAlert && (
+      {show && (
         <motion.div
           initial={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}

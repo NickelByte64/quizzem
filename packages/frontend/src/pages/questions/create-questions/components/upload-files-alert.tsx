@@ -3,8 +3,7 @@ import { FileRejection, FileWithPath } from "react-dropzone";
 import { Alert } from "~/components";
 
 type UploadFilesAlertProps = {
-  isSuccess: boolean;
-  isError: boolean;
+  status: "success" | "error" | "warning" | null;
   acceptedFiles: readonly FileWithPath[];
   fileRejections: readonly FileRejection[];
 };
@@ -12,15 +11,13 @@ type UploadFilesAlertProps = {
 export function UploadFilesAlert(
   props: Readonly<UploadFilesAlertProps>
 ): JSX.Element {
-  const { isSuccess, isError, acceptedFiles, fileRejections } = props;
+  const { status = "error", acceptedFiles, fileRejections } = props;
+
+  console.log(!!status, status);
 
   return (
-    <Alert
-      show={isSuccess || isError}
-      variant={getAlertVariant(isSuccess, isError)}
-      className="mt-8"
-    >
-      {isSuccess && (
+    <Alert show={!!status} variant={getAlertVariant(status)} className="mt-8">
+      {status === "success" && (
         <p>
           Deine {acceptedFiles.length > 1 ? "Dateien" : "Datei"}{" "}
           <span className="font-bold">
@@ -30,21 +27,28 @@ export function UploadFilesAlert(
           hochgeladen. Du kannst sie jetzt in der Fragenübersicht sehen.
         </p>
       )}
-      {isError && (
+      {fileRejections.length > 0 ? (
         <p>
-          Es ist ein Fehler aufgetreten. Bitte überprüfe deine Dateien und
-          versuche es erneut.
+          Diese Datei{" "}
+          <span className="font-bold">
+            {fileRejections.map((file) => file.file.name).join(", ")}
+          </span>{" "}
+          wurde abgelehnt. Bitte überprüfe die Dateiformate und -größen.
         </p>
+      ) : (
+        status === "error" && (
+          <p>
+            Es ist ein Fehler aufgetreten. Bitte überprüfe deine Dateien und
+            versuche es erneut.
+          </p>
+        )
       )}
     </Alert>
   );
 }
 
 function getAlertVariant(
-  isSuccess: boolean,
-  isError: boolean
+  status: "success" | "error" | "warning" | null
 ): "success" | "error" | "warning" {
-  if (isSuccess) return "success";
-  if (isError) return "error";
-  return "warning";
+  return status ?? "warning";
 }
