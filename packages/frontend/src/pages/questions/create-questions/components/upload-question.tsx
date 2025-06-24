@@ -1,18 +1,59 @@
+import { UseMutateFunction } from "@tanstack/react-query";
 import { JSX } from "react";
 import { DropzoneOptions, useDropzone } from "react-dropzone";
 import { Button, Divider, Headline, InlineLink } from "~/components";
+import { UploadFilesAlert } from "~/pages/questions/create-questions/components/upload-files-alert";
+import { usePostRemote } from "~/utils";
 
-const onDrop: DropzoneOptions["onDrop"] = (acceptedFiles) => {
-  console.log(acceptedFiles);
-};
+/**
+ * Handles the drop event for the dropzone.
+ * This function creates a FormData object, appends the accepted files to it
+ * and submits it using the provided mutate function.
+ *
+ * @returns {DropzoneOptions["onDrop"]} A function that handles the drop event.
+ */
+function onDrop(
+  mutate: UseMutateFunction<void, unknown, FormData>
+): DropzoneOptions["onDrop"] {
+  return (acceptedFiles, fileRejections) => {
+    if (fileRejections.length > 0) {
+      console.error("File rejections:", fileRejections);
+      return;
+    }
+
+    const formData = new FormData();
+    acceptedFiles.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    mutate(formData);
+  };
+}
 
 export function UploadQuestion(): JSX.Element {
-  const { getRootProps, getInputProps, open, isDragActive, acceptedFiles } =
-    useDropzone({
-      onDrop,
-      noClick: true,
-      noKeyboard: true,
-    });
+  const { mutate, isSuccess, isError } = usePostRemote<FormData, void>(
+    "questions/upload"
+  );
+
+  const {
+    getRootProps,
+    getInputProps,
+    open,
+    isDragActive,
+    acceptedFiles,
+    fileRejections,
+  } = useDropzone({
+    onDrop: onDrop(mutate),
+    noClick: true,
+    noKeyboard: true,
+    accept: {
+      "application/json": [".json"],
+      "text/csv": [".csv"],
+    },
+    maxSize: 5 * 1024 * 1024, // 5 MB
+    multiple: true,
+    maxFiles: 2,
+  });
 
   return (
     <>
@@ -30,6 +71,14 @@ export function UploadQuestion(): JSX.Element {
         herunterladen, um sicherzustellen, dass deine Dateien im richtigen
         Format sind.
       </p>
+
+      <UploadFilesAlert
+        isError={isError}
+        isSuccess={isSuccess}
+        acceptedFiles={acceptedFiles}
+        fileRejections={fileRejections}
+      />
+
       <div
         {...getRootProps()}
         className="my-8 border border-dashed rounded-xl p-8 flex flex-col items-center justify-center gap-4"
@@ -54,17 +103,6 @@ export function UploadQuestion(): JSX.Element {
         <Divider withText text="oder" />
 
         <Button onClick={open}>Durchsuchen</Button>
-
-        {acceptedFiles.length > 0 && (
-          <div className="mt-4 w-full">
-            <Headline as="h4">Liste von Dateien</Headline>
-            <ol className="list-decimal pl-6">
-              {acceptedFiles.map((file) => (
-                <li key={file.path}>{file.name}</li>
-              ))}
-            </ol>
-          </div>
-        )}
       </div>
     </>
   );

@@ -1,5 +1,6 @@
 export * from "./actions";
 export * from "./data-display";
+export * from "./feedback";
 export * from "./form-item";
 export * from "./global";
 export * from "./layout";
