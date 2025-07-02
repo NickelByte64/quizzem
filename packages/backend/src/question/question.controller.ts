@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Post,
   UploadedFiles,
   UseInterceptors,
@@ -37,10 +39,10 @@ export class QuestionController {
 
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files'))
-  uploadQuestions(@UploadedFiles() files: Express.Multer.File[]): void {
-    console.log(
-      'Received file:',
-      files.map((file) => file),
-    );
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async uploadQuestions(
+    @UploadedFiles() files: Express.Multer.File[],
+  ): Promise<void> {
+    return await this.questionService.uploadQuestions(files);
   }
 }

@@ -13,8 +13,6 @@ export function UploadFilesAlert(
 ): JSX.Element {
   const { status = "error", acceptedFiles, fileRejections } = props;
 
-  console.log(!!status, status);
-
   return (
     <Alert show={!!status} variant={getAlertVariant(status)} className="mt-8">
       {status === "success" && (

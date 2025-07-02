@@ -33,7 +33,6 @@ export function UploadQuestion(): JSX.Element {
 
       // If there are file rejections, log them and set status to error
       if (fileRejections.length > 0 || acceptedFiles.length === 0) {
-        console.error("File rejections:", fileRejections);
         setStatus("error");
         resetStatus();
         return;

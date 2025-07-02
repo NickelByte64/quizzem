@@ -1,34 +1,34 @@
 [
   {
     "question": "Was ist die Hauptstadt von Frankreich?",
-    "question_type": "MULTIPLE_CHOICE",
-    "correct_answer": "Paris",
+    "questionType": "MULTIPLE_CHOICE",
+    "correctAnswer": "Paris",
     "answers": "Paris;London;Berlin;Rom"
   },
   {
     "question": "Ist Wasser nass?",
-    "question_type": "TRUE_FALSE",
-    "correct_answer": true
+    "questionType": "TRUE_FALSE",
+    "correctAnswer": true
   },
   {
     "question": "_ ist das größte Säugetier der Welt.",
-    "question_type": "FILL_IN_THE_BLANK",
-    "correct_answer": "Blauwal"
+    "questionType": "FILL_IN_THE_BLANK",
+    "correctAnswer": "Blauwal"
   },
   {
     "question": "Ordne die Planeten nach ihrer Entfernung zur Sonne.",
-    "question_type": "ORDERING",
-    "correct_answer": "Merkur;Venus;Erde;Mars",
+    "questionType": "ORDERING",
+    "correctAnswer": "Merkur;Venus;Erde;Mars",
     "answers": "Merkur;Venus;Erde;Mars"
   },
   {
     "question": "Wie viele Einwohner hat Deutschland (ungefähr)?",
-    "question_type": "ESTIMATE",
-    "correct_answer": 830000000
+    "questionType": "ESTIMATE",
+    "correctAnswer": 830000000
   },
   {
     "question": "Wieviel ist 7 mal 8?",
-    "question_type": "NUMERIC",
-    "correct_answer": 56
+    "questionType": "NUMERIC",
+    "correctAnswer": 56
   }
 ]
