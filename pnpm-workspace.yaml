@@ -1,8 +1,11 @@
 packages:
   - packages/*
-onlyBuiltDependencies:
-  - bcrypt
-  - esbuild
+
 ignoredBuiltDependencies:
   - '@nestjs/core'
   - '@swc/core'
+
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - bcrypt
+  - esbuild
