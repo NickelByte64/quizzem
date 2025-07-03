@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import { IEnvVariables } from 'src/utils/env.types';
 import { AppModule } from './app.module';
 
