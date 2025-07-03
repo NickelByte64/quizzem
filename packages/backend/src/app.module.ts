@@ -5,8 +5,10 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_PIPE } from '@nestjs/core';
 import { ClsModule, ClsService } from 'nestjs-cls';
 import { resolve } from 'path';
+import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 import { DbModule } from 'src/db/db.module';
 import { RequestContext } from 'src/request-context/request-context';
 import { RequestContextMiddleware } from 'src/request-context/request-context.middleware';
@@ -33,6 +35,7 @@ import { UserModule } from './user/user.module';
     QuestionModule,
     AuthModule,
   ],
+  providers: [{ provide: APP_PIPE, useValue: ValidationPipe }],
 })
 export class AppModule implements NestModule, OnModuleInit {
   constructor(private readonly clsService: ClsService) {}

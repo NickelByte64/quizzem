@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { parse } from 'csv-parse/sync';
+import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
 import { UploadQuestionDto } from 'src/question/dto/upload-question.dto';
 import { QuestionModel } from 'src/question/model/question.model';
 import { DataSource, Repository } from 'typeorm';
@@ -18,6 +19,10 @@ export class QuestionService {
     private readonly questionRepository: Repository<QuestionModel>,
     private readonly dataSource: DataSource,
   ) {}
+
+  async createQuestions(data: CreateQuestionDto[]): Promise<void> {
+    await this.saveQuestions(data);
+  }
 
   /**
    * Handle the file upload of questions in the JSON and/or CSV format.

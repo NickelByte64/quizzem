@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   HttpCode,
   HttpStatus,
@@ -7,11 +8,18 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
 import { QuestionService } from 'src/question/question.service';
 
 @Controller('questions')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
+
+  @Post()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async createQuestions(@Body() data: CreateQuestionDto[]): Promise<void> {
+    return await this.questionService.createQuestions(data);
+  }
 
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files'))
