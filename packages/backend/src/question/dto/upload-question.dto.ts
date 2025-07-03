@@ -1,15 +1,15 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IsStringNumberOrBoolean } from 'src/question/decorators/is-string-number-or-boolean.decorator';
-import { EQuestionType } from 'src/question/models/question-type.enum';
+import { QuestionType } from 'src/question/dto/question-type.enum';
 
 export class UploadQuestionDto {
   @IsString()
   @IsNotEmpty()
   question: string;
 
-  @IsEnum(EQuestionType)
+  @IsEnum(QuestionType)
   @IsNotEmpty()
-  questionType: EQuestionType;
+  questionType: QuestionType;
 
   @IsStringNumberOrBoolean()
   @IsNotEmpty()

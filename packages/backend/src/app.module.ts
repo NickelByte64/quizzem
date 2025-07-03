@@ -11,13 +11,10 @@ import { DbModule } from 'src/db/db.module';
 import { RequestContext } from 'src/request-context/request-context';
 import { RequestContextMiddleware } from 'src/request-context/request-context.middleware';
 import { AuthModule } from './auth/auth.module';
-import { CategoryModule } from './category/category.module';
 import { QuestionModule } from './question/question.module';
 import { RedisModule } from './redis/redis.module';
 import { SessionModule } from './session/session.module';
 import { UserModule } from './user/user.module';
-import { GameRoundActionModule } from './game-round-action/game-round-action.module';
-import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -34,10 +31,7 @@ import { GameModule } from './game/game.module';
     UserModule,
     SessionModule,
     QuestionModule,
-    CategoryModule,
     AuthModule,
-    GameRoundActionModule,
-    GameModule,
   ],
 })
 export class AppModule implements NestModule, OnModuleInit {
