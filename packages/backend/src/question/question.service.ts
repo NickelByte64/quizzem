@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { parse } from 'csv-parse/sync';
+import { FileUploadService } from 'src/common/services/file-upload.service';
 import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
 import { UploadQuestionDto } from 'src/question/dto/upload-question.dto';
 import { QuestionModel } from 'src/question/model/question.model';
@@ -15,6 +16,7 @@ import { DataSource, Repository } from 'typeorm';
 @Injectable()
 export class QuestionService {
   constructor(
+    private readonly fileUploadService: FileUploadService,
     @InjectRepository(QuestionModel)
     private readonly questionRepository: Repository<QuestionModel>,
     private readonly dataSource: DataSource,
@@ -31,12 +33,12 @@ export class QuestionService {
    * The questions are then stored in the database.
    */
   async uploadQuestions(files: Express.Multer.File[]): Promise<void> {
-    if (!files || files.length === 0) {
-      throw new BadRequestException('No files provided');
-    }
-
-    this.validateFilesMimeType(files);
-    this.validateFilesSize(files);
+    this.fileUploadService.validateFilesExist(files);
+    this.fileUploadService.validateFilesMimeType(files, [
+      'text/csv',
+      'application/json',
+    ]);
+    this.fileUploadService.validateFilesSize(files);
 
     const jsonFile = files.find((file) => file.mimetype === 'application/json');
     const csvFile = files.find((file) => file.mimetype === 'text/csv');
@@ -48,44 +50,6 @@ export class QuestionService {
     } else {
       throw new BadRequestException(
         'No valid file type found. Expected JSON or CSV.',
-      );
-    }
-  }
-  /**
-   * Validates the MIME types of the uploaded files.
-   */
-  private validateFilesMimeType(files: Express.Multer.File[]): void {
-    const ALLOWED_MIME_TYPES = ['text/csv', 'application/json'];
-
-    for (const file of files) {
-      if (!file.mimetype) {
-        throw new BadRequestException('File type is missing');
-      }
-
-      if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-        throw new BadRequestException(
-          `Invalid file type: ${file.mimetype}. Allowed types are: ${ALLOWED_MIME_TYPES.join(', ')}`,
-        );
-      }
-    }
-  }
-
-  /**
-   * Validates the total size of the uploaded files.
-   */
-  private validateFilesSize(files: Express.Multer.File[]): void {
-    const MAX_FILES_SIZE = 5 * 1024 * 1024; // 5 MB
-
-    const filesSizeSum = files.reduce((totalSize, file) => {
-      if (!file.size) {
-        throw new BadRequestException('File size is missing');
-      }
-      return totalSize + file.size;
-    }, 0);
-
-    if (filesSizeSum > MAX_FILES_SIZE) {
-      throw new BadRequestException(
-        `Total file size exceeds the limit of ${MAX_FILES_SIZE / (1024 * 1024)} MB`,
       );
     }
   }
@@ -168,27 +132,16 @@ export class QuestionService {
     // Sanitize CSV fields
     const sanitized: UploadQuestionDto[] = instances.map((i) => {
       return {
-        question: this.sanitizeCsvField(i.question),
-        questionType: this.sanitizeCsvField(i.questionType),
-        correctAnswer: this.sanitizeCsvField(i.correctAnswer),
-        answers: this.sanitizeCsvField(i.answers),
+        question: this.fileUploadService.sanitizeCsvFields(i.question),
+        questionType: this.fileUploadService.sanitizeCsvFields(i.questionType),
+        correctAnswer: this.fileUploadService.sanitizeCsvFields(
+          i.correctAnswer,
+        ),
+        answers: this.fileUploadService.sanitizeCsvFields(i.answers),
       };
     });
 
     await this.saveQuestions(sanitized);
-  }
-
-  /**
-   * Sanitizes a CSV field to prevent formula injection attacks.
-   * If the field starts with '=', '+', '-', or '@', it prepends a single quote (')
-   * to the value to treat it as a string in CSV format.
-   */
-  private sanitizeCsvField<T>(value: T): T {
-    if (!value) return '' as T;
-    const dangerousStart = ['=', '+', '-', '@'];
-    return dangerousStart.includes(String(value)[0])
-      ? (`'${String(value)}` as T)
-      : value;
   }
 
   /**
