@@ -9,20 +9,20 @@
     }
   },
   "scripts": {
-    "build": "rimraf ./dist && tsc && pnpm generate && pnpm prettier",
-    "generate": "tsx src/generate.ts",
+    "generate": "rimraf ./dist && tsc && pnpm generate-pre && pnpm prettier",
+    "generate-pre": "tsx src/generate.ts",
     "prettier": "prettier --write ./dist"
   },
   "dependencies": {
-    "glob": "^11.0.1"
+    "glob": "^11.0.3"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
-    "@types/node": "^22.10.7",
-    "eslint": "^9.24.0",
-    "prettier": "^3.4.2",
+    "@types/node": "^22.16.0",
+    "eslint": "^9.30.1",
+    "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
     "ts-morph": "^25.0.1",
-    "tsx": "^4.19.3"
+    "tsx": "^4.20.3"
   }
 }

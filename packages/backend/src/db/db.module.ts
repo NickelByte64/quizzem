@@ -1,8 +1,8 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ENTITIES_LIST } from 'src/db/entities-list';
 import { PrePopulateDB } from 'src/db/pre-populate-db';
-import { CategoryModel } from 'src/question/models/category.model';
 import { IEnvVariables } from 'src/utils/env.types';
 
 @Module({
@@ -16,18 +16,17 @@ import { IEnvVariables } from 'src/utils/env.types';
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        autoLoadEntities: true,
-        synchronize: true,
+        entities: ENTITIES_LIST,
       }),
     }),
-    TypeOrmModule.forFeature([CategoryModel]),
+    TypeOrmModule.forFeature(ENTITIES_LIST),
   ],
   providers: [PrePopulateDB],
 })
 export class DbModule implements OnModuleInit {
   constructor(private readonly prePopulateDB: PrePopulateDB) {}
 
-  async onModuleInit() {
-    await this.prePopulateDB.run();
+  onModuleInit() {
+    this.prePopulateDB.run();
   }
 }

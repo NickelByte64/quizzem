@@ -2,8 +2,12 @@ import { JSX } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { BasePage } from "~/components/global/base-page";
 import { CategoriesPage } from "~/pages/categories/categories.page";
-import { GamePage } from "~/pages/game/game.page";
+import { GameManagerListPage } from "~/pages/game-manager-list/game-manager-list.page";
+import { CreateGamePage } from "~/pages/games/create-game/create-game.page";
+import { GameManagerPage } from "~/pages/games/game-manager/game-manager.page";
 import { HomePage } from "~/pages/home/home.page";
+import { PrepareGameRound } from "~/pages/prepare-game-round/prepare-game-round";
+import { CreateQuestionsPage } from "~/pages/questions/create-questions/create-questions.page";
 import { QuestionsPage } from "~/pages/questions/questions.page";
 
 export function Router(): JSX.Element {
@@ -13,8 +17,12 @@ export function Router(): JSX.Element {
         <Route path="/" element={<HomePage />} />
         <Route element={<BasePage />}>
           <Route path="/questions" element={<QuestionsPage />} />
+          <Route path="/questions/create" element={<CreateQuestionsPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
-          <Route path="/game" element={<GamePage />} />
+          <Route path="/game-manager" element={<GameManagerListPage />} />
+          <Route path="/game-manager/:id" element={<GameManagerPage />} />
+          <Route path="/game/create" element={<CreateGamePage />} />
+          <Route path="/prepare-game-round" element={<PrepareGameRound />} />
         </Route>
       </Routes>
     </BrowserRouter>

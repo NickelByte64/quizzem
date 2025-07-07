@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   DetailedHTMLProps,
   JSX,
@@ -12,9 +13,9 @@ type SelectProps = DetailedHTMLProps<
   PropsWithChildren;
 
 export function Select(props: Readonly<SelectProps>): JSX.Element {
-  const { children, ...rest } = props;
+  const { children, className, ...rest } = props;
   return (
-    <select className="select w-full" {...rest}>
+    <select className={clsx("select w-full", className)} {...rest}>
       {children}
     </select>
   );

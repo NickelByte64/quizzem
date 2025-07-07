@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AnswerModel } from 'src/question/models/answers.model';
-import { QuestionModel } from 'src/question/models/question.model';
+import { FileUploadService } from 'src/common/services/file-upload.service';
+import { QuestionModel } from 'src/question/model/question.model';
 import { QuestionController } from 'src/question/question.controller';
 import { QuestionService } from 'src/question/question.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AnswerModel, QuestionModel])],
+  imports: [TypeOrmModule.forFeature([QuestionModel])],
   controllers: [QuestionController],
-  providers: [QuestionService],
+  providers: [QuestionService, FileUploadService],
 })
 export class QuestionModule {}

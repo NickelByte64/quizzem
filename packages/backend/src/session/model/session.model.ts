@@ -1,12 +1,9 @@
-import { UUID, randomUUID } from 'crypto';
 import { UserModel } from 'src/user/model/user.model';
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { QuizzemModel } from 'src/utils/quizzem.model';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity('session')
-export class SessionModel {
-  @PrimaryColumn({ type: 'uuid' })
-  id: UUID = randomUUID();
-
+export class SessionModel extends QuizzemModel {
   @Column()
   expiredAt: Date = new Date();
 

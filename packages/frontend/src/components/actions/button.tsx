@@ -11,15 +11,27 @@ type ButtonProps = DetailedHTMLProps<
   HTMLButtonElement
 > &
   PropsWithChildren & {
-    variant?: "primary" | "secondary" | "accent" | "neutral";
+    variant?: "primary" | "secondary" | "accent" | "neutral" | "error";
+    outline?: boolean;
   };
 
 export function Button(props: Readonly<ButtonProps>): JSX.Element {
-  const { children, variant = "primary", className, ...rest } = props;
+  const {
+    children,
+    variant = "primary",
+    outline = true,
+    className,
+    ...rest
+  } = props;
 
   return (
     <button
-      className={clsx("btn btn-outline", buttonStyles[variant], className)}
+      className={clsx(
+        "btn",
+        outline && "btn-outline",
+        buttonStyles[variant],
+        className
+      )}
       {...rest}
     >
       {children}
@@ -32,4 +44,5 @@ const buttonStyles = {
   primary: "btn-primary",
   secondary: "btn-secondary",
   accent: "btn-accent",
+  error: "btn-error",
 };

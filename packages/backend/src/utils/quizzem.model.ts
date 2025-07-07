@@ -2,9 +2,9 @@ import { randomUUID, UUID } from 'crypto';
 import { Column, PrimaryColumn } from 'typeorm';
 
 export abstract class QuizzemModel {
-  @PrimaryColumn({ type: 'uuid' })
+  @PrimaryColumn()
   id: UUID = randomUUID();
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column()
   createdAt: Date;
 }

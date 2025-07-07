@@ -1,34 +1,21 @@
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsObject,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from 'class-validator';
-import { UUID } from 'crypto';
-import { EQuestionType } from 'src/question/models/question-type.enum';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsStringNumberOrBoolean } from 'src/question/decorators/is-string-number-or-boolean.decorator';
+import { QuestionType } from 'src/question/dto/question-type.enum';
 
 export class CreateQuestionDto {
   @IsString()
   @IsNotEmpty()
   question: string;
 
+  @IsEnum(QuestionType)
+  @IsNotEmpty()
+  questionType: QuestionType;
+
+  @IsStringNumberOrBoolean()
+  @IsNotEmpty()
+  correctAnswer: string | number | boolean;
+
   @IsString()
   @IsOptional()
-  hint: string | null;
-
-  @IsEnum(EQuestionType)
-  type: EQuestionType;
-
-  @IsOptional()
-  @IsNumber()
-  timer: number | null;
-
-  @IsObject()
-  answer: Record<string, unknown>;
-
-  @IsUUID()
-  categoryId: UUID;
+  answers?: string;
 }
