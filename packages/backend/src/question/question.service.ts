@@ -9,7 +9,6 @@ import { validate } from 'class-validator';
 import { parse } from 'csv-parse/sync';
 import { FileUploadService } from 'src/common/services/file-upload.service';
 import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
-import { UploadQuestionDto } from 'src/question/dto/upload-question.dto';
 import { QuestionModel } from 'src/question/model/question.model';
 import { DataSource, Repository } from 'typeorm';
 
@@ -56,7 +55,7 @@ export class QuestionService {
 
   /**
    * Handles the uploaded JSON file. Parses the content,
-   * validates the structure, and converts it to instances of UploadQuestionDto.
+   * validates the structure, and converts it to instances of CreateQuestionDto.
    * If the structure is valid, it saves the instances to the database.
    */
   private async handleJsonFile(file: Express.Multer.File): Promise<void> {
@@ -74,7 +73,7 @@ export class QuestionService {
       throw new BadRequestException('JSON must be an array of questions');
     }
 
-    const instances = plainToInstance(UploadQuestionDto, parsed);
+    const instances = plainToInstance(CreateQuestionDto, parsed);
     const errors = await Promise.all(instances.map((i) => validate(i)));
 
     const hasErrors = errors.some((err) => err.length > 0);
@@ -88,7 +87,7 @@ export class QuestionService {
 
   /**
    * Handles the uploaded CSV file. Parses the content,
-   * validates the structure, and converts it to instances of UploadQuestionDto.
+   * validates the structure, and converts it to instances of CreateQuestionDto.
    * If the structure is valid, it saves the instances to the database.
    */
   private async handleCsvFile(file: Express.Multer.File): Promise<void> {
@@ -121,7 +120,7 @@ export class QuestionService {
       throw new BadRequestException('CSV must be an array of questions');
     }
 
-    const instances = plainToInstance(UploadQuestionDto, parsed);
+    const instances = plainToInstance(CreateQuestionDto, parsed);
     const errors = await Promise.all(instances.map((i) => validate(i)));
     const hasErrors = errors.some((err) => err.length > 0);
     if (hasErrors) {
@@ -130,7 +129,7 @@ export class QuestionService {
     }
 
     // Sanitize CSV fields
-    const sanitized: UploadQuestionDto[] = instances.map((i) => {
+    const sanitized: CreateQuestionDto[] = instances.map((i) => {
       return {
         question: this.fileUploadService.sanitizeCsvFields(i.question),
         questionType: this.fileUploadService.sanitizeCsvFields(i.questionType),
@@ -147,7 +146,7 @@ export class QuestionService {
   /**
    * Saves the validated questions to the database.
    */
-  private async saveQuestions(questions: UploadQuestionDto[]): Promise<void> {
+  private async saveQuestions(questions: CreateQuestionDto[]): Promise<void> {
     const createdQuestions = questions.map((question) => {
       return this.questionRepository.create({
         question: question.question,
