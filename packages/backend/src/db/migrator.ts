@@ -4,7 +4,7 @@ import { join, resolve } from 'path';
 
 dotenv.config({ path: join(process.cwd(), '../../../..', '.env.development') });
 
-const migrationsDirs = ['001'].map((ver) =>
+const migrationsDirs = ['001', '002'].map((ver) =>
   resolve(__dirname, 'migrations', ver),
 );
 

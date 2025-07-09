@@ -18,6 +18,7 @@ import { RedisModule } from './redis/redis.module';
 import { SessionModule } from './session/session.module';
 import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';
+import { TenantModule } from './tenant/tenant.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { CategoryModule } from './category/category.module';
     QuestionModule,
     AuthModule,
     CategoryModule,
+    TenantModule,
   ],
   providers: [{ provide: APP_PIPE, useValue: ValidationPipe }],
 })
