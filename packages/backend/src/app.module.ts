@@ -5,20 +5,22 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ClsModule, ClsService } from 'nestjs-cls';
 import { resolve } from 'path';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 import { DbModule } from 'src/db/db.module';
 import { RequestContext } from 'src/request-context/request-context';
 import { RequestContextMiddleware } from 'src/request-context/request-context.middleware';
+import { SessionGuard } from 'src/session/guards/session.guard';
 import { AuthModule } from './auth/auth.module';
+import { CategoryModule } from './category/category.module';
 import { QuestionModule } from './question/question.module';
 import { RedisModule } from './redis/redis.module';
 import { SessionModule } from './session/session.module';
-import { UserModule } from './user/user.module';
-import { CategoryModule } from './category/category.module';
 import { TenantModule } from './tenant/tenant.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -39,7 +41,11 @@ import { TenantModule } from './tenant/tenant.module';
     CategoryModule,
     TenantModule,
   ],
-  providers: [{ provide: APP_PIPE, useValue: ValidationPipe }],
+  providers: [
+    SessionGuard,
+    { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_PIPE, useValue: ValidationPipe },
+  ],
 })
 export class AppModule implements NestModule, OnModuleInit {
   constructor(private readonly clsService: ClsService) {}
