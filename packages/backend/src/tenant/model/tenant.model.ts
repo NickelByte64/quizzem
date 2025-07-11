@@ -5,6 +5,6 @@ import { Entity, JoinColumn, OneToOne } from 'typeorm';
 @Entity('tenant')
 export class TenantModel extends QuizzemModel {
   @OneToOne(() => UserModel)
-  @JoinColumn()
+  @JoinColumn({ name: 'user_id' })
   user: UserModel;
 }

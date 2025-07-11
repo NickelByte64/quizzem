@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ENTITIES_LIST } from 'src/db/entities-list';
@@ -21,12 +21,12 @@ import { IEnvVariables } from 'src/utils/env.types';
     }),
     TypeOrmModule.forFeature(ENTITIES_LIST),
   ],
-  providers: [PrePopulateDB],
+  providers: [PrePopulateDB, Logger],
 })
 export class DbModule implements OnModuleInit {
   constructor(private readonly prePopulateDB: PrePopulateDB) {}
 
-  onModuleInit() {
-    this.prePopulateDB.run();
+  async onModuleInit() {
+    await this.prePopulateDB.run();
   }
 }

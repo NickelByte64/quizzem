@@ -7,7 +7,7 @@ export class CategoryGroupModel extends QuizzemModel {
   @Column({ unique: true })
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true, default: null })
   description: string | null;
 
   @OneToMany(() => CategoryModel, (category) => category.group)
