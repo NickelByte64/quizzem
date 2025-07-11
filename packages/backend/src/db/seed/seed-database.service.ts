@@ -12,21 +12,24 @@ import { UserModel } from 'src/user/model/user.model';
 import { EntityManager } from 'typeorm';
 
 @Injectable()
-export class PrePopulateDB {
+export class SeedDatabaseService {
   constructor(
     private readonly logger: Logger,
     private readonly em: EntityManager,
   ) {}
 
   async run() {
-    this.logger.log('Start populating database...', PrePopulateDB.name);
+    this.logger.log('Start populating database...', SeedDatabaseService.name);
 
     await this.seedWrapper('users', () => this.seedUsers());
     await this.seedWrapper('tenants', () => this.seedTenants());
     await this.seedWrapper('category groups', () => this.seedCategoryGroups());
     await this.seedWrapper('categories', () => this.seedCategories());
 
-    this.logger.log('Finished populating database...', PrePopulateDB.name);
+    this.logger.log(
+      'Finished populating database...',
+      SeedDatabaseService.name,
+    );
   }
 
   async seedUsers(): Promise<void> {
@@ -47,7 +50,7 @@ export class PrePopulateDB {
     } else {
       this.logger.error(
         'The number of users does not match the number of tenants. Skipping user seeding.',
-        PrePopulateDB.name,
+        SeedDatabaseService.name,
       );
     }
   }
@@ -73,7 +76,7 @@ export class PrePopulateDB {
     } else {
       this.logger.error(
         'The number of tenants does not match the number of users. Skipping tenant seeding.',
-        PrePopulateDB.name,
+        SeedDatabaseService.name,
       );
     }
   }
@@ -110,10 +113,10 @@ export class PrePopulateDB {
     entity: string,
     seederFn: () => Promise<void>,
   ): Promise<void> {
-    this.logger.log(`Seeding ${entity}...`, PrePopulateDB.name);
+    this.logger.log(`Seeding ${entity}...`, SeedDatabaseService.name);
 
     await seederFn();
 
-    this.logger.log(`Finished seeding ${entity}...`, PrePopulateDB.name);
+    this.logger.log(`Finished seeding ${entity}...`, SeedDatabaseService.name);
   }
 }

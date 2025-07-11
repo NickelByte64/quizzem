@@ -2,7 +2,7 @@ import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ENTITIES_LIST } from 'src/db/entities-list';
-import { PrePopulateDB } from 'src/db/pre-populate-db';
+import { SeedDatabaseService } from 'src/db/seed/seed-database.service';
 import { IEnvVariables } from 'src/utils/env.types';
 
 @Module({
@@ -21,12 +21,12 @@ import { IEnvVariables } from 'src/utils/env.types';
     }),
     TypeOrmModule.forFeature(ENTITIES_LIST),
   ],
-  providers: [PrePopulateDB, Logger],
+  providers: [SeedDatabaseService, Logger],
 })
 export class DbModule implements OnModuleInit {
-  constructor(private readonly prePopulateDB: PrePopulateDB) {}
+  constructor(private readonly seedDatabaseService: SeedDatabaseService) {}
 
   async onModuleInit() {
-    await this.prePopulateDB.run();
+    await this.seedDatabaseService.run();
   }
 }
