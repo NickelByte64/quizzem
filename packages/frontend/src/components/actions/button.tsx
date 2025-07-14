@@ -19,7 +19,7 @@ export function Button(props: Readonly<ButtonProps>): JSX.Element {
   const {
     children,
     variant = "primary",
-    outline = true,
+    outline = false,
     className,
     ...rest
   } = props;

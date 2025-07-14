@@ -9,6 +9,7 @@ import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ClsModule, ClsService } from 'nestjs-cls';
 import { resolve } from 'path';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { PublicGuard } from 'src/common/guards/public.guard';
 import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 import { DbModule } from 'src/db/db.module';
 import { RequestContext } from 'src/request-context/request-context';
@@ -43,6 +44,7 @@ import { UserModule } from './user/user.module';
   ],
   providers: [
     SessionGuard,
+    PublicGuard,
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_PIPE, useValue: ValidationPipe },
   ],

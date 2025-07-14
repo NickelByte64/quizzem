@@ -1,6 +1,8 @@
 import clsx from "clsx";
 import { DetailedHTMLProps, InputHTMLAttributes, JSX } from "react";
 import { FieldErrors, FieldPath, FieldValues, get } from "react-hook-form";
+import { InputError } from "~/components/form-item/input-error";
+import { LabelInput } from "~/components/form-item/label-input";
 
 type InputProps<T extends FieldValues> = Omit<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
@@ -25,3 +27,6 @@ export function Input<T extends FieldValues>(
     />
   );
 }
+
+Input.Label = LabelInput;
+Input.Error = InputError;
