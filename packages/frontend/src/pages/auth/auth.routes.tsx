@@ -1,5 +1,6 @@
 import { SignInPage } from "~/pages/auth/sign-in.page";
 import { SignUpPage } from "~/pages/auth/sign-up.page";
+import { NavigateBack } from "~/router/components/navigate-back";
 import { PublicRoute } from "~/router/components/public-route";
 import { createRoutes } from "~/router/routes.service";
 
@@ -8,7 +9,9 @@ export const AUTH_ROUTES = createRoutes("/auth", [
     path: "sign-in",
     element: (
       <PublicRoute>
-        <SignInPage />
+        <NavigateBack>
+          <SignInPage />
+        </NavigateBack>
       </PublicRoute>
     ),
   },
@@ -16,7 +19,9 @@ export const AUTH_ROUTES = createRoutes("/auth", [
     path: "sign-up",
     element: (
       <PublicRoute>
-        <SignUpPage />
+        <NavigateBack>
+          <SignUpPage />
+        </NavigateBack>
       </PublicRoute>
     ),
   },
