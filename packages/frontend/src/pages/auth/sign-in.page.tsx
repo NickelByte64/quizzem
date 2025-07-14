@@ -3,8 +3,12 @@ import { AxiosError } from "axios";
 import { JSX, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import { Alert, Button, Headline, Input, Layout } from "~/components";
+import { Button, Headline, Layout } from "~/components";
+import { AuthAlert } from "~/pages/auth/components/auth-alert";
+import { PasswordInput } from "~/pages/auth/components/password-input";
+import { UsernameInput } from "~/pages/auth/components/username-input";
 import { usePostRemote } from "~/utils";
+import { ErrorService } from "~/utils/error/error.service";
 
 export function SignInPage(): JSX.Element {
   const [remoteError, setRemoteError] = useState<AxiosError | null>(null);
@@ -22,8 +26,6 @@ export function SignInPage(): JSX.Element {
     },
   });
 
-  const resetError = () => setTimeout(() => setRemoteError(null), 5000);
-
   const { mutate } = usePostRemote<SignInDto, void>("auth/sign-in");
 
   const onSubmit: SubmitHandler<SignInDto> = (data) => {
@@ -33,47 +35,20 @@ export function SignInPage(): JSX.Element {
       },
       onError: (error) => {
         setRemoteError(error);
-        resetError();
+        ErrorService.resetError(setRemoteError);
       },
     });
   };
 
   return (
     <Layout>
-      <Headline as="h1">Anmelden</Headline>
+      <Headline as="h1">Einloggen</Headline>
 
-      <Alert show={!!remoteError} variant={"error"} className="mb-4">
-        {remoteError?.response?.data?.message}
-      </Alert>
+      <AuthAlert remoteError={remoteError} />
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <Input.Label label="User Name" required>
-          <Input
-            placeholder="Naturwissenschaften"
-            required
-            errors={errors}
-            {...register(`userName`, {
-              required: "User name ist erforderlich.",
-            })}
-          />
-          <Input.Error message={errors.userName?.message} />
-        </Input.Label>
-        <Input.Label label="Passwort" required>
-          <Input
-            placeholder="Naturwissenschaften"
-            required
-            type="password"
-            errors={errors}
-            {...register(`password`, {
-              required: "Passwort ist erforderlich.",
-              minLength: {
-                value: 6,
-                message: "Passwort muss mindestens 6 Zeichen lang sein",
-              },
-            })}
-          />
-          <Input.Error message={errors.password?.message} />
-        </Input.Label>
+        <UsernameInput register={register} errors={errors} name="userName" />
+        <PasswordInput register={register} errors={errors} name="password" />
 
         <Button type={"submit"} disabled={Object.keys(errors).length > 0}>
           Anmelden
@@ -81,7 +56,7 @@ export function SignInPage(): JSX.Element {
       </form>
 
       <Button variant="secondary" className="w-full mt-4">
-        <Link to={""}>Noch kein Account? Hier anmelden.</Link>
+        <Link to={"/auth/sign-up"}>Noch kein Account? Hier anmelden</Link>
       </Button>
     </Layout>
   );
