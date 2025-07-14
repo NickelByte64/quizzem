@@ -39,12 +39,8 @@ export class SessionService {
       payload,
       this.configService.getOrThrow('PASETO_PRIVATE_KEY'),
     );
-    const refreshToken = await V4.sign(
-      payload,
-      this.configService.getOrThrow('PASETO_PRIVATE_KEY'),
-    );
 
-    return { accessToken, refreshToken };
+    return { accessToken };
   }
 
   async findSessionByToken(token: string): Promise<SessionRedis | null> {

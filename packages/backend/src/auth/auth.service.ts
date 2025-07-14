@@ -3,9 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { RefreshTokenDto } from 'src/auth/dto/refresh-token.dto';
 import { SignInDto } from 'src/auth/dto/sign-in.dto';
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
@@ -13,13 +11,10 @@ import { RequestContext } from 'src/request-context/request-context';
 import { SessionService } from 'src/session/session.service';
 import { UserModel } from 'src/user/model/user.model';
 import { UserService } from 'src/user/user.service';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UserModel)
-    private readonly userRepo: Repository<UserModel>,
     private readonly userService: UserService,
     private readonly sessionService: SessionService,
   ) {}
@@ -35,38 +30,28 @@ export class AuthService {
       throw new ForbiddenException();
     }
 
-    const { accessToken, refreshToken } = await this.generateAccessTokens(user);
+    const { accessToken } = await this.generateAccessTokens(user);
 
-    user.refreshToken = refreshToken;
-    await this.userRepo.save(user);
-
-    this.setTokenCookies(accessToken, refreshToken);
+    this.setTokenCookies(accessToken);
   }
 
   async signUp(data: SignUpDto): Promise<void> {
     const user = await this.userService.create(data);
 
-    const { accessToken, refreshToken } = await this.generateAccessTokens(user);
-    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+    const { accessToken } = await this.generateAccessTokens(user);
 
-    await this.userRepo.update(user.id, { refreshToken: hashedRefreshToken });
-
-    this.setTokenCookies(accessToken, refreshToken);
+    this.setTokenCookies(accessToken);
   }
 
   async signOut(): Promise<void> {
     const session = await RequestContext.getSession();
-    if (!session) {
+    const user = await RequestContext.getUser();
+    if (!session || !user) {
       throw new NotFoundException();
     }
 
     await this.sessionService.remove(session);
     await this.sessionService.persistInDb(session);
-    // TODO remove refreshtoken
-  }
-
-  refreshToken(data: RefreshTokenDto): void | PromiseLike<void> {
-    throw new Error(`Method not implemented. ${JSON.stringify(data)}`);
   }
 
   async authenticated(): Promise<boolean> {
@@ -82,12 +67,14 @@ export class AuthService {
     return await this.sessionService.createSessionTokens(session);
   }
 
-  private setTokenCookies(accessToken: string, refreshToken: string): void {
+  private setTokenCookies(accessToken: string): void {
     const res = RequestContext.getResponse();
 
-    const cookieOptions = { httpOnly: true, path: '/', signed: true };
-
-    res.cookie('_act_', accessToken, cookieOptions);
-    res.cookie('_rft_', refreshToken, cookieOptions);
+    res.cookie('_act_', accessToken, {
+      httpOnly: true,
+      path: '/',
+      signed: true,
+      sameSite: 'strict',
+    });
   }
 }

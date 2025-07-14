@@ -11,9 +11,6 @@ export class UserModel extends QuizzemModel {
   @Column()
   password: string;
 
-  @Column({ type: 'varchar', nullable: true, default: null })
-  refreshToken: string | null;
-
   // ------ Relations ------
 
   @OneToMany(() => SessionModel, (session) => session.user)
