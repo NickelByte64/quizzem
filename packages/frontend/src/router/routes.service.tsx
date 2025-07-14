@@ -21,7 +21,7 @@ type LayoutRoutesProps = {
 export function LayoutRoutes(props: Readonly<LayoutRoutesProps>): JSX.Element {
   const { routes } = props;
 
-  const element = useRoutes(routes);
+  const routeElements = useRoutes(routes);
 
-  return <>{element}</>;
+  return <>{routeElements}</>;
 }

@@ -1,9 +1,8 @@
 import {
   RemixiconComponentType,
-  RiFoldersFill,
   RiFunctionFill,
-  RiGamepadFill,
   RiQuestionnaireFill,
+  RiShieldFill,
 } from "@remixicon/react";
 
 type GroupedNavigationLink = {
@@ -20,7 +19,7 @@ type NavigationLink = {
   external?: boolean;
 };
 
-export const NAVIGATION_LINKS: GroupedNavigationLink[] = [
+const PUBLIC_NAVIGATION_LINKS: GroupedNavigationLink[] = [
   {
     identifier: "MAIN",
     label: "Main",
@@ -33,23 +32,29 @@ export const NAVIGATION_LINKS: GroupedNavigationLink[] = [
       },
     ],
   },
+];
+
+const AUTH_NAVIGATION_LINKS: GroupedNavigationLink[] = [
   {
-    identifier: "GAME",
-    label: "Game",
-    Icon: RiGamepadFill,
+    identifier: "AUTH",
+    label: "Authentication",
+    Icon: RiShieldFill,
     links: [
       {
-        identifier: "CREATE_GAME",
-        to: "/game/create",
-        label: "Create Game",
+        identifier: "LOGIN",
+        to: "/login",
+        label: "Login",
       },
       {
-        identifier: "UPDATE_GAME",
-        to: "/game",
-        label: "Update Game",
+        identifier: "REGISTER",
+        to: "/register",
+        label: "Register",
       },
     ],
   },
+];
+
+const QUESTION_NAVIGATION_LINKS: GroupedNavigationLink[] = [
   {
     identifier: "QUESTIONS",
     label: "Questions",
@@ -67,17 +72,18 @@ export const NAVIGATION_LINKS: GroupedNavigationLink[] = [
       },
     ],
   },
-  {
-    identifier: "CATEGORIES",
-    label: "Categories",
-    Icon: RiFoldersFill,
-    links: [
-      {
-        identifier: "CATEGORIES_LIST",
-        to: "/categories",
-        label: "Categories List",
-        external: true,
-      },
-    ],
-  },
 ];
+
+export function buildNavigationLinks(
+  authenticated: boolean | undefined
+): GroupedNavigationLink[] {
+  const links: GroupedNavigationLink[] = [...PUBLIC_NAVIGATION_LINKS];
+
+  if (authenticated) {
+    links.push(...QUESTION_NAVIGATION_LINKS);
+  } else {
+    links.push(...AUTH_NAVIGATION_LINKS);
+  }
+
+  return links;
+}

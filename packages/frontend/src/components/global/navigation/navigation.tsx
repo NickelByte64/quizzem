@@ -4,16 +4,20 @@ import { Link } from "react-router";
 import { Divider } from "~/components";
 import { NavigationAction } from "~/components/global/navigation/navigation-action";
 import { NavigationDrawer } from "~/components/global/navigation/navigation-drawer";
-import { NAVIGATION_LINKS } from "~/components/global/navigation/navigation-links";
+import { buildNavigationLinks } from "~/components/global/navigation/navigation-links";
 import { useNavigationStore } from "~/components/global/navigation/navigation.store";
+import { useAuth } from "~/utils";
 
 export function Navigation(): JSX.Element {
   const { toggleDrawerState, drawerState } = useNavigationStore();
+  const { data: authenticated } = useAuth();
+
+  const naviagtionLinks = buildNavigationLinks(authenticated);
 
   return (
     <nav className="p-4">
       <ul className="flex flex-col gap-4">
-        {NAVIGATION_LINKS.map(({ Icon, identifier, label, links }) => (
+        {naviagtionLinks.map(({ Icon, identifier, label, links }) => (
           <li key={identifier}>
             <div className="flex items-center gap-2">
               <span>
