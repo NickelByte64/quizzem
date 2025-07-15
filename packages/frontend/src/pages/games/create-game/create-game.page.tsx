@@ -3,14 +3,7 @@ import { UUID } from "crypto";
 import { JSX } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import {
-  Button,
-  Headline,
-  Input,
-  InputError,
-  LabelInput,
-  Layout,
-} from "~/components";
+import { Button, Headline, Input, InputError, LabelInput } from "~/components";
 import { GameRounds } from "~/pages/games/create-game/components/game-rounds/game-rounds";
 import { defaultGame } from "~/pages/games/create-game/utils/form-values";
 import { GameRoundFormValues } from "~/pages/games/create-game/utils/game-create.types";
@@ -43,37 +36,35 @@ export function CreateGamePage(): JSX.Element {
   };
 
   return (
-    <Layout>
-      <FormProvider {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Headline>Spiel erstellen</Headline>
+    <FormProvider {...form}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Headline>Spiel erstellen</Headline>
 
-          <div className="flex flex-col mb-4 gap-4">
-            <p className="text-sm">
-              Mit Klick auf Spiel erstellen legst du das Spiel fest. Alles
-              Weitere wie Kategorien, Fragen, etc. kannst du dann im Game
-              Manager anpassen.
-            </p>
-          </div>
+        <div className="flex flex-col mb-4 gap-4">
+          <p className="text-sm">
+            Mit Klick auf Spiel erstellen legst du das Spiel fest. Alles Weitere
+            wie Kategorien, Fragen, etc. kannst du dann im Game Manager
+            anpassen.
+          </p>
+        </div>
 
-          <div className={"mb-8"}>
-            <LabelInput label="Name des Spiels">
-              <Input
-                errors={errors}
-                placeholder="Wer wird Billionär?"
-                {...register("name", {
-                  required: "Der Name des Spiels ist erforderlich.",
-                })}
-              />
-              <InputError message={errors.name?.message} />
-            </LabelInput>
-          </div>
+        <div className={"mb-8"}>
+          <LabelInput label="Name des Spiels">
+            <Input
+              errors={errors}
+              placeholder="Wer wird Billionär?"
+              {...register("name", {
+                required: "Der Name des Spiels ist erforderlich.",
+              })}
+            />
+            <InputError message={errors.name?.message} />
+          </LabelInput>
+        </div>
 
-          <GameRounds />
+        <GameRounds />
 
-          <Button className="w-full mt-4">Spiel erstellen</Button>
-        </form>
-      </FormProvider>
-    </Layout>
+        <Button className="w-full mt-4">Spiel erstellen</Button>
+      </form>
+    </FormProvider>
   );
 }

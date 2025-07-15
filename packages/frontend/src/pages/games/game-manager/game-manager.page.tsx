@@ -3,7 +3,7 @@ import { UUID } from "crypto";
 import { JSX } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { Headline, Layout } from "~/components";
+import { Headline } from "~/components";
 import { ManageGameRounds } from "~/pages/games/game-manager/components/manage-game-rounds";
 import { useGetRemote } from "~/utils";
 
@@ -29,7 +29,7 @@ export function GameManagerPage(): JSX.Element {
   };
 
   return (
-    <Layout>
+    <>
       <Headline>Game Manager für "{data.name}"</Headline>
       <p>Hier kannst du den Spielverlauf verwalten.</p>
 
@@ -38,6 +38,6 @@ export function GameManagerPage(): JSX.Element {
           <ManageGameRounds data={data} />
         </form>
       </FormProvider>
-    </Layout>
+    </>
   );
 }

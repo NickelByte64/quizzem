@@ -1,4 +1,4 @@
 export * from "./auth";
+export { EnvService } from "./env/env.service";
 export * from "./remote";
-export * from "./router";
 export * from "./styling";

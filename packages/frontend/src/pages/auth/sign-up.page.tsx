@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { JSX, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import { Button, Headline, Layout } from "~/components";
+import { Button, Headline } from "~/components";
 import { AuthAlert } from "~/pages/auth/components/auth-alert";
 import { PasswordInput } from "~/pages/auth/components/password-input";
 import { UsernameInput } from "~/pages/auth/components/username-input";
@@ -41,7 +41,7 @@ export function SignUpPage(): JSX.Element {
   };
 
   return (
-    <Layout>
+    <>
       <Headline as="h1">Anmelden</Headline>
 
       <AuthAlert remoteError={remoteError} />
@@ -58,6 +58,6 @@ export function SignUpPage(): JSX.Element {
       <Button variant="secondary" className="w-full mt-4">
         <Link to={"/auth/sign-in"}>Hast du ein Account? Hier einloggen</Link>
       </Button>
-    </Layout>
+    </>
   );
 }

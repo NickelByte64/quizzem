@@ -1,5 +1,7 @@
 import { JSX, PropsWithChildren } from "react";
-import { useAuth } from "~/utils";
+import { Loading } from "~/components/feedback/loading";
+import { AccessDeniedPage } from "~/pages/errors/access-denied.page";
+import { EnvService, useAuth } from "~/utils";
 
 /**
  * ProtectedRoute component ensures that the user is authenticated before rendering its children.
@@ -14,15 +16,22 @@ export function ProtectedRoute(
 
   const { data: authenticated, isLoading } = useAuth();
 
-  if (isLoading) return <div>Loading...</div>;
-
-  if (!authenticated)
+  if (isLoading)
     return (
-      <div>
-        <h1>Access Denied</h1>
-        <p>You must be logged in to view this page.</p>
+      <div className="fixed inset-0 bg-base-300 flex items-center justify-center">
+        <Loading size="xl" />
       </div>
     );
 
-  return <>{children}</>;
+  if (!authenticated) return <AccessDeniedPage />;
+
+  return (
+    <>
+      {EnvService.IS_DEV_ENVIRONMENT && (
+        <p className={"text-warning font-bold text-xl"}>Protected Route</p>
+      )}
+
+      {children}
+    </>
+  );
 }

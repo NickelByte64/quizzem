@@ -10,7 +10,10 @@ export function BasePage(): JSX.Element {
       <Navigation.Drawer>
         <Navigation />
       </Navigation.Drawer>
-      <Outlet />
+
+      <main className="px-4 pt-20 pb-8">
+        <Outlet />
+      </main>
     </>
   );
 }

@@ -2,7 +2,7 @@ import { GameDto, PageableDto } from "@quizzem/common";
 import { RiDeleteBinFill, RiPencilFill } from "@remixicon/react";
 import { JSX, useState } from "react";
 import { Link } from "react-router";
-import { Headline, IconButton, Layout } from "~/components";
+import { Headline, IconButton } from "~/components";
 import { DeleteModal } from "~/pages/game-manager-list/components/delete-modal";
 import { useGetRemote } from "~/utils";
 
@@ -13,7 +13,7 @@ export function GameManagerListPage(): JSX.Element {
   const [game, setGame] = useState<GameDto | null>(null);
 
   return (
-    <Layout>
+    <>
       <Headline>Game Manager List</Headline>
       <ul className="list">
         {data?.data.map((game, i) => (
@@ -46,6 +46,6 @@ export function GameManagerListPage(): JSX.Element {
       </ul>
 
       <DeleteModal game={game} open={openModal} setOpen={setOpenModal} />
-    </Layout>
+    </>
   );
 }

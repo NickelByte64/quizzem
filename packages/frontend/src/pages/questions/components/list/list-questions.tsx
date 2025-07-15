@@ -1,5 +1,6 @@
 import { PageableDto, QuestionDto } from "@quizzem/common";
 import { JSX } from "react";
+import { Loading } from "~/components/feedback/loading";
 import { ListQuestionsItem } from "~/pages/questions/components/list/list-question-item";
 import { useGetRemote } from "~/utils";
 
@@ -8,7 +9,7 @@ export function ListQuestions(): JSX.Element {
     useGetRemote<PageableDto<QuestionDto>>("question");
 
   if (isLoading) {
-    return <div>loading</div>;
+    return <Loading />;
   }
 
   if (!data?.data || data.data.length === 0) {
