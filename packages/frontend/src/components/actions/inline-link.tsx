@@ -7,6 +7,7 @@ import {
   PropsWithChildren,
 } from "react";
 import { Link as RouterLink } from "react-router";
+import { Theme, useTheme } from "~/utils";
 
 type InlineLinkProps = PropsWithChildren &
   DetailedHTMLProps<
@@ -27,6 +28,8 @@ export function InlineLink(props: Readonly<InlineLinkProps>): JSX.Element {
     ...rest
   } = props;
 
+  const { theme } = useTheme();
+
   const componentProps = {
     ...(Component === RouterLink ? { to } : { href }),
     ...rest,
@@ -34,7 +37,11 @@ export function InlineLink(props: Readonly<InlineLinkProps>): JSX.Element {
 
   return (
     <Component
-      className={clsx("underline text-secondary hover:no-underline", className)}
+      className={clsx(
+        "underline hover:no-underline",
+        className,
+        theme === Theme.DRACULA ? "text-secondary" : "text-secondary-content"
+      )}
       {...componentProps}
     >
       {children}

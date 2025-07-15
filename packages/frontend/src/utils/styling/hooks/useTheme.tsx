@@ -1,11 +1,16 @@
 import { useCallback, useState } from "react";
 
-type Theme = "cupcake" | "dracula";
+export enum Theme {
+  CUPCAKE = "cupcake",
+  DRACULA = "dracula",
+}
 
+// TODO Use a more robust way to handle themes with a context provider.
 export function useTheme() {
   const htmlEl = document.querySelector("html");
   const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(LOCAL_STORAGE_THEME_NAME) as Theme) ?? "cupcake"
+    () =>
+      (localStorage.getItem(LOCAL_STORAGE_THEME_NAME) as Theme) ?? Theme.CUPCAKE
   );
 
   const setThemeInitial = useCallback(() => {
@@ -16,7 +21,7 @@ export function useTheme() {
 
   const toggleTheme = useCallback(() => {
     if (!htmlEl) return;
-    const newTheme = theme === "cupcake" ? "dracula" : "cupcake";
+    const newTheme = theme === Theme.CUPCAKE ? Theme.DRACULA : Theme.CUPCAKE;
     setTheme(newTheme);
     localStorage.setItem(LOCAL_STORAGE_THEME_NAME, newTheme);
     htmlEl.removeAttribute(DATA_THEME_NAME);
