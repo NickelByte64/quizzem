@@ -37,6 +37,7 @@ export function InlineLink(props: Readonly<InlineLinkProps>): JSX.Element {
 
   return (
     <Component
+      data-component-name={InlineLink.name}
       className={clsx(
         "underline hover:no-underline",
         className,

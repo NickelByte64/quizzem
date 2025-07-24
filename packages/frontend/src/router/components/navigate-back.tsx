@@ -14,7 +14,7 @@ export function NavigateBack(props: Readonly<NavigateBackProps>): JSX.Element {
   }
 
   if (authenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to={"/"} replace />;
   }
 
   return <>{children}</>;

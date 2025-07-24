@@ -15,7 +15,7 @@ export function Navigation(): JSX.Element {
   const naviagtionLinks = buildNavigationLinks(authenticated);
 
   return (
-    <nav className="p-4">
+    <nav className="p-4" data-component-name={Navigation.name}>
       <ul className="flex flex-col gap-4">
         {naviagtionLinks.map(({ Icon, identifier, label, links }) => (
           <li key={identifier}>

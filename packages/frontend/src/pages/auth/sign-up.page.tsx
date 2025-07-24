@@ -7,7 +7,7 @@ import { Button, Headline } from "~/components";
 import { AuthAlert } from "~/pages/auth/components/auth-alert";
 import { PasswordInput } from "~/pages/auth/components/password-input";
 import { UsernameInput } from "~/pages/auth/components/username-input";
-import { usePostRemote } from "~/utils";
+import { invalidateAuth, usePostRemote } from "~/utils";
 import { ErrorService } from "~/utils/error/error.service";
 
 export function SignUpPage(): JSX.Element {
@@ -31,6 +31,7 @@ export function SignUpPage(): JSX.Element {
   const onSubmit: SubmitHandler<SignUpDto> = (data) => {
     mutate(data, {
       onSuccess: () => {
+        invalidateAuth();
         navigate("/");
       },
       onError: (error) => {

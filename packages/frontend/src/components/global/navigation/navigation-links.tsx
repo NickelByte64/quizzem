@@ -41,14 +41,14 @@ const AUTH_NAVIGATION_LINKS: GroupedNavigationLink[] = [
     Icon: RiShieldFill,
     links: [
       {
-        identifier: "LOGIN",
-        to: "/login",
-        label: "Login",
+        identifier: "SIGN_IN",
+        to: "auth/sign-in",
+        label: "Sign in",
       },
       {
-        identifier: "REGISTER",
-        to: "/register",
-        label: "Register",
+        identifier: "SIGN_UP",
+        to: "auth/sign-up",
+        label: "Sign up",
       },
     ],
   },

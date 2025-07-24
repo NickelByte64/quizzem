@@ -1,5 +1,9 @@
-import { QueryClient, UseQueryResult } from "@tanstack/react-query";
-import { calculateStaleTimeInMinutes, useGetRemote } from "~/utils";
+import { UseQueryResult } from "@tanstack/react-query";
+import {
+  calculateStaleTimeInMinutes,
+  queryClient,
+  useGetRemote,
+} from "~/utils";
 
 export function useAuth(): UseQueryResult<boolean> {
   return useGetRemote<boolean>("/auth/authenticated", {
@@ -7,7 +11,7 @@ export function useAuth(): UseQueryResult<boolean> {
   });
 }
 
-export function invalidateAuth(queryClient: QueryClient): void {
+export function invalidateAuth(): void {
   queryClient.invalidateQueries({
     queryKey: ["/auth/authenticated"],
   });

@@ -11,7 +11,7 @@ export function BasePage(): JSX.Element {
         <Navigation />
       </Navigation.Drawer>
 
-      <main className="px-4 pt-20 pb-8">
+      <main className="px-8 pt-20 pb-8">
         <Outlet />
       </main>
     </>
