@@ -5,8 +5,10 @@ import {
   CATEGORY_GROUP_MODELS,
   CATEGORY_MODELS,
 } from 'src/db/seed/data/categories';
+import { QUESTION_MODELS } from 'src/db/seed/data/questions';
 import { TENANTS } from 'src/db/seed/data/tenants';
 import { USERS } from 'src/db/seed/data/users';
+import { QuestionModel } from 'src/question/model/question.model';
 import { TenantModel } from 'src/tenant/model/tenant.model';
 import { UserModel } from 'src/user/model/user.model';
 import { EntityManager } from 'typeorm';
@@ -25,6 +27,7 @@ export class SeedDatabaseService {
     await this.seedWrapper('tenants', () => this.seedTenants());
     await this.seedWrapper('category groups', () => this.seedCategoryGroups());
     await this.seedWrapper('categories', () => this.seedCategories());
+    await this.seedWrapper('questions', () => this.seedQuestions());
 
     this.logger.log(
       'Finished populating database...',
@@ -105,6 +108,20 @@ export class SeedDatabaseService {
 
       if (!categoryExists) {
         await categoryRepository.save(category);
+      }
+    }
+  }
+
+  private async seedQuestions(): Promise<void> {
+    const questionRepository = this.em.getRepository(QuestionModel);
+
+    for (const question of QUESTION_MODELS) {
+      const questionExists = await questionRepository.findOne({
+        where: { id: question.id },
+      });
+
+      if (!questionExists) {
+        await questionRepository.save(question);
       }
     }
   }

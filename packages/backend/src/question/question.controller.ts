@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -9,11 +10,24 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
+import { QuestionDto } from 'src/question/dto/question.dto';
+import { QuestionMapper } from 'src/question/question.mapper';
 import { QuestionService } from 'src/question/question.service';
+import { PageableQueryDto } from 'src/utils/pageable/dto/pageable-query.dto';
+import { PageableDto } from 'src/utils/pageable/dto/pageable.dto';
+import { PageableQuery } from 'src/utils/pageable/pageable.query';
 
 @Controller('questions')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
+
+  @Get()
+  async getQuestions(
+    @PageableQuery() query: PageableQueryDto,
+  ): Promise<PageableDto<QuestionDto>> {
+    const pageable = await this.questionService.listQuestions(query);
+    return { ...pageable, data: QuestionMapper.toDtoList(pageable.data) };
+  }
 
   @Post()
   @HttpCode(HttpStatus.NO_CONTENT)

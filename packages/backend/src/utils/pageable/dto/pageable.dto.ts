@@ -1,3 +1,7 @@
+/**
+ * @see PageableDto
+ * @see PageableQueryDto
+ */
 export class PageableDto<T> {
   data: T[];
   page: number;

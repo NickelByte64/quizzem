@@ -10,6 +10,8 @@ import { parse } from 'csv-parse/sync';
 import { FileUploadService } from 'src/common/services/file-upload.service';
 import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
 import { QuestionModel } from 'src/question/model/question.model';
+import { PageableQueryDto } from 'src/utils/pageable/dto/pageable-query.dto';
+import { PageableDto } from 'src/utils/pageable/dto/pageable.dto';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
@@ -20,6 +22,24 @@ export class QuestionService {
     private readonly questionRepository: Repository<QuestionModel>,
     private readonly dataSource: DataSource,
   ) {}
+
+  async listQuestions(
+    query: PageableQueryDto,
+  ): Promise<PageableDto<QuestionModel>> {
+    const { page, size } = query;
+    const [questions, total] = await this.questionRepository.findAndCount({
+      take: PageableQueryDto.getTake(size),
+      skip: PageableQueryDto.getSkip(page, size),
+      order: { createdAt: 'DESC' },
+    });
+
+    return new PageableDto<QuestionModel>({
+      data: questions,
+      totalElements: total,
+      page,
+      size,
+    });
+  }
 
   async createQuestions(data: CreateQuestionDto[]): Promise<void> {
     await this.saveQuestions(data);

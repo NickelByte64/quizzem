@@ -18,10 +18,9 @@ export class UserService {
   async findAll(query: PageableQueryDto): Promise<PageableDto<UserModel>> {
     const { page, size } = query;
 
-    const count = await this.userRepo.count();
-    const users = await this.userRepo.find({
-      skip: page * size,
-      take: size,
+    const [users, count] = await this.userRepo.findAndCount({
+      skip: PageableQueryDto.getSkip(page, size),
+      take: PageableQueryDto.getTake(size),
     });
 
     return new PageableDto({
