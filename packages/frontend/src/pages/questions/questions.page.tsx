@@ -6,7 +6,6 @@ export function QuestionsPage(): JSX.Element {
   return (
     <>
       <Headline as={"h1"}>Fragenkatalog</Headline>
-
       <ListQuestions />
     </>
   );

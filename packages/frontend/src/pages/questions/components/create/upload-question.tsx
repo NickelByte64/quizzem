@@ -1,13 +1,8 @@
 import clsx from "clsx";
 import { JSX, useCallback, useState } from "react";
-import {
-  DropzoneOptions,
-  FileRejection,
-  FileWithPath,
-  useDropzone,
-} from "react-dropzone";
+import { FileRejection, FileWithPath, useDropzone } from "react-dropzone";
 import { Button, Divider, Headline, InlineLink } from "~/components";
-import { UploadFilesAlert } from "~/pages/questions/create-questions/components/upload-files-alert";
+import { UploadFilesAlert } from "~/pages/questions/components/create/upload-files-alert";
 import { usePostRemote } from "~/utils";
 
 export function UploadQuestion(): JSX.Element {
