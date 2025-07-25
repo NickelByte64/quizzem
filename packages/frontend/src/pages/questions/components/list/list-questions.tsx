@@ -1,9 +1,19 @@
 import { PageableDto, QuestionDto } from "@quizzem/common";
-import { JSX } from "react";
-import { Card, Loading } from "~/components";
+import { RiPencilFill } from "@remixicon/react";
+import { UUID } from "crypto";
+import { Dispatch, JSX, SetStateAction } from "react";
+import { Card, IconButton, Loading } from "~/components";
 import { useGetRemote } from "~/utils";
 
-export function ListQuestions(): JSX.Element {
+type ListQuestionsProps = {
+  setSelectedQuestionId: Dispatch<SetStateAction<UUID | null>>;
+};
+
+export function ListQuestions(
+  props: Readonly<ListQuestionsProps>
+): JSX.Element {
+  const { setSelectedQuestionId } = props;
+
   const { data: questions, isLoading } =
     useGetRemote<PageableDto<QuestionDto>>("questions");
 
@@ -26,6 +36,7 @@ export function ListQuestions(): JSX.Element {
               <th>Typ</th>
               <th>Richtige Antwort</th>
               <th>Antworten</th>
+              <th></th>
             </tr>
           </thead>
 
@@ -37,6 +48,13 @@ export function ListQuestions(): JSX.Element {
                 <td>{question.questionType}</td>
                 <td>{question.correctAnswer}</td>
                 <td>{question.answers ?? "-"}</td>
+                <td>
+                  <IconButton
+                    onClick={() => setSelectedQuestionId(question.id)}
+                  >
+                    <RiPencilFill />
+                  </IconButton>
+                </td>
               </tr>
             ))}
           </tbody>

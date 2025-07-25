@@ -1,16 +1,16 @@
-import { Dispatch, JSX, PropsWithChildren, SetStateAction } from "react";
+import { JSX, PropsWithChildren } from "react";
 import { Button } from "~/components/actions/button";
 
 type ModalActionsProps = PropsWithChildren & {
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  onClose: () => void;
 };
 
 export function ModalActions(props: Readonly<ModalActionsProps>): JSX.Element {
-  const { children, setOpen } = props;
+  const { children, onClose } = props;
 
   return (
     <div className="modal-action">
-      <Button variant="neutral" onClick={() => setOpen(false)}>
+      <Button variant="neutral" onClick={onClose}>
         Schließen
       </Button>
       {children}

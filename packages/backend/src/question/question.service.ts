@@ -2,13 +2,16 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { UUID } from 'crypto';
 import { parse } from 'csv-parse/sync';
 import { FileUploadService } from 'src/common/services/file-upload.service';
 import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
+import { UpdateQuestionDto } from 'src/question/dto/update-question.dto';
 import { QuestionModel } from 'src/question/model/question.model';
 import { PageableQueryDto } from 'src/utils/pageable/dto/pageable-query.dto';
 import { PageableDto } from 'src/utils/pageable/dto/pageable.dto';
@@ -41,6 +44,14 @@ export class QuestionService {
     });
   }
 
+  async getQuestionById(id: UUID): Promise<QuestionModel> {
+    const question = await this.questionRepository.findOne({ where: { id } });
+    if (!question) {
+      throw new NotFoundException('Question not found');
+    }
+    return question;
+  }
+
   async createQuestions(data: CreateQuestionDto[]): Promise<void> {
     await this.saveQuestions(data);
   }
@@ -71,6 +82,10 @@ export class QuestionService {
         'No valid file type found. Expected JSON or CSV.',
       );
     }
+  }
+
+  async updateQuestion(id: UUID, data: UpdateQuestionDto): Promise<void> {
+    await this.questionRepository.update(id, data);
   }
 
   /**

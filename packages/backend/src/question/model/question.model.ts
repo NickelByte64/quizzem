@@ -12,6 +12,6 @@ export class QuestionModel extends QuizzemModel {
   @Column()
   correctAnswer: string;
 
-  @Column()
-  answers?: string;
+  @Column({ type: 'text', nullable: true })
+  answers: string | null;
 }

@@ -4,13 +4,17 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
+  Put,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { UUID } from 'crypto';
 import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
 import { QuestionDto } from 'src/question/dto/question.dto';
+import { UpdateQuestionDto } from 'src/question/dto/update-question.dto';
 import { QuestionMapper } from 'src/question/question.mapper';
 import { QuestionService } from 'src/question/question.service';
 import { PageableQueryDto } from 'src/utils/pageable/dto/pageable-query.dto';
@@ -29,6 +33,12 @@ export class QuestionController {
     return { ...pageable, data: QuestionMapper.toDtoList(pageable.data) };
   }
 
+  @Get(':id')
+  async getQuestionById(@Param('id') id: UUID): Promise<QuestionDto> {
+    const question = await this.questionService.getQuestionById(id);
+    return QuestionMapper.toDto(question);
+  }
+
   @Post()
   @HttpCode(HttpStatus.NO_CONTENT)
   async createQuestions(@Body() data: CreateQuestionDto[]): Promise<void> {
@@ -42,5 +52,14 @@ export class QuestionController {
     @UploadedFiles() files: Express.Multer.File[],
   ): Promise<void> {
     return await this.questionService.uploadQuestions(files);
+  }
+
+  @Put(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async updateQuestion(
+    @Param('id') id: UUID,
+    @Body() data: UpdateQuestionDto,
+  ): Promise<void> {
+    return await this.questionService.updateQuestion(id, data);
   }
 }

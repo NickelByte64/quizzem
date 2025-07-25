@@ -16,6 +16,7 @@ export const QUESTION_MODELS: QuestionModel[] = [
     question: 'Ist Wasser nass?',
     questionType: 'TRUE_FALSE',
     correctAnswer: String(true),
+    answers: null,
   },
   {
     id: '8768de88-d260-4494-956a-27fa3f7e6131',
@@ -23,6 +24,7 @@ export const QUESTION_MODELS: QuestionModel[] = [
     question: '_ ist das größte Säugetier der Welt.',
     questionType: 'FILL_IN_THE_BLANK',
     correctAnswer: 'Blauwal',
+    answers: null,
   },
   {
     id: '381acddf-3dc8-4311-9864-f1fe48909347',
@@ -38,6 +40,7 @@ export const QUESTION_MODELS: QuestionModel[] = [
     question: 'Wie viele Einwohner hat Deutschland (ungefähr)?',
     questionType: 'ESTIMATE',
     correctAnswer: String(830000000),
+    answers: null,
   },
   {
     id: '17f14efd-e040-427b-8414-83999f7cb475',
@@ -45,5 +48,6 @@ export const QUESTION_MODELS: QuestionModel[] = [
     question: 'Wieviel ist 7 mal 8?',
     questionType: 'NUMERIC',
     correctAnswer: String(56),
+    answers: null,
   },
 ];
