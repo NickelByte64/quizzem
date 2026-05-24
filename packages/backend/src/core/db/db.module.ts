@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GameModel } from '~/src/features/game/game.model';
 
 @Module({
   imports: [
@@ -10,7 +11,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'postgres',
       password: 'postgres',
       database: 'quizzem',
-      entities: [],
+      entities: [GameModel],
+      synchronize: true,
     }),
   ],
 })
