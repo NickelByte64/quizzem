@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AnswerModel } from '~/src/features/answer/answer.model';
 import { GameModel } from '~/src/features/game/game.model';
+import { QuestionModel } from '~/src/features/question/question.model';
 
 @Module({
   imports: [
@@ -11,7 +13,7 @@ import { GameModel } from '~/src/features/game/game.model';
       username: 'postgres',
       password: 'postgres',
       database: 'quizzem',
-      entities: [GameModel],
+      entities: [GameModel, QuestionModel, AnswerModel],
       synchronize: true,
     }),
   ],

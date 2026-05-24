@@ -1,5 +1,5 @@
 import { Controller, Post } from '@nestjs/common';
-import { GameDto } from '~/src/features/game/game.dto';
+import { UUID } from 'crypto';
 import { GameMapper } from '~/src/features/game/game.mapper';
 import { HostService } from '~/src/features/host/host.service';
 
@@ -12,8 +12,8 @@ export class HostController {
   }
 
   @Post('/create-game')
-  async createGame(): Promise<GameDto> {
+  async createGame(): Promise<{ id: UUID }> {
     const gameModel = await this.hostService.createGame();
-    return GameMapper.toDto(gameModel);
+    return { id: GameMapper.toDto(gameModel).id };
   }
 }

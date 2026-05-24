@@ -8,6 +8,9 @@ export class GameMapper {
       createdAt: game.createdAt,
       updatedAt: game.updatedAt,
       state: game.state,
+      title: game.title,
+      description: game.description,
+      questions: game.questions,
     };
   }
 }
