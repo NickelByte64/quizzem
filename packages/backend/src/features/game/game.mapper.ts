@@ -1,4 +1,4 @@
-import { GameDto } from '~/src/features/game/game.dto';
+import { GameDto } from '~/src/features/game/dto/game.dto';
 import { GameModel } from '~/src/features/game/game.model';
 
 export class GameMapper {
@@ -12,5 +12,9 @@ export class GameMapper {
       description: game.description,
       questions: game.questions,
     };
+  }
+
+  static toDtoList(gameModels: GameModel[]): GameDto[] {
+    return gameModels.map((game) => this.toDto(game));
   }
 }

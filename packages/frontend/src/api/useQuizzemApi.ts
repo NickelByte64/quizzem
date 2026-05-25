@@ -28,3 +28,12 @@ export function usePostQuizzemData<Req, Res>(
     mutationFn: async (body) => await HTTP.post(target, { body }),
   });
 }
+
+export function usePutQuizzemData<Req, Res>(
+  target: string,
+): UseMutationResult<HttpResponse<Res>, Error, Req> {
+  return useMutation<HttpResponse<Res>, Error, Req>({
+    mutationKey: [target],
+    mutationFn: async (body) => await HTTP.put(target, { body }),
+  });
+}

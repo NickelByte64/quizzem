@@ -23,8 +23,8 @@ async function request<Req, Res>(
         "Content-Type": "application/json",
         ...requestInit?.headers,
       },
-      body: requestInit?.body ? JSON.stringify(requestInit.body) : undefined,
       ...requestInit,
+      body: requestInit?.body ? JSON.stringify(requestInit.body) : undefined,
     });
 
     const data = (await res.json()) as Res;
