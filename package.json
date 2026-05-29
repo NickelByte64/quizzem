@@ -8,7 +8,12 @@
   "workspaces": [
     "packages/*"
   ],
+  "dependencies": {
+    "eslint": "^10.4.0",
+    "prettier": "^3.8.3"
+  },
   "devDependencies": {
+    "@types/node": "^25.9.1",
     "typescript": "^6.0.3"
   }
 }
