@@ -1,4 +1,4 @@
-package quizzem.backend.features.game.dto
+package quizzem.backend.features.game.api.dto
 
 data class CreateGameDto(
     val title: String,

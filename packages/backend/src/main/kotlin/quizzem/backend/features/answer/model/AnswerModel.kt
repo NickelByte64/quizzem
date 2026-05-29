@@ -1,14 +1,25 @@
 package quizzem.backend.features.answer.model
 
+import jakarta.persistence.*
 import quizzem.backend.features.question.model.QuestionModel
 import java.time.Instant
 import java.util.*
 
-data class AnswerModel(
-    val id: UUID,
-    val createdAt: Instant,
-    val updatedAt: Instant,
+@Entity
+@Table(name = "answers")
+class AnswerModel(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: UUID? = null,
 
-    val text: String = "",
-    val question: QuestionModel
-)
+    var createdAt: Instant = Instant.now(),
+
+    var updatedAt: Instant = createdAt,
+
+    @Column(length = 400) var text: String = "",
+
+    @ManyToOne @JoinColumn(name = "question_id") var question: QuestionModel
+) {
+    @PreUpdate
+    fun onUpdate() {
+        updatedAt = Instant.now()
+    }
+}

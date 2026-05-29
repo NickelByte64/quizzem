@@ -1,10 +1,11 @@
-package quizzem.backend.features.game
+package quizzem.backend.features.game.api
 
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import quizzem.backend.features.game.dto.CreateGameDto
+import quizzem.backend.features.game.api.dto.CreateGameDto
+import quizzem.backend.features.game.service.GameService
 
 @RestController
 @RequestMapping("/game")
