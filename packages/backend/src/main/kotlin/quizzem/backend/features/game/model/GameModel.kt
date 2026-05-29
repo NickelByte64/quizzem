@@ -1,6 +1,7 @@
 package quizzem.backend.features.game.model
 
 import jakarta.persistence.*
+import org.hibernate.annotations.UuidGenerator
 import quizzem.backend.features.question.model.QuestionModel
 import java.time.Instant
 import java.util.*
@@ -9,7 +10,7 @@ import java.util.*
 @Table(name = "games")
 class GameModel(
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @UuidGenerator
     var id: UUID? = null,
 
     var createdAt: Instant = Instant.now(),
