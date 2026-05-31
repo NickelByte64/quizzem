@@ -17,7 +17,7 @@ async function request<Req, Res>(
 ): Promise<HttpResponse<Res>> {
   try {
     // TODO implement correct base URL handling in .env
-    const res = await fetch("http://localhost:3000" + target, {
+    const res = await fetch("http://localhost:8080" + target, {
       method,
       headers: {
         "Content-Type": "application/json",

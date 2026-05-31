@@ -16,8 +16,14 @@ export const ROUTER = createBrowserRouter([
         element: <HostPage />,
       },
       {
-        path: "game",
+        path: "games",
         element: <GamePage />,
+        children: [
+          {
+            path: ":id",
+            element: <GamePage />,
+          },
+        ],
       },
       {
         path: "player",

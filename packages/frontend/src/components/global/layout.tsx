@@ -12,7 +12,7 @@ export function Layout() {
             <Link to="/host">Host</Link>
           </li>
           <li>
-            <Link to="/game">Game</Link>
+            <Link to="/games">Game</Link>
           </li>
           <li>
             <Link to="/player">Player</Link>

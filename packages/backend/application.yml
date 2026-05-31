@@ -7,7 +7,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -15,3 +15,8 @@ spring:
   sql:
     init:
       mode: always
+
+logging:
+  level:
+    org.hibernate.SQL: warn
+    org.hibernate.orm.jdbc.bind: off

@@ -1,18 +1,25 @@
 package quizzem.backend.features.game.api
 
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import quizzem.backend.features.game.api.dto.CreateGameDto
+import quizzem.backend.features.game.api.dto.CreateGameResponseDto
+import quizzem.backend.features.game.api.dto.GameDto
+import quizzem.backend.features.game.mapper.toDto
 import quizzem.backend.features.game.service.GameService
 
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/games")
 class GameController(private val gameService: GameService) {
 
+    @GetMapping
+    fun listGames(): List<GameDto> {
+        val games = gameService.listGames()
+        return games.map { it.toDto() }
+    }
+
     @PostMapping
-    fun createGame(@RequestBody() dto: CreateGameDto) {
-        return gameService.createGame(dto)
+    fun createGame(@RequestBody() dto: CreateGameDto): CreateGameResponseDto {
+        val gameId = gameService.createGame(dto)
+        return CreateGameResponseDto(gameId)
     }
 }
