@@ -27,7 +27,11 @@ async function request<Req, Res>(
       body: requestInit?.body ? JSON.stringify(requestInit.body) : undefined,
     });
 
-    const data = (await res.json()) as Res;
+    let data: Res = null as unknown as Res;
+
+    if (res.headers.get("Content-Type")?.includes("application/json")) {
+      data = (await res.json()) as Res;
+    }
 
     return {
       data,

@@ -10,10 +10,18 @@ import {
   type HttpResponse,
 } from "~/src/api/http";
 
+export type UseQuizzemQuery<Res> = UseQueryResult<HttpResponse<Res>, Error>;
+
+export type UseQuizzemMutation<Req, Res> = UseMutationResult<
+  HttpResponse<Res>,
+  Error,
+  Req
+>;
+
 export function useGetQuizzemData<Res>(
   target: string,
   requestInit?: ExtendedRequestInit<void>,
-): UseQueryResult<HttpResponse<Res>> {
+): UseQuizzemQuery<Res> {
   return useQuery<HttpResponse<Res>>({
     queryKey: [target],
     queryFn: async () => await HTTP.get(target, requestInit),
@@ -22,7 +30,7 @@ export function useGetQuizzemData<Res>(
 
 export function usePostQuizzemData<Req, Res>(
   target: string,
-): UseMutationResult<HttpResponse<Res>, Error, Req> {
+): UseQuizzemMutation<Req, Res> {
   return useMutation<HttpResponse<Res>, Error, Req>({
     mutationKey: [target],
     mutationFn: async (body) => await HTTP.post(target, { body }),
@@ -31,7 +39,7 @@ export function usePostQuizzemData<Req, Res>(
 
 export function usePutQuizzemData<Req, Res>(
   target: string,
-): UseMutationResult<HttpResponse<Res>, Error, Req> {
+): UseQuizzemMutation<Req, Res> {
   return useMutation<HttpResponse<Res>, Error, Req>({
     mutationKey: [target],
     mutationFn: async (body) => await HTTP.put(target, { body }),

@@ -1,42 +1,38 @@
 package quizzem.backend.features.question.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import quizzem.backend.features.question.api.dto.CreateQuestionDto
+import quizzem.backend.features.question.model.AnswerMode
 import quizzem.backend.features.question.model.AnswerModel
+import quizzem.backend.features.question.model.MediaType
 import quizzem.backend.features.question.model.QuestionModel
-import quizzem.backend.features.question.repository.AnswerRepository
 import quizzem.backend.features.question.repository.QuestionRepository
 
 @Service
 class QuestionService(
     val questionRepository: QuestionRepository,
-    val answerRepository: AnswerRepository,
 ) {
-    fun createQuestion(dto: CreateQuestionDto): QuestionModel {
-        val answers = emptyList<AnswerModel>()
-
+    fun createQuestion(dto: CreateQuestionDto) {
         val newQuestion = QuestionModel(
             text = dto.text,
-            answerMode = dto.answerMode,
-            mediaType = dto.mediaType,
+            answerMode = dto.answerMode ?: AnswerMode.SINGLE_CHOICE,
+            mediaType = dto.mediaType ?: MediaType.NONE,
         )
 
-        for (answer in dto.answers) {
-            val newAnswer =
-                AnswerModel(
-                    text = answer.text,
-                    isCorrectAnswer = answer.isCorrectAnswer,
-                    question = newQuestion
-                )
-
-            answerRepository.save(newAnswer)
-            answers.plus(newAnswer)
-        }
-
-        newQuestion.answers = answers.toMutableList()
+        newQuestion.answers = dto.answers.map { answer ->
+            AnswerModel(
+                text = answer.text,
+                isCorrectAnswer = answer.isCorrectAnswer ?: false,
+                question = newQuestion
+            )
+        }.toMutableList()
 
         questionRepository.save(newQuestion)
+    }
 
-        return newQuestion
+    @Transactional
+    fun createQuestionsBulk(dtos: List<CreateQuestionDto>) {
+        dtos.forEach { createQuestion(it) }
     }
 }

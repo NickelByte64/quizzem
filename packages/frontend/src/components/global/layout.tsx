@@ -1,22 +1,16 @@
 import { Link, Outlet } from "react-router";
+import { ROUTES } from "~/src/router/router";
 
 export function Layout() {
   return (
     <>
       <header>
         <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/host">Host</Link>
-          </li>
-          <li>
-            <Link to="/games">Game</Link>
-          </li>
-          <li>
-            <Link to="/player">Player</Link>
-          </li>
+          {ROUTES.map((route) => (
+            <li key={route.path}>
+              <Link to={route.path}>{route.name}</Link>
+            </li>
+          ))}
         </ul>
       </header>
       <Outlet />

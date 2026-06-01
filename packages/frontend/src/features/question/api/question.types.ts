@@ -1,23 +1,48 @@
 import { type UUID } from "node:crypto";
-import type { AnswerDto } from "~/src/features/answer/api/answer.types";
-export const QUESTION_TYPE = {
+
+export const MEDIA_TYPE = {
+  NONE: "NONE",
+  IMAGE: "IMAGE",
+  VIDEO: "VIDEO",
+  AUDIO: "AUDIO",
+};
+export type MediaType = (typeof MEDIA_TYPE)[keyof typeof MEDIA_TYPE];
+
+export const ANSWER_MODE = {
+  SINGLE_CHOICE: "SINGLE_CHOICE",
   MULTIPLE_CHOICE: "MULTIPLE_CHOICE",
   TRUE_FALSE: "TRUE_FALSE",
-  FILL_IN_THE_BLANK: "FILL_IN_THE_BLANK",
-  ORDERING: "ORDERING",
-  ESTIMATE: "ESTIMATE",
+  FREE_TEXT: "FREE_TEXT",
   NUMERIC: "NUMERIC",
-  IMAGE_QUESTION: "IMAGE_QUESTION",
-  MUSIC_QUESTION: "MUSIC_QUESTION",
-  VIDEO_QUESTION: "VIDEO_QUESTION",
+  ORDERING: "ORDERING",
 };
-export type QuestionType = (typeof QUESTION_TYPE)[keyof typeof QUESTION_TYPE];
+export type AnswerMode = (typeof ANSWER_MODE)[keyof typeof ANSWER_MODE];
+
+export type AnswerDto = {
+  id: UUID;
+  createdAt: Date;
+  updatedAt: Date;
+  text: string;
+  isCorrectAnswer: boolean;
+};
 
 export type QuestionDto = {
   id: UUID;
   createdAt: Date;
   updatedAt: Date;
   text: string;
-  type: QuestionType;
+  type: AnswerMode;
   answers: AnswerDto[];
+};
+
+export type CreateAnswerDto = {
+  text: string;
+  isCorrectAnswer: boolean;
+};
+
+export type CreateQuestionDto = {
+  text: string;
+  answerMode: AnswerMode;
+  mediaType: MediaType;
+  answers: CreateAnswerDto[];
 };
