@@ -1,15 +1,13 @@
 package quizzem.backend.features.question.api.dto
 
 import quizzem.backend.core.api.dto.QuizzemDto
-import quizzem.backend.features.question.model.AnswerMode
 import java.time.Instant
 import java.util.*
 
-class QuestionDto(
+class AnswerDto(
     id: UUID,
     createdAt: Instant,
     updatedAt: Instant,
-    var text: String,
-    var type: AnswerMode,
-    var answers: List<AnswerDto>
+    val text: String,
+    val isCorrectAnswer: Boolean
 ) : QuizzemDto(id, createdAt, updatedAt)

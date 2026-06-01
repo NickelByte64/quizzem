@@ -1,39 +1,32 @@
 package quizzem.backend.features.question.model
 
 import jakarta.persistence.*
-import org.hibernate.annotations.UuidGenerator
-import quizzem.backend.features.answer.model.AnswerModel
+import quizzem.backend.core.domain.QuizzemModel
 import quizzem.backend.features.game.model.GameModel
-import java.time.Instant
-import java.util.*
 
 @Entity
 @Table(name = "questions")
 class QuestionModel(
-    @Id
-    @UuidGenerator
-    var id: UUID? = null,
-
-    var createdAt: Instant = Instant.now(),
-
-    var updatedAt: Instant,
-
-    @Column(length = 400)
-    var text: String = "",
+    @Column(columnDefinition = "TEXT")
+    var text: String,
 
     @Enumerated(EnumType.STRING)
-    var type: QuestionType = QuestionType.MULTIPLE_CHOICE,
+    var answerMode: AnswerMode = AnswerMode.SINGLE_CHOICE,
+
+    @Enumerated(EnumType.STRING)
+    var mediaType: MediaType = MediaType.NONE,
+
+    @ManyToMany(
+        mappedBy = "questions",
+        fetch = FetchType.LAZY
+    )
+    var games: MutableList<GameModel> = mutableListOf(),
 
     @OneToMany(
-        mappedBy = "question", cascade = [(CascadeType.ALL)], orphanRemoval = true
+        mappedBy = "question",
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
     )
     var answers: MutableList<AnswerModel> = mutableListOf(),
-
-    @ManyToOne @JoinColumn(name = "game_id")
-    var game: GameModel
-) {
-    @PreUpdate
-    fun onUpdate() {
-        updatedAt = Instant.now()
-    }
-}
+) : QuizzemModel()
