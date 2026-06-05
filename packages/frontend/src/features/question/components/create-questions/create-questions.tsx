@@ -2,7 +2,10 @@ import { useId, useState, type JSX } from "react";
 import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import { QUERY_CLIENT } from "~/src/api/query-client";
 import { Button, ModalDialog } from "~/src/components";
-import { QuestionApi } from "~/src/features/question/api/question.api";
+import {
+  QuestionApi,
+  ROOT_QUESTIONS_TARGET,
+} from "~/src/features/question/api/question.api";
 import { type CreateQuestionDto } from "~/src/features/question/api/question.types";
 import { CreateQuestionListElement } from "~/src/features/question/components/create-questions/create-question-list-element";
 import {
@@ -26,8 +29,8 @@ export function CreateQuestion(): JSX.Element {
     name: "questions",
   });
 
-  const { useCreateQuestionsBulkApi } = QuestionApi;
-  const { mutate: mutateBulk } = useCreateQuestionsBulkApi();
+  const { useCreateQuestionsBulk } = QuestionApi;
+  const { mutate: mutateBulk } = useCreateQuestionsBulk();
 
   const onSubmit: SubmitHandler<CreateQuestionFormValues> = (data) => {
     const formattedData: CreateQuestionDto[] = data.questions.map(
@@ -42,14 +45,14 @@ export function CreateQuestion(): JSX.Element {
     mutateBulk(formattedData, {
       onSuccess: () => {
         reset();
-        QUERY_CLIENT.invalidateQueries({ queryKey: ["/questions"] });
+        QUERY_CLIENT.invalidateQueries({ queryKey: [ROOT_QUESTIONS_TARGET] });
         setOpenModal(false);
       },
     });
   };
 
   return (
-    <>
+    <div className="my-8">
       <Button onClick={() => setOpenModal(true)}>Create Questions</Button>
 
       <ModalDialog
@@ -88,6 +91,6 @@ export function CreateQuestion(): JSX.Element {
           </Button>
         </form>
       </ModalDialog>
-    </>
+    </div>
   );
 }

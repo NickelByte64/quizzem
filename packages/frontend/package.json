@@ -14,6 +14,7 @@
     "@tailwindcss/vite": "^4.3.0",
     "@tanstack/react-query": "^5.100.14",
     "@uidotdev/usehooks": "^2.4.1",
+    "dayjs": "^1.11.21",
     "motion": "^12.40.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",

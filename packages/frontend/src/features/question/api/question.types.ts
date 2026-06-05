@@ -1,4 +1,4 @@
-import { type UUID } from "node:crypto";
+import type { PageableParamsDto, QuizzemDto } from "~/src/api/api.types";
 
 export const MEDIA_TYPE = {
   NONE: "NONE",
@@ -18,18 +18,12 @@ export const ANSWER_MODE = {
 };
 export type AnswerMode = (typeof ANSWER_MODE)[keyof typeof ANSWER_MODE];
 
-export type AnswerDto = {
-  id: UUID;
-  createdAt: Date;
-  updatedAt: Date;
+export type AnswerDto = QuizzemDto & {
   text: string;
   isCorrectAnswer: boolean;
 };
 
-export type QuestionDto = {
-  id: UUID;
-  createdAt: Date;
-  updatedAt: Date;
+export type QuestionDto = QuizzemDto & {
   text: string;
   type: AnswerMode;
   answers: AnswerDto[];
@@ -46,3 +40,5 @@ export type CreateQuestionDto = {
   mediaType: MediaType;
   answers: CreateAnswerDto[];
 };
+
+export type GetAllQuestionsParamsDto = PageableParamsDto;

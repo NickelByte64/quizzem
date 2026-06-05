@@ -1,3 +1,5 @@
+import { dateReviver } from "~/src/utils/date";
+
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 export type HttpResponse<Res> = {
@@ -30,7 +32,7 @@ async function request<Req, Res>(
     let data: Res = null as unknown as Res;
 
     if (res.headers.get("Content-Type")?.includes("application/json")) {
-      data = (await res.json()) as Res;
+      data = JSON.parse(await res.text(), dateReviver) as Res;
     }
 
     return {

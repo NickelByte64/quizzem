@@ -16,7 +16,7 @@ export function Layout() {
       <main className="p-4 bg-bg-100">
         <Outlet />
       </main>
-      <footer className="p-4 bg-bg-elevated">footer</footer>
+      <footer className="p-4 bg-bg-200">footer</footer>
     </>
   );
 }

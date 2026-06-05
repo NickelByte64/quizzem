@@ -1,4 +1,7 @@
+import type { UUID } from "node:crypto";
+import type { PageableDto } from "~/src/api/api.types";
 import {
+  useDeleteQuizzemData,
   useGetQuizzemData,
   usePostQuizzemData,
   type UseQuizzemMutation,
@@ -6,26 +9,45 @@ import {
 } from "~/src/api/useQuizzemApi";
 import type {
   CreateQuestionDto,
+  GetAllQuestionsParamsDto,
   QuestionDto,
 } from "~/src/features/question/api/question.types";
 
-function useGetQuestionListApi(): UseQuizzemQuery<QuestionDto[]> {
-  return useGetQuizzemData<QuestionDto[]>("/questions");
+export const ROOT_QUESTIONS_TARGET = "/questions";
+
+function useGetQuestionList(
+  params: GetAllQuestionsParamsDto,
+): UseQuizzemQuery<PageableDto<QuestionDto>> {
+  const searchParams = new URLSearchParams({
+    page: String(params?.page ?? 0),
+    size: String(params?.size ?? 10),
+  });
+
+  return useGetQuizzemData<PageableDto<QuestionDto>>(
+    `${ROOT_QUESTIONS_TARGET}?${searchParams.toString()}`,
+  );
 }
 
-function useCreateQuestionApi(): UseQuizzemMutation<CreateQuestionDto, void> {
-  return usePostQuizzemData<CreateQuestionDto, void>("/questions");
+function useCreateQuestion(): UseQuizzemMutation<CreateQuestionDto, void> {
+  return usePostQuizzemData<CreateQuestionDto, void>(ROOT_QUESTIONS_TARGET);
 }
 
-function useCreateQuestionsBulkApi(): UseQuizzemMutation<
+function useCreateQuestionsBulk(): UseQuizzemMutation<
   CreateQuestionDto[],
   void
 > {
-  return usePostQuizzemData<CreateQuestionDto[], void>("/questions/bulk");
+  return usePostQuizzemData<CreateQuestionDto[], void>(
+    `${ROOT_QUESTIONS_TARGET}/bulk`,
+  );
+}
+
+function useDeleteQuestionsById(): UseQuizzemMutation<{ id: UUID }, void> {
+  return useDeleteQuizzemData<{ id: UUID }, void>(ROOT_QUESTIONS_TARGET);
 }
 
 export const QuestionApi = {
-  useGetQuestionListApi,
-  useCreateQuestionApi,
-  useCreateQuestionsBulkApi,
+  useGetQuestionList,
+  useCreateQuestion,
+  useCreateQuestionsBulk,
+  useDeleteQuestionsById,
 };

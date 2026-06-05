@@ -5,7 +5,12 @@ type ButtonProps = DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 > & {
-  variant?: "primary" | "secondary" | "neutral";
+  variant?:
+    | "primary"
+    | "primary-light"
+    | "secondary"
+    | "secondary-light"
+    | "neutral";
   size?: "full" | "fit";
 };
 
@@ -14,7 +19,9 @@ const button = tv({
   variants: {
     variant: {
       primary: "bg-primary hover:bg-primary-dark",
+      "primary-light": "bg-primary-light hover:bg-primary",
       secondary: "bg-secondary hover:bg-secondary-dark",
+      "secondary-light": "bg-secondary-light hover:bg-secondary",
       neutral: "bg-neutral-100 hover:bg-neutral-200 text-primary",
     },
     size: {

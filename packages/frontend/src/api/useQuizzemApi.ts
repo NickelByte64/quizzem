@@ -4,6 +4,7 @@ import {
   type UseMutationResult,
   type UseQueryResult,
 } from "@tanstack/react-query";
+import type { UUID } from "node:crypto";
 import {
   HTTP,
   type ExtendedRequestInit,
@@ -23,7 +24,7 @@ export function useGetQuizzemData<Res>(
   requestInit?: ExtendedRequestInit<void>,
 ): UseQuizzemQuery<Res> {
   return useQuery<HttpResponse<Res>>({
-    queryKey: [target],
+    queryKey: [target.split("?")[0], target],
     queryFn: async () => await HTTP.get(target, requestInit),
   });
 }
@@ -43,5 +44,14 @@ export function usePutQuizzemData<Req, Res>(
   return useMutation<HttpResponse<Res>, Error, Req>({
     mutationKey: [target],
     mutationFn: async (body) => await HTTP.put(target, { body }),
+  });
+}
+
+export function useDeleteQuizzemData<Req extends { id: UUID }, Res>(
+  target: string,
+): UseQuizzemMutation<Req, Res> {
+  return useMutation<HttpResponse<Res>, Error, Req>({
+    mutationKey: [target],
+    mutationFn: async (body) => await HTTP.delete(`${target}/${body.id}`),
   });
 }
