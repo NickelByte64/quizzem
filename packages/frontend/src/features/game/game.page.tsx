@@ -11,14 +11,11 @@ export function GamePage(): JSX.Element {
   return (
     <>
       <h1>Game Page</h1>
-      {id ? (
-        <EditGame id={id} />
-      ) : (
-        <>
-          <CreateGame />
-          <ListGames />
-        </>
-      )}
+
+      <CreateGame />
+      <ListGames />
+
+      {id && <EditGame id={id} />}
     </>
   );
 }

@@ -1,3 +1,3 @@
-export * from "./base-input";
-export * from "./label-input";
-export * from "./text-input";
+export * from "./checkbox/checkbox";
+export * from "./input/input";
+export * from "./select/select";

@@ -4,7 +4,7 @@ import { ROUTES } from "~/src/router/router";
 export function Layout() {
   return (
     <>
-      <header>
+      <header className="p-4 bg-bg-elevated">
         <ul>
           {ROUTES.map((route) => (
             <li key={route.path}>
@@ -13,8 +13,10 @@ export function Layout() {
           ))}
         </ul>
       </header>
-      <Outlet />
-      <footer>footer</footer>
+      <main className="p-4 bg-bg-sunken">
+        <Outlet />
+      </main>
+      <footer className="p-4 bg-bg-elevated">footer</footer>
     </>
   );
 }

@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { Button, LabelInput, TextInput } from "~/src/components";
+// import { Button, LabelInput, TextInput } from "~/src/components";
 import { GameApi } from "~/src/features/game/api/game.api";
 
 type CreateGameFormValues = {
@@ -36,9 +36,10 @@ export function CreateGame(): JSX.Element {
           name="title"
           control={control}
           render={({ field }) => (
-            <LabelInput label="Title" htmlFor={field.name}>
-              <TextInput {...field} />
-            </LabelInput>
+            <></>
+            // <LabelInput label="Title" htmlFor={field.name}>
+            //   <TextInput {...field} />
+            // </LabelInput>
           )}
         />
 
@@ -46,9 +47,10 @@ export function CreateGame(): JSX.Element {
           name="description"
           control={control}
           render={({ field }) => (
-            <LabelInput label="Description" htmlFor={field.name}>
-              <TextInput {...field} />
-            </LabelInput>
+            <></>
+            // <LabelInput label="Description" htmlFor={field.name}>
+            //   <TextInput {...field} />
+            // </LabelInput>
           )}
         />
 

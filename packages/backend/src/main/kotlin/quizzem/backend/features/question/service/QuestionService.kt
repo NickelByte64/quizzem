@@ -13,6 +13,10 @@ import quizzem.backend.features.question.repository.QuestionRepository
 class QuestionService(
     val questionRepository: QuestionRepository,
 ) {
+    fun getAllQuestions(): List<QuestionModel> {
+        return questionRepository.findAll()
+    }
+
     fun createQuestion(dto: CreateQuestionDto) {
         val newQuestion = QuestionModel(
             text = dto.text,

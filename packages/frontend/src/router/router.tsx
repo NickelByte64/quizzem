@@ -41,6 +41,12 @@ export const ROUTER = createBrowserRouter([
       {
         path: "questions",
         element: <QuestionPage />,
+        children: [
+          {
+            path: ":id",
+            element: <QuestionPage />,
+          },
+        ],
       },
     ],
   },

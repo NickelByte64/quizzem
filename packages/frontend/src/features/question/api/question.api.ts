@@ -1,8 +1,17 @@
 import {
+  useGetQuizzemData,
   usePostQuizzemData,
   type UseQuizzemMutation,
+  type UseQuizzemQuery,
 } from "~/src/api/useQuizzemApi";
-import type { CreateQuestionDto } from "~/src/features/question/api/question.types";
+import type {
+  CreateQuestionDto,
+  QuestionDto,
+} from "~/src/features/question/api/question.types";
+
+function useGetQuestionListApi(): UseQuizzemQuery<QuestionDto[]> {
+  return useGetQuizzemData<QuestionDto[]>("/questions");
+}
 
 function useCreateQuestionApi(): UseQuizzemMutation<CreateQuestionDto, void> {
   return usePostQuizzemData<CreateQuestionDto, void>("/questions");
@@ -16,6 +25,7 @@ function useCreateQuestionsBulkApi(): UseQuizzemMutation<
 }
 
 export const QuestionApi = {
+  useGetQuestionListApi,
   useCreateQuestionApi,
   useCreateQuestionsBulkApi,
 };
