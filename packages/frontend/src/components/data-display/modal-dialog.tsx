@@ -13,7 +13,7 @@ type ModalDialogProps = PropsWithChildren & {
 };
 
 const modalDialogStyles = tv({
-  base: "bg-bg-surface rounded-lg border border-primary p-4 z-50 w-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-xl max-h-9/10 overflow-auto",
+  base: "bg-bg-100 rounded-lg border border-primary p-4 z-50 w-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-xl max-h-9/10 overflow-auto",
   variants: {
     size: {
       sm: "max-w-lg",
@@ -51,7 +51,7 @@ export function ModalDialog(props: Readonly<ModalDialogProps>): JSX.Element {
           {additionalButtons}
         </div>
       </dialog>
-      <div className="fixed inset-0 bg-black/60 z-40" />
+      <div className="fixed inset-0 bg-bg-black/60 z-40" />
     </>
   );
 }

@@ -10,12 +10,12 @@ type ButtonProps = DetailedHTMLProps<
 };
 
 const button = tv({
-  base: "px-4 py-1 rounded-md text-white disabled:bg-neutral-100 disabled:cursor-not-allowed shadow-md font-semibold",
+  base: "text-text-inverse px-4 py-1 rounded-md hover:cursor-pointer disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed shadow-md font-semibold",
   variants: {
     variant: {
       primary: "bg-primary hover:bg-primary-dark",
       secondary: "bg-secondary hover:bg-secondary-dark",
-      neutral: "bg-neutral-100 hover:bg-neutral-200 text-primary-foreground",
+      neutral: "bg-neutral-100 hover:bg-neutral-200 text-primary",
     },
     size: {
       full: "w-full",

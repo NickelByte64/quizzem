@@ -59,7 +59,7 @@ export function Select<T extends string>(props: SelectProps<T>): JSX.Element {
       {isExpanded && (
         <ul
           ref={ref}
-          className="bg-bg-surface absolute top-full left-0 w-full py-2 shadow-lg rounded-md z-40"
+          className="bg-bg-100 absolute top-full left-0 w-full py-2 shadow-lg rounded-md z-40"
         >
           {options.map((option) => (
             <li key={option.value} value={option.value}>

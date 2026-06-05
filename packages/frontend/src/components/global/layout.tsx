@@ -4,7 +4,7 @@ import { ROUTES } from "~/src/router/router";
 export function Layout() {
   return (
     <>
-      <header className="p-4 bg-bg-elevated">
+      <header className="p-4 bg-bg-200">
         <ul>
           {ROUTES.map((route) => (
             <li key={route.path}>
@@ -13,7 +13,7 @@ export function Layout() {
           ))}
         </ul>
       </header>
-      <main className="p-4 bg-bg-sunken">
+      <main className="p-4 bg-bg-100">
         <Outlet />
       </main>
       <footer className="p-4 bg-bg-elevated">footer</footer>

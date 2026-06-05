@@ -7,7 +7,7 @@ import { ListQuestions } from "~/src/features/question/components/list-questions
 export function QuestionPage(): JSX.Element {
   return (
     <>
-      <Headline title="Question Page" />
+      <Headline as="h1" title="Question Page" />
       <CreateQuestion />
       <ListQuestions />
       <EditQuestion />

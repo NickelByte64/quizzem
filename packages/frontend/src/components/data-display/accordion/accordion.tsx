@@ -14,7 +14,7 @@ export function Accordion(props: Readonly<AccordionProps>): JSX.Element {
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div className="border rounded-md">
+    <div className="border border-primary rounded-md">
       <button
         type="button"
         className={cx(

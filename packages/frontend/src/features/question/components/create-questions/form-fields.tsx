@@ -29,12 +29,24 @@ type QuestionInputTextProps = {
   index: number;
 };
 
+export const DEFAULT_ANSWER = {
+  text: "",
+  isCorrectAnswer: false,
+};
+
+export const DEFAULT_QUESTION: QuestionFormValues = {
+  text: "",
+  answerMode: ANSWER_MODE.SINGLE_CHOICE,
+  mediaType: MEDIA_TYPE.NONE,
+  answers: [DEFAULT_ANSWER],
+};
+
 export function QuestionInputText(
   props: Readonly<QuestionInputTextProps>,
 ): JSX.Element {
   const { control, index } = props;
 
-  const maxLength = 20;
+  const maxLength = 1000;
 
   return (
     <Controller
@@ -131,7 +143,7 @@ export function AnswerInputText(
 ): JSX.Element {
   const { control, questionIndex, answerIndex } = props;
 
-  const maxLength = 20;
+  const maxLength = 500;
 
   return (
     <Controller

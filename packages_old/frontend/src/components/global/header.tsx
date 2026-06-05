@@ -9,7 +9,7 @@ export function Header(): JSX.Element {
   const { toggleTheme, theme } = useTheme();
 
   return (
-    <header className="p-4 shadow-xl z-99 fixed w-full bg-base-100">
+    <header className=" p-4 shadow-xl z-99 fixed w-full bg-base-100">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
           <Navigation.Action />

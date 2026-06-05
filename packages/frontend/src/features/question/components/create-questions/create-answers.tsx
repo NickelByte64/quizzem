@@ -2,10 +2,10 @@ import { RiDeleteBinLine } from "@remixicon/react";
 import type { JSX } from "react";
 import { useFieldArray, type Control } from "react-hook-form";
 import { Button, Divider, Headline, IconButton } from "~/src/components";
-import { DEFAULT_ANSWER } from "~/src/features/question/components/create-questions/create-questions";
 import {
   AnswerInputIsCorrectAnswer,
   AnswerInputText,
+  DEFAULT_ANSWER,
   type CreateQuestionFormValues,
 } from "~/src/features/question/components/create-questions/form-fields";
 
@@ -45,7 +45,7 @@ export function CreateAnswers(
               />
             </div>
 
-            <div className="flex items-center border-l-2 pl-2 border-neutral">
+            <div className="flex items-center border-l pl-2 border-primary">
               <IconButton
                 type="button"
                 onClick={() => remove(j)}

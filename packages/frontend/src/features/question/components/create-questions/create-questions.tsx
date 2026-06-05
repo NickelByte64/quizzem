@@ -3,31 +3,15 @@ import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import { QUERY_CLIENT } from "~/src/api/query-client";
 import { Button, ModalDialog } from "~/src/components";
 import { QuestionApi } from "~/src/features/question/api/question.api";
-import {
-  ANSWER_MODE,
-  MEDIA_TYPE,
-  type CreateQuestionDto,
-} from "~/src/features/question/api/question.types";
+import { type CreateQuestionDto } from "~/src/features/question/api/question.types";
 import { CreateQuestionListElement } from "~/src/features/question/components/create-questions/create-question-list-element";
 import {
+  DEFAULT_QUESTION,
   type CreateQuestionFormValues,
-  type QuestionFormValues,
 } from "~/src/features/question/components/create-questions/form-fields";
 
-export const DEFAULT_ANSWER = {
-  text: "",
-  isCorrectAnswer: false,
-};
-
-const DEFAULT_QUESTION: QuestionFormValues = {
-  text: "",
-  answerMode: ANSWER_MODE.SINGLE_CHOICE,
-  mediaType: MEDIA_TYPE.NONE,
-  answers: [DEFAULT_ANSWER],
-};
-
 export function CreateQuestion(): JSX.Element {
-  const [openModal, setOpenModal] = useState<boolean>(true);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const formId = useId();
 
   const { control, handleSubmit, reset } = useForm<CreateQuestionFormValues>({

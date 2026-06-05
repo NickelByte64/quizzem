@@ -2,10 +2,10 @@ import type { DetailedHTMLProps, HTMLAttributes, JSX } from "react";
 import { tv } from "tailwind-variants";
 
 const headline = tv({
-  base: "truncate",
+  base: "truncate pb-2",
   variants: {
     size: {
-      h1: "text-4xl font-light",
+      h1: "text-4xl font-light mb-8",
       h2: "text-3xl font-semibold",
       h3: "text-2xl font-semibold",
       h4: "text-xl font-semibold",
