@@ -7,14 +7,15 @@ import {
 type InputRootProps = PropsWithChildren & {
   error?: string;
   maxLength?: number;
+  isRequired?: boolean;
 };
 
 export function InputRoot(props: Readonly<InputRootProps>): JSX.Element {
-  const { children, error, maxLength } = props;
+  const { children, error, maxLength, isRequired } = props;
 
   const value: InputContextValue = useMemo(
-    () => ({ error, maxLength }),
-    [error, maxLength],
+    () => ({ error, maxLength, isRequired }),
+    [error, maxLength, isRequired],
   );
 
   return (

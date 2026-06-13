@@ -8,16 +8,19 @@ import type {
 type BaseInputLabelProps = PropsWithChildren &
   DetailedHTMLProps<LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement> & {
     label: string;
+    isRequired?: boolean;
   };
 
 export function BaseInputLabel(
   props: Readonly<BaseInputLabelProps>,
 ): JSX.Element {
-  const { label, children, ...rest } = props;
+  const { label, children, isRequired, ...rest } = props;
 
   return (
     <label className="flex flex-col" {...rest}>
-      <span className="text-sm font-semibold">{label}</span>
+      <span className="text-sm font-semibold">
+        {label} {isRequired && "*"}
+      </span>
       {children}
     </label>
   );

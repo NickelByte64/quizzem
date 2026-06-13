@@ -1,9 +1,9 @@
 import type { DetailedHTMLProps, InputHTMLAttributes, JSX } from "react";
 import { cx } from "tailwind-variants";
-import { BaseInputLabel } from "~/src/components/form/base-input/base-input-label";
 import { BaseInputMessage } from "~/src/components/form/base-input/base-input-message";
 import { BaseInputOptionals } from "~/src/components/form/base-input/base-input-optionals";
 import { InputError } from "~/src/components/form/input/input-error";
+import { InputLabel } from "~/src/components/form/input/input-label";
 import { InputLength } from "~/src/components/form/input/input-length";
 import { InputRoot } from "~/src/components/form/input/input-root";
 import { useInputContext } from "~/src/components/form/input/input.context";
@@ -37,7 +37,7 @@ export function Input(props: Readonly<InputProps>): JSX.Element {
 }
 
 Input.Root = InputRoot;
-Input.Label = BaseInputLabel;
+Input.Label = InputLabel;
 Input.Length = InputLength;
 Input.Error = InputError;
 Input.Optionals = BaseInputOptionals;
