@@ -3,6 +3,7 @@ import type { PageableDto } from "~/src/api/api.types";
 import {
   useDeleteQuizzemData,
   useGetQuizzemData,
+  usePatchQuizzemData,
   usePostQuizzemData,
   type UseQuizzemMutation,
   type UseQuizzemQuery,
@@ -11,6 +12,7 @@ import type {
   CreateQuestionDto,
   GetAllQuestionsParamsDto,
   QuestionDto,
+  UpdateQuestionDto,
 } from "~/src/features/question/api/question.types";
 
 export const ROOT_QUESTIONS_TARGET = "/questions";
@@ -20,12 +22,16 @@ function useGetQuestionList(
 ): UseQuizzemQuery<PageableDto<QuestionDto>> {
   const searchParams = new URLSearchParams({
     page: String(params?.page ?? 0),
-    size: String(params?.size ?? 10),
+    size: String(params?.size ?? 20),
   });
 
   return useGetQuizzemData<PageableDto<QuestionDto>>(
     `${ROOT_QUESTIONS_TARGET}?${searchParams.toString()}`,
   );
+}
+
+function useGetQuestionById(id: UUID): UseQuizzemQuery<QuestionDto> {
+  return useGetQuizzemData<QuestionDto>(`${ROOT_QUESTIONS_TARGET}/${id}`);
 }
 
 function useCreateQuestion(): UseQuizzemMutation<CreateQuestionDto, void> {
@@ -41,13 +47,23 @@ function useCreateQuestionsBulk(): UseQuizzemMutation<
   );
 }
 
-function useDeleteQuestionsById(): UseQuizzemMutation<{ id: UUID }, void> {
-  return useDeleteQuizzemData<{ id: UUID }, void>(ROOT_QUESTIONS_TARGET);
+function useUpdateQuestion(
+  id: UUID,
+): UseQuizzemMutation<UpdateQuestionDto, void> {
+  return usePatchQuizzemData<UpdateQuestionDto, void>(
+    `${ROOT_QUESTIONS_TARGET}/${id}`,
+  );
+}
+
+function useDeleteQuestion(id: UUID): UseQuizzemMutation<void, void> {
+  return useDeleteQuizzemData<void>(`${ROOT_QUESTIONS_TARGET}/${id}`);
 }
 
 export const QuestionApi = {
   useGetQuestionList,
+  useGetQuestionById,
   useCreateQuestion,
   useCreateQuestionsBulk,
-  useDeleteQuestionsById,
+  useUpdateQuestion,
+  useDeleteQuestion,
 };

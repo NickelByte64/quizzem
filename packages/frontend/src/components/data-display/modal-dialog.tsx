@@ -44,7 +44,7 @@ export function ModalDialog(props: Readonly<ModalDialogProps>): JSX.Element {
 
         <div className="py-4">{children}</div>
 
-        <div className="flex justify-end gap-2 mt-4">
+        <div className="flex justify-end gap-2">
           <Button variant="neutral" onClick={onClose}>
             Close
           </Button>

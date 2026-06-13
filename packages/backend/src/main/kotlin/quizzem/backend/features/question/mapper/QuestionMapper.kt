@@ -12,7 +12,8 @@ fun QuestionModel.toDto(): QuestionDto {
         createdAt = createdAt,
         updatedAt = updatedAt,
         text = text,
-        type = answerMode,
+        mediaType = mediaType,
+        answerMode = answerMode,
         answers = answers.map { it.toDto() }
     )
 }

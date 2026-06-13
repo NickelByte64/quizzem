@@ -1,11 +1,13 @@
 package quizzem.backend.features.question.service
 
+import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import quizzem.backend.core.api.dto.PageableDto
 import quizzem.backend.features.question.api.dto.CreateQuestionDto
 import quizzem.backend.features.question.api.dto.GetAllQuestionsParamsDto
+import quizzem.backend.features.question.api.dto.UpdateQuestionDto
 import quizzem.backend.features.question.model.AnswerMode
 import quizzem.backend.features.question.model.AnswerModel
 import quizzem.backend.features.question.model.MediaType
@@ -28,6 +30,10 @@ class QuestionService(
             totalElements = page.totalElements,
             totalPages = page.totalPages
         )
+    }
+
+    fun getQuestionById(id: UUID): QuestionModel {
+        return questionRepository.findById(id).orElseThrow({ EntityNotFoundException("No question with id $id") })
     }
 
     fun createQuestion(dto: CreateQuestionDto) {
@@ -53,7 +59,29 @@ class QuestionService(
         dtos.forEach { createQuestion(it) }
     }
 
+    @Transactional
+    fun updateQuestion(id: UUID, dto: UpdateQuestionDto) {
+        val question =
+            questionRepository.findById(id).orElseThrow { EntityNotFoundException("Question with id $id not found") }
+
+        dto.text?.let { question.text = it }
+        dto.answerMode?.let { question.answerMode = it }
+        dto.mediaType?.let { question.mediaType = it }
+        dto.answers?.let { incoming ->
+            question.answers.clear()
+            question.answers.addAll(incoming.map { answer ->
+                AnswerModel(
+                    text = answer.text,
+                    isCorrectAnswer = answer.isCorrectAnswer,
+                    question = question
+                )
+            })
+        }
+    }
+
     fun deleteQuestion(id: UUID) {
         questionRepository.deleteById(id)
     }
+
+
 }

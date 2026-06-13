@@ -24,11 +24,6 @@ export type CreateQuestionFormValues = {
   questions: QuestionFormValues[];
 };
 
-type QuestionInputTextProps = {
-  control: Control<CreateQuestionFormValues, any, CreateQuestionFormValues>;
-  index: number;
-};
-
 export const DEFAULT_ANSWER = {
   text: "",
   isCorrectAnswer: false,
@@ -39,6 +34,11 @@ export const DEFAULT_QUESTION: QuestionFormValues = {
   answerMode: ANSWER_MODE.SINGLE_CHOICE,
   mediaType: MEDIA_TYPE.NONE,
   answers: [DEFAULT_ANSWER],
+};
+
+type QuestionInputTextProps = {
+  control: Control<CreateQuestionFormValues, any, CreateQuestionFormValues>;
+  index: number;
 };
 
 export function QuestionInputText(
@@ -94,9 +94,6 @@ export function AnswerModeSelect(
         <Select.Root>
           <Select.Label label="Answer Mode" />
           <Select options={ANSWER_MODE_OPTIONS} {...field} />
-          <Select.Optionals>
-            <Select.Error />
-          </Select.Optionals>
         </Select.Root>
       )}
     />
@@ -193,9 +190,6 @@ export function AnswerInputIsCorrectAnswer(
     <Controller
       control={control}
       name={`questions.${questionIndex}.answers.${answerIndex}.isCorrectAnswer`}
-      rules={{
-        validate: {},
-      }}
       render={({ field }) => (
         <Checkbox.Label
           disabled={isDisabled}

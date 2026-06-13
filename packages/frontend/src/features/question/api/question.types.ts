@@ -25,7 +25,8 @@ export type AnswerDto = QuizzemDto & {
 
 export type QuestionDto = QuizzemDto & {
   text: string;
-  type: AnswerMode;
+  answerMode: AnswerMode;
+  mediaType: MediaType;
   answers: AnswerDto[];
 };
 
@@ -42,3 +43,15 @@ export type CreateQuestionDto = {
 };
 
 export type GetAllQuestionsParamsDto = PageableParamsDto;
+
+type UpdateAnswerDto = {
+  text: string;
+  isCorrectAnswer: boolean;
+};
+
+export type UpdateQuestionDto = {
+  text: string | null;
+  answerMode: AnswerMode | null;
+  mediaType: MediaType | null;
+  answers: UpdateAnswerDto[] | null;
+};

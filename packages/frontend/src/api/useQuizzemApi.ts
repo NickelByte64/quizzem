@@ -4,7 +4,6 @@ import {
   type UseMutationResult,
   type UseQueryResult,
 } from "@tanstack/react-query";
-import type { UUID } from "node:crypto";
 import {
   HTTP,
   type ExtendedRequestInit,
@@ -47,11 +46,20 @@ export function usePutQuizzemData<Req, Res>(
   });
 }
 
-export function useDeleteQuizzemData<Req extends { id: UUID }, Res>(
+export function usePatchQuizzemData<Req, Res>(
   target: string,
 ): UseQuizzemMutation<Req, Res> {
   return useMutation<HttpResponse<Res>, Error, Req>({
     mutationKey: [target],
-    mutationFn: async (body) => await HTTP.delete(`${target}/${body.id}`),
+    mutationFn: async (body) => await HTTP.patch(target, { body }),
+  });
+}
+
+export function useDeleteQuizzemData<Res>(
+  target: string,
+): UseQuizzemMutation<void, Res> {
+  return useMutation<HttpResponse<Res>, Error>({
+    mutationKey: [target],
+    mutationFn: async () => await HTTP.delete(target),
   });
 }
