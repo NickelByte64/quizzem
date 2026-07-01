@@ -18,7 +18,7 @@ import {
   QuestionInputText,
   type UpdateQuestionFormValues,
 } from "~/src/features/question/components/edit-question/form-fields";
-import { getDirtyValues, isArrayFieldChanged } from "~/src/utils/form-diff";
+import { FormService } from "~/src/utils/form.service";
 
 type EditQuestionFormProps = {
   id: UUID;
@@ -48,7 +48,7 @@ export function EditQuestionForm(
     });
 
   const onSubmit: SubmitHandler<UpdateQuestionFormValues> = (formValues) => {
-    const diff = getDirtyValues(formState.dirtyFields, formValues);
+    const diff = FormService.getDirtyValues(formState.dirtyFields, formValues);
 
     const answersChanged = isArrayFieldChanged(
       diff.answers,

@@ -31,4 +31,5 @@ export type CreateGameResponseDto = {
 export type CreateGameDto = {
   title: string;
   description: string | null;
+  questions: UUID[];
 };

@@ -10,7 +10,7 @@ import type {
   GameDto,
 } from "~/src/features/game/api/game.types";
 
-function useCreateGameApi(): UseQuizzemMutation<
+function useCreateGame(): UseQuizzemMutation<
   CreateGameDto,
   CreateGameResponseDto
 > {
@@ -22,6 +22,6 @@ function useGetGameListApi(): UseQuizzemQuery<GameDto[]> {
 }
 
 export const GameApi = {
-  useCreateGameApi,
+  useCreateGame,
   useGetGameListApi,
 };

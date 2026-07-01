@@ -140,24 +140,21 @@ export function AnswerInputText(
           required: (val) => val.length > 0 || "Field is required.",
         },
       }}
-      render={({ field, fieldState }) => {
-        console.log(fieldState);
-        return (
-          <Input.Root
-            error={fieldState.error?.message}
-            maxLength={maxLength}
-            isRequired
-          >
-            <Input.Label label="What is the answer?">
-              <Input {...field} />
-            </Input.Label>
-            <Input.Optionals>
-              <Input.Error />
-              <Input.Length value={field.value} />
-            </Input.Optionals>
-          </Input.Root>
-        );
-      }}
+      render={({ field, fieldState }) => (
+        <Input.Root
+          error={fieldState.error?.message}
+          maxLength={maxLength}
+          isRequired
+        >
+          <Input.Label label="What is the answer?">
+            <Input {...field} />
+          </Input.Label>
+          <Input.Optionals>
+            <Input.Error />
+            <Input.Length value={field.value} />
+          </Input.Optionals>
+        </Input.Root>
+      )}
     />
   );
 }

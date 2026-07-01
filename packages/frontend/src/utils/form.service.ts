@@ -18,19 +18,21 @@ type GetDirtyValuesReturn<T extends Record<string, unknown>> = {
  * Returns true if an array field changed — either a value edit (caught by getDirtyValues)
  * or a structural add/remove that RHF doesn't track in dirtyFields (detected by length diff).
  */
-export function isArrayFieldChanged(
+function isArrayFieldChanged(
   diffValue: unknown[] | null,
   current: unknown[] | null | undefined,
   original: unknown[] | null | undefined,
 ): boolean {
-  return diffValue !== null || (current?.length ?? 0) !== (original?.length ?? 0);
+  return (
+    diffValue !== null || (current?.length ?? 0) !== (original?.length ?? 0)
+  );
 }
 
 /**
  * Returns the current value for each key that RHF considers dirty, null otherwise.
  * Callers can use null to mean "omit from the PATCH payload".
  */
-export function getDirtyValues<T extends Record<string, unknown>>(
+function getDirtyValues<T extends Record<string, unknown>>(
   dirtyFields: Partial<Record<string, unknown>>,
   values: T,
 ): GetDirtyValuesReturn<T> {
@@ -50,3 +52,8 @@ export function getDirtyValues<T extends Record<string, unknown>>(
   }
   return result;
 }
+
+export const FormService = {
+  isArrayFieldChanged,
+  getDirtyValues,
+};
