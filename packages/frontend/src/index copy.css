@@ -1,3 +1,4 @@
+/* 
 @import "tailwindcss";
 
 @theme {
@@ -331,4 +332,5 @@
   .shadow-primary {
     box-shadow: var(--shadow-primary);
   }
-}
+} 
+*/

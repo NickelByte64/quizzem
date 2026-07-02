@@ -1,22 +1,16 @@
-import { Link, Outlet } from "react-router";
-import { ROUTES } from "~/src/router/router";
+import { Box, Container } from "@mui/material";
+import { Outlet } from "react-router";
+import { Header } from "~/src/components/global/header";
 
 export function Layout() {
   return (
-    <>
-      <header className="p-4 bg-bg-200">
-        <ul>
-          {ROUTES.map((route) => (
-            <li key={route.path}>
-              <Link to={route.path}>{route.name}</Link>
-            </li>
-          ))}
-        </ul>
-      </header>
-      <main className="p-4 bg-bg-100">
+    <Container maxWidth="xl">
+      <Header />
+
+      <Box component={"main"}>
         <Outlet />
-      </main>
+      </Box>
       <footer className="p-4 bg-bg-200">footer</footer>
-    </>
+    </Container>
   );
 }
