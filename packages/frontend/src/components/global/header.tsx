@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Drawer,
   IconButton,
   Stack,
@@ -103,13 +104,14 @@ export function Header(): JSX.Element {
                 key={route.path}
                 sx={{ textAlign: "center" }}
               >
-                <Box
+                <Button
+                  variant="text"
                   component={Link}
                   to={route.path}
-                  sx={{ color: palette.primary.main, textDecoration: "none" }}
+                  sx={{ color: palette.primary.main, borderRadius: 8 }}
                 >
                   <Box component={"span"}>{route.name}</Box>
-                </Box>
+                </Button>
               </Box>
             ))}
           </Box>
