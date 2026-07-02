@@ -46,8 +46,34 @@ export function Header(): JSX.Element {
             <Box>Logo</Box>
           </Stack>
 
-          <Drawer open={open} onClose={toggleDrawer(false)}>
-            HI
+          <Drawer
+            open={open}
+            onClose={toggleDrawer(false)}
+            slotProps={{
+              paper: { sx: { backgroundColor: palette.background.default } },
+            }}
+          >
+            <Stack
+              component={"ul"}
+              sx={{
+                width: "100%",
+                listStyle: "none",
+                px: 4,
+              }}
+            >
+              {ROUTES.map((route) => (
+                <Box component={"li"} key={route.path}>
+                  <Box
+                    component={Link}
+                    to={route.path}
+                    onClick={() => setOpen(false)}
+                    sx={{ color: palette.primary.main, textDecoration: "none" }}
+                  >
+                    <Box component={"span"}>{route.name}</Box>
+                  </Box>
+                </Box>
+              ))}
+            </Stack>
           </Drawer>
         </>
       ) : (
