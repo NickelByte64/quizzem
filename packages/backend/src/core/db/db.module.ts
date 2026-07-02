@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DB_CONNECTION_OPTIONS, migrationsGlob } from './db.config';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'quizzem',
+      ...DB_CONNECTION_OPTIONS,
       autoLoadEntities: true,
+      synchronize: false,
+      migrations: [migrationsGlob],
     }),
   ],
 })

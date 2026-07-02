@@ -17,13 +17,19 @@ export class QuestionModel extends QuizzemModel {
   text!: string;
 
   @Column({
+    name: 'answer_mode',
     type: 'enum',
     enum: AnswerModeEnum,
     default: AnswerModeEnum.SINGLE_CHOICE,
   })
   answerMode: AnswerMode = AnswerModeEnum.SINGLE_CHOICE;
 
-  @Column({ type: 'enum', enum: MediaTypeEnum, default: MediaTypeEnum.NONE })
+  @Column({
+    name: 'media_type',
+    type: 'enum',
+    enum: MediaTypeEnum,
+    default: MediaTypeEnum.NONE,
+  })
   mediaType: MediaType = MediaTypeEnum.NONE;
 
   @ManyToMany(() => GameModel, (game) => game.questions, { lazy: true })
