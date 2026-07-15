@@ -1,13 +1,22 @@
 import { RiDeleteBinLine } from "@remixicon/react";
 import type { JSX } from "react";
 import { useFieldArray, type Control } from "react-hook-form";
-import { Button, Divider, Headline, IconButton } from "~/src/components";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  List,
+  Stack,
+  Typography,
+} from "~/src/components";
 import {
   AnswerInputIsCorrectAnswer,
   AnswerInputText,
   DEFAULT_ANSWER,
   type CreateQuestionFormValues,
 } from "~/src/features/question/components/create-questions/form-fields";
+import { useTheme } from "~/src/styling";
 
 type CreateAnswersProps = {
   control: Control<CreateQuestionFormValues, any, CreateQuestionFormValues>;
@@ -19,19 +28,28 @@ export function CreateAnswers(
 ): JSX.Element {
   const { control, index } = props;
 
+  const { palette } = useTheme();
   const { fields, append, remove } = useFieldArray({
     control,
     name: `questions.${index}.answers`,
   });
 
   return (
-    <div className="mt-2">
-      <Headline as="h5" title={"Answers"} />
+    <Box>
+      <Typography variant="h5">Answers</Typography>
 
-      <ul className="flex flex-col gap-4 mt-2">
+      <List sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {fields.map((field, j) => (
-          <li key={field.id} className="flex flex-row gap-4 items-stretch">
-            <div className="flex flex-col gap-2 w-full">
+          <List.Item
+            key={field.id}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 2,
+              alignItems: "stretch",
+            }}
+          >
+            <Stack sx={{ flexDirection: "column", gap: 2, width: "100%" }}>
               <AnswerInputText
                 control={control}
                 questionIndex={index}
@@ -43,30 +61,32 @@ export function CreateAnswers(
                 questionIndex={index}
                 answerIndex={j}
               />
-            </div>
+            </Stack>
 
-            <div className="flex items-center border-l pl-2 border-primary">
+            <Stack
+              sx={{
+                flexDirection: "row",
+                alignItems: "center",
+                borderLeft: `1px solid ${palette.primary.main}`,
+              }}
+            >
               <IconButton
                 type="button"
                 onClick={() => remove(j)}
                 disabled={fields.length <= 1}
                 Icon={RiDeleteBinLine}
               />
-            </div>
+            </Stack>
 
             <Divider />
-          </li>
+          </List.Item>
         ))}
 
-        <Button
-          size="full"
-          type="button"
-          onClick={() => append(DEFAULT_ANSWER)}
-        >
+        <Button fullWidth type="button" onClick={() => append(DEFAULT_ANSWER)}>
           Add Answer
         </Button>
-      </ul>
+      </List>
       <Divider />
-    </div>
+    </Box>
   );
 }

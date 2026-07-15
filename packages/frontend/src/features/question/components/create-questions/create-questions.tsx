@@ -1,7 +1,9 @@
 import { useId, useState, type JSX } from "react";
 import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import { QUERY_CLIENT } from "~/src/api/query-client";
-import { Button, ModalDialog } from "~/src/components";
+import { Box, Button, List } from "~/src/components";
+import { Dialog } from "~/src/components/feedback";
+import { Form } from "~/src/components/form";
 import {
   QuestionApi,
   ROOT_QUESTIONS_TARGET,
@@ -14,7 +16,7 @@ import {
 } from "~/src/features/question/components/create-questions/form-fields";
 
 export function CreateQuestion(): JSX.Element {
-  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
   const formId = useId();
 
   const { control, handleSubmit, reset } = useForm<CreateQuestionFormValues>({
@@ -46,51 +48,66 @@ export function CreateQuestion(): JSX.Element {
       onSuccess: () => {
         reset();
         QUERY_CLIENT.invalidateQueries({ queryKey: [ROOT_QUESTIONS_TARGET] });
-        setOpenModal(false);
+        setOpenDialog(false);
       },
     });
   };
 
   return (
-    <div className="my-8">
-      <Button onClick={() => setOpenModal(true)}>Create Questions</Button>
+    <Box sx={{ my: 8 }}>
+      <Button onClick={() => setOpenDialog(true)}>Create Questions</Button>
 
-      <ModalDialog
-        open={openModal}
+      <Dialog.Root
         onClose={() => {
-          setOpenModal(false);
+          setOpenDialog(false);
           reset();
         }}
-        title="Create Questions"
-        additionalButtons={
-          <Button key="submit" type="submit" form={formId}>
-            Create Questions
-          </Button>
-        }
+        open={openDialog}
+        label="Create Questions"
+        width="md"
       >
-        <form onSubmit={handleSubmit(onSubmit)} id={formId}>
+        <Dialog>
+          <Dialog.Title />
+          <Dialog.Content>
+            <Form id={formId} onSubmit={handleSubmit(onSubmit)}>
+              <List sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {fields.map((field, i) => (
+                  <CreateQuestionListElement
+                    key={field.id}
+                    control={control}
+                    field={field}
+                    fields={fields}
+                    index={i}
+                    remove={remove}
+                  />
+                ))}
+              </List>
+
+              <Button
+                fullWidth
+                type="button"
+                sx={{ mt: 2 }}
+                onClick={() => append(DEFAULT_QUESTION)}
+              >
+                Add Question
+              </Button>
+            </Form>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button type="submit" form={formId}>
+              Create Questions
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Dialog.Root>
+
+      {/* <ModalDialog
           <ul className="flex flex-col">
-            {fields.map((field, index) => (
-              <CreateQuestionListElement
-                key={field.id}
-                control={control}
-                field={field}
-                fields={fields}
-                index={index}
-                remove={remove}
-              />
-            ))}
+           
           </ul>
 
-          <Button
-            size="full"
-            type="button"
-            onClick={() => append(DEFAULT_QUESTION)}
-          >
-            Add Question
-          </Button>
         </form>
-      </ModalDialog>
-    </div>
+      </ModalDialog> */}
+    </Box>
   );
 }

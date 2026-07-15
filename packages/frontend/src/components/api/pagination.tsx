@@ -1,4 +1,4 @@
-import { Button } from "~/src/components/actions";
+import { Button } from "@mui/material";
 
 type PaginationProps = {
   page: number;

@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import { Layout } from "~/src/components/global/layout";
 import { HomePage } from "~/src/features/home/home.page";
+import { QuestionPage } from "~/src/features/question/question.page";
 
 export const ROUTES = [
   { path: "/", name: "Home" },
@@ -34,16 +35,16 @@ export const ROUTER = createBrowserRouter([
       //   path: "player",
       //   element: <PlayerPage />,
       // },
-      // {
-      //   path: "questions",
-      //   element: <QuestionPage />,
-      //   children: [
-      //     {
-      //       path: ":id",
-      //       element: <QuestionPage />,
-      //     },
-      //   ],
-      // },
+      {
+        path: "questions",
+        element: <QuestionPage />,
+        children: [
+          {
+            path: ":id",
+            element: <QuestionPage />,
+          },
+        ],
+      },
     ],
   },
 ]);

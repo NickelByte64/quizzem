@@ -58,13 +58,19 @@ export function QuestionInputText(
         },
       }}
       render={({ field, fieldState }) => (
-        <Input.Root error={fieldState.error?.message} maxLength={maxLength}>
-          <Input.Label label="What is the question?">
-            <Input {...field} />
+        <Input.Root
+          error={fieldState.error?.message}
+          field={field}
+          label="What is the question?"
+          maxLength={maxLength}
+          isRequired
+        >
+          <Input.Label>
+            <Input />
           </Input.Label>
           <Input.Optionals>
             <Input.Error />
-            <Input.Length value={field.value} />
+            <Input.Length />
           </Input.Optionals>
         </Input.Root>
       )}
@@ -90,10 +96,15 @@ export function AnswerModeSelect(
     <Controller
       control={control}
       name={`questions.${index}.answerMode`}
-      render={({ field }) => (
-        <Select.Root>
-          <Select.Label label="Answer Mode" />
-          <Select options={ANSWER_MODE_OPTIONS} {...field} />
+      render={({ field, fieldState }) => (
+        <Select.Root
+          label="Answer Mode"
+          options={ANSWER_MODE_OPTIONS}
+          field={field}
+          error={fieldState.error?.message}
+        >
+          <Select.Label />
+          <Select />
         </Select.Root>
       )}
     />
@@ -116,10 +127,15 @@ export function MediaTypeSelect(
     <Controller
       control={control}
       name={`questions.${index}.mediaType`}
-      render={({ field }) => (
-        <Select.Root>
-          <Select.Label label="Media Type" />
-          <Select options={MEDIA_TYPE_OPTIONS} {...field} />
+      render={({ field, fieldState }) => (
+        <Select.Root
+          label="Media Type"
+          options={MEDIA_TYPE_OPTIONS}
+          field={field}
+          error={fieldState.error?.message}
+        >
+          <Select.Label />
+          <Select />
           <Select.Optionals>
             <Select.Error />
           </Select.Optionals>
@@ -152,13 +168,18 @@ export function AnswerInputText(
         },
       }}
       render={({ field, fieldState }) => (
-        <Input.Root error={fieldState.error?.message} maxLength={maxLength}>
-          <Input.Label label="What is the answer?">
-            <Input {...field} />
+        <Input.Root
+          error={fieldState.error?.message}
+          maxLength={maxLength}
+          label="What is the answer?"
+          field={field}
+        >
+          <Input.Label>
+            <Input />
           </Input.Label>
           <Input.Optionals>
             <Input.Error />
-            <Input.Length value={field.value} />
+            <Input.Length />
           </Input.Optionals>
         </Input.Root>
       )}
@@ -191,12 +212,13 @@ export function AnswerInputIsCorrectAnswer(
       control={control}
       name={`questions.${questionIndex}.answers.${answerIndex}.isCorrectAnswer`}
       render={({ field }) => (
-        <Checkbox.Label
-          disabled={isDisabled}
+        <Checkbox.Root
+          field={field}
+          isDisabled={isDisabled}
           label="Is this the correct answer?"
         >
-          <Checkbox {...field} disabled={isDisabled} />
-        </Checkbox.Label>
+          <Checkbox />
+        </Checkbox.Root>
       )}
     />
   );

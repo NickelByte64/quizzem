@@ -1,16 +1,25 @@
 import { type JSX } from "react";
-import { Headline } from "~/src/components";
+import {
+  Breadcrumbs,
+  Typography,
+  type BreadcrumbsType,
+} from "~/src/components";
 import { CreateQuestion } from "~/src/features/question/components/create-questions/create-questions";
-import { EditQuestion } from "~/src/features/question/components/edit-question/edit-question";
-import { ListQuestions } from "~/src/features/question/components/list-questions";
+
+const breadcrumbs: BreadcrumbsType[] = [
+  { name: "Home", to: "/" },
+  { name: "Questions", to: undefined },
+];
 
 export function QuestionPage(): JSX.Element {
   return (
     <>
-      <Headline title="Question Page" />
+      <Typography variant="h1">Question Page</Typography>
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
+
       <CreateQuestion />
-      <ListQuestions />
-      <EditQuestion />
+      {/* <ListQuestions /> */}
+      {/* <EditQuestion />  */}
     </>
   );
 }
