@@ -4,15 +4,18 @@ import {
   type ButtonProps as MuiButtonProps,
 } from "@mui/material";
 
-type Variants = "contained" | "outlined";
+export type ButtonVariants = "contained" | "outlined";
+export type ColorVariants = "primary" | "secondary";
 
 type ButtonProps = Omit<MuiButtonProps, "variant"> & {
-  variant?: Variants;
+  variant?: ButtonVariants;
+  colorVariant?: ColorVariants;
 };
 
 export function Button(props: Readonly<ButtonProps>) {
   const {
     variant = "contained",
+    colorVariant = "primary",
     children,
     sx,
     fullWidth = false,
@@ -24,10 +27,16 @@ export function Button(props: Readonly<ButtonProps>) {
   const variants = {
     outlined: {
       backgroundColor: palette.background.default,
-      color: palette.primary.main,
+      color:
+        colorVariant === "primary"
+          ? palette.primary.main
+          : palette.secondary.main,
     },
     contained: {
-      backgroundColor: palette.primary.main,
+      backgroundColor:
+        colorVariant === "primary"
+          ? palette.primary.main
+          : palette.secondary.main,
       color: palette.common.white,
     },
   };

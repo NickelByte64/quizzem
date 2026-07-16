@@ -35,7 +35,7 @@ export function CreateAnswers(
   });
 
   return (
-    <Box>
+    <Box sx={{ mt: 3 }}>
       <Typography variant="h5">Answers</Typography>
 
       <List sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -49,7 +49,7 @@ export function CreateAnswers(
               alignItems: "stretch",
             }}
           >
-            <Stack sx={{ flexDirection: "column", gap: 2, width: "100%" }}>
+            <Stack sx={{ flexDirection: "column", gap: 1, width: "100%" }}>
               <AnswerInputText
                 control={control}
                 questionIndex={index}
@@ -82,11 +82,15 @@ export function CreateAnswers(
           </List.Item>
         ))}
 
-        <Button fullWidth type="button" onClick={() => append(DEFAULT_ANSWER)}>
+        <Button
+          fullWidth
+          type="button"
+          colorVariant="secondary"
+          onClick={() => append(DEFAULT_ANSWER)}
+        >
           Add Answer
         </Button>
       </List>
-      <Divider />
     </Box>
   );
 }

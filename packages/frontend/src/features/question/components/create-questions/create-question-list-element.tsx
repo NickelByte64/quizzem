@@ -4,7 +4,7 @@ import {
   type FieldArrayWithId,
   type UseFieldArrayReturn,
 } from "react-hook-form";
-import { Accordion, Button, List, Stack } from "~/src/components";
+import { Accordion, Button, Divider, List, Stack } from "~/src/components";
 import { CreateAnswers } from "~/src/features/question/components/create-questions/create-answers";
 import {
   AnswerModeSelect,
@@ -30,12 +30,12 @@ export function CreateQuestionListElement(
 
   return (
     <List.Item key={field.id}>
-      <Accordion defaultExpanded={index === 0}>
+      <Accordion defaultExpanded>
         <Accordion.Summary>
           {index + 1}. {questionText || "Question Text"}
         </Accordion.Summary>
         <Accordion.Details>
-          <Stack sx={{ gap: 1 }}>
+          <Stack sx={{ gap: 2 }}>
             <QuestionInputText control={control} index={index} />
             <AnswerModeSelect control={control} index={index} />
             <MediaTypeSelect control={control} index={index} />
@@ -44,9 +44,10 @@ export function CreateQuestionListElement(
           <CreateAnswers control={control} index={index} />
         </Accordion.Details>
 
+        <Divider />
+
         <Button
           fullWidth
-          sx={{ mt: 2 }}
           onClick={() => remove(index)}
           disabled={fields.length <= 1}
         >

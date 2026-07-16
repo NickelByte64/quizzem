@@ -68,10 +68,10 @@ export function QuestionInputText(
           <Input.Label>
             <Input />
           </Input.Label>
-          <Input.Optionals>
+          {/* <Input.Optionals>
             <Input.Error />
             <Input.Length />
-          </Input.Optionals>
+          </Input.Optionals> */}
         </Input.Root>
       )}
     />
@@ -103,8 +103,9 @@ export function AnswerModeSelect(
           field={field}
           error={fieldState.error?.message}
         >
-          <Select.Label />
-          <Select />
+          <Select.Label>
+            <Select />
+          </Select.Label>
         </Select.Root>
       )}
     />
@@ -134,11 +135,9 @@ export function MediaTypeSelect(
           field={field}
           error={fieldState.error?.message}
         >
-          <Select.Label />
-          <Select />
-          <Select.Optionals>
-            <Select.Error />
-          </Select.Optionals>
+          <Select.Label>
+            <Select />
+          </Select.Label>
         </Select.Root>
       )}
     />
@@ -177,10 +176,10 @@ export function AnswerInputText(
           <Input.Label>
             <Input />
           </Input.Label>
-          <Input.Optionals>
+          {/* <Input.Optionals>
             <Input.Error />
             <Input.Length />
-          </Input.Optionals>
+          </Input.Optionals> */}
         </Input.Root>
       )}
     />

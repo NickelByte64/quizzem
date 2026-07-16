@@ -9,7 +9,7 @@ export function AccordionDetails(
 ): JSX.Element {
   const { children, sx, ...rest } = props;
   return (
-    <MuiAccordionDetails sx={{ px: 0, ...sx }} {...rest}>
+    <MuiAccordionDetails sx={{ p: 0, ...sx }} {...rest}>
       {children}
     </MuiAccordionDetails>
   );

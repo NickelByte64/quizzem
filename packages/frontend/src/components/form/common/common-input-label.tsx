@@ -21,6 +21,7 @@ export function CommonInputLabel(
         display: "flex",
         flexDirection: "column",
         color: isDisabled ? palette.grey[400] : "inherit",
+        transform: "none",
       }}
       size="small"
     >

@@ -4,6 +4,6 @@ import {
 } from "@mui/material";
 
 export function Divider(props: Readonly<MuiDividerProps>) {
-  const { ...rest } = props;
-  return <MuiDivider {...rest} />;
+  const { sx, ...rest } = props;
+  return <MuiDivider sx={{ my: 2, ...sx }} {...rest} />;
 }

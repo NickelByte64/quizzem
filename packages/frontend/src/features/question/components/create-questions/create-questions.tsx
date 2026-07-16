@@ -1,7 +1,7 @@
 import { useId, useState, type JSX } from "react";
 import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import { QUERY_CLIENT } from "~/src/api/query-client";
-import { Box, Button, List } from "~/src/components";
+import { Box, Button, CreateButton, List } from "~/src/components";
 import { Dialog } from "~/src/components/feedback";
 import { Form } from "~/src/components/form";
 import {
@@ -55,7 +55,9 @@ export function CreateQuestion(): JSX.Element {
 
   return (
     <Box sx={{ my: 8 }}>
-      <Button onClick={() => setOpenDialog(true)}>Create Questions</Button>
+      <CreateButton onClick={() => setOpenDialog(true)}>
+        Create Questions
+      </CreateButton>
 
       <Dialog.Root
         onClose={() => {

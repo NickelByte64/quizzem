@@ -26,6 +26,7 @@ export function AccordionSummary(
         },
         "& .MuiAccordionSummary-content": {
           margin: 0,
+          minWidth: 0,
         },
         "& .MuiAccordionSummary-content.Mui-expanded": {
           margin: 0,
@@ -37,7 +38,12 @@ export function AccordionSummary(
     >
       <Typography
         component="span"
-        sx={{ fontWeight: typography.fontWeightBold }}
+        sx={{
+          fontWeight: typography.fontWeightBold,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
       >
         {children}
       </Typography>
