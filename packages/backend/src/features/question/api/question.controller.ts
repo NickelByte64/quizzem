@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -28,16 +29,18 @@ export class QuestionController {
   ): Promise<PageableDto<QuestionDto>> {
     const questions = await this.questionService.getAllQuestions(params);
 
+    const { data, ...rest } = questions;
+
     return {
-      ...questions,
-      data: questions.data.map((question) =>
-        QuestionMapper.toQuestionDto(question),
-      ),
+      ...rest,
+      data: QuestionMapper.toQuestionDtoList(data),
     };
   }
 
   @Get(':id')
-  async getQuestionById(@Param() id: UUID): Promise<QuestionDto> {
+  async getQuestionById(
+    @Param('id', ParseUUIDPipe) id: UUID,
+  ): Promise<QuestionDto> {
     const question = await this.questionService.getQuestionById(id);
     return QuestionMapper.toQuestionDto(question);
   }
@@ -57,7 +60,7 @@ export class QuestionController {
   @Patch(':id')
   @HttpCode(204)
   async updateQuestion(
-    @Param() id: UUID,
+    @Param('id', ParseUUIDPipe) id: UUID,
     @Body() dto: UpdateQuestionDto,
   ): Promise<void> {
     return await this.questionService.updateQuestion(id, dto);
@@ -65,7 +68,7 @@ export class QuestionController {
 
   @Delete(':id')
   @HttpCode(204)
-  async deleteQuestion(@Param() id: UUID): Promise<void> {
+  async deleteQuestion(@Param('id', ParseUUIDPipe) id: UUID): Promise<void> {
     return await this.questionService.deleteQuestion(id);
   }
 }

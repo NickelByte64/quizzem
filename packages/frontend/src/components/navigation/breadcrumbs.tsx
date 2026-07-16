@@ -21,7 +21,7 @@ export function Breadcrumbs(props: Readonly<BreadcrumbsProps>): JSX.Element {
   return (
     <MuiBreadcrumbs
       separator={<RiArrowRightSLine size={"1rem"} />}
-      sx={{ mb: 2 }}
+      sx={{ mb: 4 }}
     >
       {breadcrumbs.map((breadcrumb) =>
         breadcrumb.to ? (

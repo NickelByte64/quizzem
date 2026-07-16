@@ -1,11 +1,22 @@
 import dayjs from "dayjs";
 import type { UUID } from "node:crypto";
-import { useState, type JSX } from "react";
+import { useState, type Dispatch, type JSX, type SetStateAction } from "react";
 import { useNavigate } from "react-router";
+import type { PageableDto } from "~/src/api/api.types";
+import type { HttpResponse } from "~/src/api/http";
 import { QUERY_CLIENT } from "~/src/api/query-client";
-import { Button } from "~/src/components";
+import type { UseQuizzemQuery } from "~/src/api/useQuizzemApi";
+import {
+  Alert,
+  Button,
+  List,
+  QueryBoundary,
+  Skeleton,
+  Snackbar,
+  Stack,
+  Typography,
+} from "~/src/components";
 import { Pagination } from "~/src/components/api";
-import { Headline } from "~/src/components/typography/headline";
 import {
   QuestionApi,
   ROOT_QUESTIONS_TARGET,
@@ -15,16 +26,48 @@ import {
   MEDIA_TYPE,
   type AnswerMode,
   type MediaType,
+  type QuestionDto,
 } from "~/src/features/question/api/question.types";
+import { useTheme } from "~/src/styling";
 
 export function ListQuestions(): JSX.Element {
-  const navigate = useNavigate();
-
   const [page, setPage] = useState(0);
 
   const { useGetQuestionList } = QuestionApi;
+  const { data, isError, isLoading, refetch } = useGetQuestionList({ page });
 
-  const { data } = useGetQuestionList({ page });
+  return (
+    <>
+      <Typography variant="h2">List Questions</Typography>
+
+      <QueryBoundary
+        hasContent={data && data.data.totalElements > 0}
+        isLoading={isLoading}
+        isError={isError}
+        skeletons={<ListQuestionsSkeletons />}
+        content={
+          <ListQuestionsContent page={page} setPage={setPage} data={data!} />
+        }
+        emptyContent={<ListQuestionsEmpty />}
+        error={<ListQuestionsContentError refetch={refetch} />}
+      />
+    </>
+  );
+}
+
+type ListQuestionsContentProps = {
+  page: number;
+  setPage: Dispatch<SetStateAction<number>>;
+  data: HttpResponse<PageableDto<QuestionDto>>;
+};
+
+function ListQuestionsContent(
+  props: Readonly<ListQuestionsContentProps>,
+): JSX.Element {
+  const { page, setPage, data } = props;
+
+  const navigate = useNavigate();
+  const { shape, palette } = useTheme();
 
   function handlePageChange(newPage: number): void {
     setPage(newPage);
@@ -32,66 +75,130 @@ export function ListQuestions(): JSX.Element {
 
   return (
     <>
-      <Headline as="h2" title="List Questions" />
-
-      <ul className="flex flex-col gap-2 mt-4">
-        {data?.data.data.map((question) => (
-          <li
+      <List sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 4 }}>
+        {data.data.data.map((question) => (
+          <List.Item
             key={question.id}
-            className="flex items-center justify-between gap-4 rounded-lg border px-4 py-2"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 4,
+              border: `1px solid ${palette.primary.main}`,
+              px: 2,
+              py: 1,
+              borderRadius: shape.borderRadiusMd,
+              backgroundColor: palette.background.paper,
+            }}
           >
-            <span className="truncate flex-1">{question.text}</span>
-            <span>
+            <Typography component={"span"} ellipsis sx={{ flex: 1 }}>
+              {question.text}
+            </Typography>
+            <Typography component={"span"}>
               {dayjs(question.createdAt).format("DD. MMM YYYY, hh:mm:ss")}
-            </span>
-            <span className="16">
+            </Typography>
+            <Typography component={"span"}>
               {MEDIA_TYPE_LABEL.get(question.mediaType)}
-            </span>
-            <span className="w-40">
+            </Typography>
+            <Typography component={"span"} sx={{ width: "10rem" }}>
               {ANSWER_MODE_LABELS.get(question.answerMode)}
-            </span>
-            <div className="flex gap-2">
+            </Typography>
+            <Stack sx={{ flexDirection: "row", gap: 2 }}>
               <Button
-                variant="secondary"
+                variant="outlined"
+                colorVariant="secondary"
                 onClick={() => navigate(`/questions/${question.id}`)}
               >
                 Edit
               </Button>
               <DeleteButton id={question.id} />
-            </div>
-          </li>
+            </Stack>
+          </List.Item>
         ))}
-      </ul>
+      </List>
 
       <Pagination
         page={page}
-        totalPages={data?.data.totalPages ?? 0}
+        totalPages={data.data.totalPages}
         onPageChange={handlePageChange}
       />
     </>
   );
 }
 
+function ListQuestionsEmpty(): JSX.Element {
+  return <Typography>No questions available</Typography>;
+}
+
+function ListQuestionsSkeletons(): JSX.Element {
+  return (
+    <List sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 4 }}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <List.Item key={i}>
+          <Skeleton width={"100%"} height={"54.5px"} />
+        </List.Item>
+      ))}
+    </List>
+  );
+}
+
+type ListQuestionsContentErrorProps = {
+  refetch: UseQuizzemQuery<PageableDto<QuestionDto>>["refetch"];
+};
+
+function ListQuestionsContentError(
+  props: Readonly<ListQuestionsContentErrorProps>,
+): JSX.Element {
+  const { refetch } = props;
+
+  return (
+    <Alert
+      severity="error"
+      title="We couldn't load your questions."
+      action={
+        <Button variant="outlined" onClick={() => refetch()}>
+          Retry
+        </Button>
+      }
+    />
+  );
+}
+
 function DeleteButton(props: Readonly<{ id: UUID }>) {
   const { id } = props;
+
+  const [open, setOpen] = useState(false);
 
   const { useDeleteQuestion } = QuestionApi;
 
   const { mutate } = useDeleteQuestion(id);
 
   return (
-    <Button
-      onClick={() => {
-        mutate(undefined, {
-          onSuccess: () =>
-            QUERY_CLIENT.invalidateQueries({
-              queryKey: [ROOT_QUESTIONS_TARGET],
-            }),
-        });
-      }}
-    >
-      Delete
-    </Button>
+    <>
+      <Button
+        onClick={() => {
+          mutate(undefined, {
+            onSuccess: () => {
+              QUERY_CLIENT.invalidateQueries({
+                queryKey: [ROOT_QUESTIONS_TARGET],
+              });
+            },
+            onError: () => {
+              setOpen(true);
+            },
+          });
+        }}
+      >
+        Delete
+      </Button>
+      <Snackbar
+        alertProps={{
+          title: "Question could not be deleted",
+          severity: "error",
+        }}
+        snackBarProps={{ open, setOpen }}
+      />
+    </>
   );
 }
 

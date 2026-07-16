@@ -1,10 +1,7 @@
 import { type JSX } from "react";
-import {
-  Breadcrumbs,
-  Typography,
-  type BreadcrumbsType,
-} from "~/src/components";
+import { Layout, type BreadcrumbsType } from "~/src/components";
 import { CreateQuestion } from "~/src/features/question/components/create-questions/create-questions";
+import { ListQuestions } from "~/src/features/question/components/list-questions";
 
 const breadcrumbs: BreadcrumbsType[] = [
   { name: "Home", to: "/" },
@@ -13,13 +10,10 @@ const breadcrumbs: BreadcrumbsType[] = [
 
 export function QuestionPage(): JSX.Element {
   return (
-    <>
-      <Typography variant="h1">Question Page</Typography>
-      <Breadcrumbs breadcrumbs={breadcrumbs} />
-
+    <Layout title={"Question Page"} breadcrumbs={breadcrumbs}>
       <CreateQuestion />
-      {/* <ListQuestions /> */}
+      <ListQuestions />
       {/* <EditQuestion />  */}
-    </>
+    </Layout>
   );
 }

@@ -25,6 +25,9 @@ export class QuestionService {
     const [records, count] = await this.questionRepository.findAndCount({
       skip: params.page * params.size,
       take: params.size,
+      relations: {
+        answers: true,
+      },
     });
 
     return new PageableDto({

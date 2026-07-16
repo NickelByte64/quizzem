@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router";
-import { Layout } from "~/src/components/global/layout";
+import { GlobalLayout } from "~/src/components/global/layout";
 import { HomePage } from "~/src/features/home/home.page";
 import { QuestionPage } from "~/src/features/question/question.page";
 
@@ -14,7 +14,7 @@ export const ROUTES = [
 export const ROUTER = createBrowserRouter([
   {
     path: "/",
-    Component: Layout,
+    Component: GlobalLayout,
     children: [
       { index: true, element: <HomePage /> },
       // {

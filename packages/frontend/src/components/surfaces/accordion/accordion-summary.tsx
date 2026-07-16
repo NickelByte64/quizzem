@@ -1,24 +1,24 @@
 import {
   AccordionSummary as MuiAccordionSummary,
-  Typography,
   useTheme,
   type AccordionSummaryProps as MuiAccordionSummaryProps,
 } from "@mui/material";
 import { RiArrowDownSLine } from "@remixicon/react";
 import type { JSX } from "react";
+import { Typography } from "~/src/components/data-display";
 
 export function AccordionSummary(
   props: Readonly<MuiAccordionSummaryProps>,
 ): JSX.Element {
   const { children, sx, ...rest } = props;
 
-  const { palette, typography } = useTheme();
+  const { palette, typography, shape } = useTheme();
 
   return (
     <MuiAccordionSummary
       sx={{
         backgroundColor: palette.background.default,
-        borderRadius: 5,
+        borderRadius: shape.borderRadiusMd,
         p: 2,
         minHeight: "unset !important",
         "&.Mui-expanded": {
@@ -38,11 +38,9 @@ export function AccordionSummary(
     >
       <Typography
         component="span"
+        ellipsis
         sx={{
           fontWeight: typography.fontWeightBold,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
         }}
       >
         {children}

@@ -15,7 +15,7 @@ export const THEME = createTheme({
       contrastText: "#f5d6e0",
     },
     background: {
-      default: "#f9f4eb",
+      default: "#faf6ef",
       paper: "#fbfefd",
     },
   },
@@ -33,45 +33,68 @@ export const THEME = createTheme({
     },
     h1: {
       fontweight: 600,
-      fontSize: "4rem",
+      fontSize: "3rem",
       lineHeight: 1.25,
       letterSpacing: "0.022em",
       margin: "0.35em 0",
     },
     h2: {
       fontweight: 600,
-      fontsize: "3.1875rem",
+      fontSize: "2.5rem",
       lineheight: 1.1765,
       letterspacing: "0.0116em",
       margin: "0.35em 0",
     },
     h3: {
       fontweight: 600,
-      fontSize: "2.5rem",
+      fontSize: "2rem",
       lineHeight: 1.2,
       letterSpacing: "0.0025em",
       margin: "0.35em 0",
     },
     h4: {
       fontweight: 400,
-      fontSize: "2rem",
+      fontSize: "1.75rem",
       lineHeight: 1.25,
       letterSpacing: "-0.004em",
       margin: "0.35em 0",
     },
     h5: {
       fontweight: 400,
-      fontSize: "1.5625rem",
+      fontSize: "1.5rem",
       lineHeight: 1.28,
       letterSpacing: "-0.0096em",
       margin: "0.35em 0",
     },
     h6: {
       fontweight: 400,
-      fontSize: "1.25rem",
+      fontSize: "1.2rem",
       lineHeight: 1.4,
       letterSpacing: "-0.0137em",
       margin: "0.35em 0",
     },
   },
+  shape: {
+    borderRadius: 8,
+    borderRadiusSm: 1,
+    borderRadiusMd: 2,
+    borderRadiusLg: 4,
+    borderRadiusXl: 8,
+  },
 });
+
+declare module "@mui/material/styles" {
+  interface Shape {
+    borderRadiusSm: number;
+    borderRadiusMd: number;
+    borderRadiusLg: number;
+    borderRadiusXl: number;
+  }
+
+  interface ShapeOptions {
+    borderRadiusSm?: number;
+    borderRadiusMd?: number;
+    borderRadiusLg?: number;
+    borderRadiusXl?: number;
+  }
+}

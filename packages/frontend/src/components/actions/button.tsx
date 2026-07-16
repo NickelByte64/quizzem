@@ -26,7 +26,10 @@ export function Button(props: Readonly<ButtonProps>) {
 
   const variants = {
     outlined: {
-      backgroundColor: palette.background.default,
+      borderColor:
+        colorVariant === "primary"
+          ? palette.primary.main
+          : palette.secondary.main,
       color:
         colorVariant === "primary"
           ? palette.primary.main

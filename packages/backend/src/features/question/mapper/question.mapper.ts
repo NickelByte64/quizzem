@@ -16,6 +16,10 @@ export class QuestionMapper {
     };
   }
 
+  static toQuestionDtoList(models: QuestionModel[]): QuestionDto[] {
+    return models.map((model) => this.toQuestionDto(model));
+  }
+
   static toAnswerDto(model: AnswerModel): AnswerDto {
     return {
       id: model.id,
@@ -24,5 +28,9 @@ export class QuestionMapper {
       text: model.text,
       isCorrectAnswer: model.isCorrectAnswer,
     };
+  }
+
+  static toAnswerDtoList(models: AnswerModel[]): AnswerDto[] {
+    return models.map((model) => this.toAnswerDto(model));
   }
 }

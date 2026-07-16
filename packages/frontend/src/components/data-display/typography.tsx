@@ -4,7 +4,20 @@ import {
 } from "@mui/material";
 import type { JSX } from "react";
 
-export function Typography(props: Readonly<MuiTypographyProps>): JSX.Element {
-  const { children, ...rest } = props;
-  return <MuiTypography {...rest}>{children}</MuiTypography>;
+type TypographyProps = MuiTypographyProps & {
+  ellipsis?: boolean;
+};
+
+export function Typography(props: Readonly<TypographyProps>): JSX.Element {
+  const { ellipsis = false, children, sx, ...rest } = props;
+
+  const ellipsisStyles = ellipsis
+    ? { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }
+    : undefined;
+
+  return (
+    <MuiTypography sx={{ ...ellipsisStyles, ...sx }} {...rest}>
+      {children}
+    </MuiTypography>
+  );
 }

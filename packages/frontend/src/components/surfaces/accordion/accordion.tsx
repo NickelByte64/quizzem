@@ -10,7 +10,7 @@ import { AccordionSummary } from "~/src/components/surfaces/accordion/accordion-
 export function Accordion(props: Readonly<MuiAccordionProps>): JSX.Element {
   const { children, ...rest } = props;
 
-  const { palette } = useTheme();
+  const { palette, shape } = useTheme();
 
   return (
     <MuiAccordion
@@ -23,7 +23,7 @@ export function Accordion(props: Readonly<MuiAccordionProps>): JSX.Element {
         boxShadow: "none",
         border: `solid 1px ${palette.primary.main}`,
         "&.MuiPaper-root": {
-          borderRadius: 5,
+          borderRadius: shape.borderRadiusMd,
         },
       }}
       {...rest}

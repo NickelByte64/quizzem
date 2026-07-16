@@ -1,5 +1,6 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { type JSX } from "react";
 import { RouterProvider } from "react-router";
 import { QUERY_CLIENT } from "~/src/api/query-client";
@@ -13,6 +14,8 @@ export function App(): JSX.Element {
         <RouterProvider router={ROUTER} />
         <CssBaseline />
       </ThemeProvider>
+
+      <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

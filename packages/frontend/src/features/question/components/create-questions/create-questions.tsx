@@ -1,9 +1,14 @@
 import { useId, useState, type JSX } from "react";
 import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import { QUERY_CLIENT } from "~/src/api/query-client";
-import { Box, Button, CreateButton, List } from "~/src/components";
-import { Dialog } from "~/src/components/feedback";
-import { Form } from "~/src/components/form";
+import {
+  Box,
+  Button,
+  CreateButton,
+  Dialog,
+  Form,
+  List,
+} from "~/src/components";
 import {
   QuestionApi,
   ROOT_QUESTIONS_TARGET,
@@ -54,7 +59,7 @@ export function CreateQuestion(): JSX.Element {
   };
 
   return (
-    <Box sx={{ my: 8 }}>
+    <Box sx={{ mb: 4 }}>
       <CreateButton onClick={() => setOpenDialog(true)}>
         Create Questions
       </CreateButton>

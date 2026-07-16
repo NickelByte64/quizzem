@@ -2,7 +2,7 @@ import { Box, Container } from "@mui/material";
 import { Outlet } from "react-router";
 import { Header } from "~/src/components/global/header";
 
-export function Layout() {
+export function GlobalLayout() {
   return (
     <Container maxWidth="xl">
       <Header />

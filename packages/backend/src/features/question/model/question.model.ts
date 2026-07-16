@@ -37,8 +37,7 @@ export class QuestionModel extends QuizzemModel {
 
   @OneToMany(() => AnswerModel, (answer) => answer.question, {
     cascade: true,
-    lazy: true,
     orphanedRowAction: 'delete',
   })
-  answers: AnswerModel[] = [];
+  answers!: AnswerModel[];
 }

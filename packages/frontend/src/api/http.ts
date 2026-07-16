@@ -1,3 +1,4 @@
+import { HttpError } from "~/src/api/api.error";
 import { dateReviver } from "~/src/utils/date";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -5,7 +6,6 @@ export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 export type HttpResponse<Res> = {
   data: Res;
   status: number;
-  ok: boolean;
 };
 
 export type ExtendedRequestInit<Req> = Omit<RequestInit, "body"> & {
@@ -17,9 +17,11 @@ async function request<Req, Res>(
   target: string,
   requestInit?: ExtendedRequestInit<Req>,
 ): Promise<HttpResponse<Res>> {
+  let res: Response;
+
   try {
     // TODO implement correct base URL handling in .env
-    const res = await fetch("http://localhost:3000" + target, {
+    res = await fetch("http://localhost:3000" + target, {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -28,23 +30,22 @@ async function request<Req, Res>(
       ...requestInit,
       body: requestInit?.body ? JSON.stringify(requestInit.body) : undefined,
     });
-
-    let data: Res = null as unknown as Res;
-
-    if (res.headers.get("Content-Type")?.includes("application/json")) {
-      data = JSON.parse(await res.text(), dateReviver) as Res;
-    }
-
-    return {
-      data,
-      status: res.status,
-      ok: res.ok,
-    };
   } catch (err) {
-    // TODO implement correct error handling
+    // network failure, CORS, etc. — fetch itself rejected
     console.error(err);
     throw new Error("Failed to fetch from remote API.");
   }
+
+  let data: Res = null as unknown as Res;
+  if (res.headers.get("Content-Type")?.includes("application/json")) {
+    data = JSON.parse(await res.text(), dateReviver) as Res;
+  }
+
+  if (!res.ok) {
+    throw new HttpError(res.status, data);
+  }
+
+  return { data, status: res.status };
 }
 
 export const HTTP = {
