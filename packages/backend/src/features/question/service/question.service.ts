@@ -39,7 +39,10 @@ export class QuestionService {
   }
 
   async getQuestionById(id: UUID): Promise<QuestionModel> {
-    const record = await this.questionRepository.findOneBy({ id });
+    const record = await this.questionRepository.findOne({
+      where: { id },
+      relations: { answers: true },
+    });
     if (!record) {
       throw new NotFoundException(`Question with id ${id} not found`);
     }

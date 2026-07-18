@@ -8,7 +8,7 @@ import {
 import type { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 
 type CheckboxContextValues = {
-  isDisabled: boolean;
+  isDisabled?: boolean;
   label: string;
   field: ControllerRenderProps<FieldValues>;
 };
@@ -18,7 +18,7 @@ const CheckboxContext = createContext<CheckboxContextValues | undefined>(
 );
 
 type CheckboxRootProps<T extends FieldValues> = PropsWithChildren & {
-  isDisabled: boolean;
+  isDisabled?: boolean;
   label: string;
   field: ControllerRenderProps<T, Path<T>>;
 };
@@ -26,7 +26,7 @@ type CheckboxRootProps<T extends FieldValues> = PropsWithChildren & {
 export function CheckboxRoot<T extends FieldValues>(
   props: Readonly<CheckboxRootProps<T>>,
 ): JSX.Element {
-  const { field, label, isDisabled, children } = props;
+  const { field, label, isDisabled = false, children } = props;
 
   const value = useMemo<CheckboxContextValues>(
     () => ({

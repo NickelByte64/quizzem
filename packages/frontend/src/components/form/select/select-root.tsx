@@ -12,12 +12,14 @@ import type {
   Path,
 } from "react-hook-form";
 import type { SelectOptions } from "~/src/components/form/select/select";
+import type { BgColorVariants } from "~/src/styling";
 
 export type SelectContextValues = {
   label: string;
   error: FieldError["message"];
   field: ControllerRenderProps<FieldValues>;
   options: SelectOptions[];
+  bgColorVariant?: BgColorVariants;
   helperText?: string;
   isRequired?: boolean;
 };
@@ -31,6 +33,7 @@ type SelectRootProps<T extends FieldValues> = PropsWithChildren & {
   error: FieldError["message"];
   field: ControllerRenderProps<T, Path<T>>;
   options: SelectOptions[];
+  bgColorVariant?: BgColorVariants;
   helperText?: string;
   isRequired?: boolean;
 };
@@ -38,8 +41,16 @@ type SelectRootProps<T extends FieldValues> = PropsWithChildren & {
 export function SelectRoot<T extends FieldValues>(
   props: Readonly<SelectRootProps<T>>,
 ): JSX.Element {
-  const { error, field, label, options, isRequired, helperText, children } =
-    props;
+  const {
+    error,
+    field,
+    label,
+    options,
+    bgColorVariant = "default",
+    isRequired,
+    helperText,
+    children,
+  } = props;
 
   const value = useMemo<SelectContextValues>(
     () => ({
@@ -47,10 +58,11 @@ export function SelectRoot<T extends FieldValues>(
       field: field as ControllerRenderProps<FieldValues>,
       label,
       options,
+      bgColorVariant,
       isRequired,
       helperText,
     }),
-    [error, field, label, options, isRequired, helperText],
+    [error, field, label, options, bgColorVariant, isRequired, helperText],
   );
 
   return (

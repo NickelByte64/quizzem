@@ -12,10 +12,19 @@ import {
 export function Checkbox(): JSX.Element {
   const { isDisabled, field, label } = useCheckboxContext();
 
+  const { value, ...rest } = field;
+
   return (
     <MuiFormGroup>
       <MuiFormControlLabel
-        control={<MuiCheckbox size="small" disabled={isDisabled} {...field} />}
+        control={
+          <MuiCheckbox
+            size="small"
+            disabled={isDisabled}
+            checked={value}
+            {...rest}
+          />
+        }
         label={label}
       />
     </MuiFormGroup>

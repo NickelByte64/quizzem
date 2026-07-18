@@ -1,13 +1,22 @@
 import { RiDeleteBinLine } from "@remixicon/react";
 import type { JSX } from "react";
 import { useFieldArray, type Control } from "react-hook-form";
-import { Button, Divider, Headline, IconButton } from "~/src/components";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  List,
+  Stack,
+  Typography,
+} from "~/src/components";
 import {
   AnswerInputIsCorrectAnswer,
   AnswerInputText,
   DEFAULT_ANSWER,
   type UpdateQuestionFormValues,
 } from "~/src/features/question/components/edit-question/form-fields";
+import { useTheme } from "~/src/styling";
 
 type CreateAnswersProps = {
   control: Control<UpdateQuestionFormValues, any, UpdateQuestionFormValues>;
@@ -16,42 +25,55 @@ type CreateAnswersProps = {
 export function EditAnswers(props: Readonly<CreateAnswersProps>): JSX.Element {
   const { control } = props;
 
+  const { palette } = useTheme();
   const { fields, append, remove } = useFieldArray({
     control,
     name: `answers`,
   });
 
   return (
-    <div className="mt-2">
-      <Headline as="h5" title={"Answers"} />
-      <ul className="flex flex-col gap-4 mt-2">
+    <Box sx={{ mt: 3 }}>
+      <Typography variant="h5">Answers</Typography>
+
+      <List sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {fields.map((field, index) => (
-          <li key={field.id} className="flex flex-row gap-4 items-stretch">
-            <div className="flex flex-col gap-2 w-full">
+          <List.Item
+            key={field.id}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 2,
+              alignItems: "stretch",
+            }}
+          >
+            <Stack sx={{ flexDirection: "column", gap: 1, width: "100%" }}>
               <AnswerInputText control={control} index={index} />
               <AnswerInputIsCorrectAnswer control={control} index={index} />
-            </div>
-            <div className="flex items-center border-l pl-2 border-primary">
+            </Stack>
+
+            <Stack
+              sx={{
+                flexDirection: "row",
+                alignItems: "center",
+                borderLeft: `1px solid ${palette.primary.main}`,
+              }}
+            >
               <IconButton
                 type="button"
                 onClick={() => remove(index)}
                 disabled={fields.length <= 1}
                 Icon={RiDeleteBinLine}
               />
-            </div>
+            </Stack>
 
             <Divider />
-          </li>
+          </List.Item>
         ))}
 
-        <Button
-          size="full"
-          type="button"
-          onClick={() => append(DEFAULT_ANSWER)}
-        >
+        <Button fullWidth type="button" onClick={() => append(DEFAULT_ANSWER)}>
           Add Answer
         </Button>
-      </ul>
-    </div>
+      </List>
+    </Box>
   );
 }

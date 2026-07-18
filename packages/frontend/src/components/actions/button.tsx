@@ -3,13 +3,13 @@ import {
   useTheme,
   type ButtonProps as MuiButtonProps,
 } from "@mui/material";
+import type { MainColorVariants } from "~/src/styling";
 
 export type ButtonVariants = "contained" | "outlined";
-export type ColorVariants = "primary" | "secondary";
 
 type ButtonProps = Omit<MuiButtonProps, "variant"> & {
   variant?: ButtonVariants;
-  colorVariant?: ColorVariants;
+  colorVariant?: MainColorVariants;
 };
 
 export function Button(props: Readonly<ButtonProps>) {

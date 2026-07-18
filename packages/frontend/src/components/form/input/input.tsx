@@ -9,11 +9,26 @@ import {
   InputRoot,
   useInputContext,
 } from "~/src/components/form/input/input-root";
+import { useTheme } from "~/src/styling";
 
 export function Input(): JSX.Element {
-  const { field } = useInputContext();
+  const { field, bgColorVariant } = useInputContext();
 
-  return <MuiInput size="small" sx={{ borderRadius: 5 }} {...field} />;
+  const { palette, shape } = useTheme();
+
+  return (
+    <MuiInput
+      size="small"
+      sx={{
+        borderRadius: shape.borderRadiusLg,
+        backgroundColor:
+          bgColorVariant === "default"
+            ? palette.background.default
+            : palette.background.paper,
+      }}
+      {...field}
+    />
+  );
 }
 
 Input.Root = InputRoot;

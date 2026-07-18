@@ -8,6 +8,7 @@ import {
   SelectRoot,
   useSelectContext,
 } from "~/src/components/form/select/select-root";
+import { useTheme } from "~/src/styling";
 
 export type SelectOptions<T extends string = string> = {
   value: T;
@@ -15,10 +16,23 @@ export type SelectOptions<T extends string = string> = {
 };
 
 export function Select(): JSX.Element {
-  const { options, field } = useSelectContext();
+  const { options, field, bgColorVariant } = useSelectContext();
+
+  const { palette, shape } = useTheme();
 
   return (
-    <MuiSelect size="small" fullWidth sx={{ borderRadius: 5 }} {...field}>
+    <MuiSelect
+      size="small"
+      fullWidth
+      sx={{
+        borderRadius: shape.borderRadiusLg,
+        backgroundColor:
+          bgColorVariant === "default"
+            ? palette.background.default
+            : palette.background.paper,
+      }}
+      {...field}
+    >
       {options.map((option) => (
         <MuiMenuItem key={option.value} value={option.value}>
           {option.label}
