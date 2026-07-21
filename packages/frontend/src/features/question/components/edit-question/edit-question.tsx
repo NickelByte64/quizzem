@@ -30,7 +30,6 @@ export function EditQuestion(
   const { id } = props;
 
   const [openDialog, setOpenDialog] = useState<boolean>(!!id);
-
   const formId = useId();
   const navigate = useNavigate();
 
@@ -38,19 +37,23 @@ export function EditQuestion(
   const { data: questionData } = useGetQuestionById(id);
   const { mutate } = useUpdateQuestion(id);
 
-  const { handleSubmit, control, reset, formState } =
-    useForm<UpdateQuestionFormValues>({
-      mode: "onChange",
-      values: {
-        text: questionData?.data.text ?? "",
-        mediaType: questionData?.data.mediaType ?? MEDIA_TYPE.NONE,
-        answerMode: questionData?.data.answerMode ?? ANSWER_MODE.SINGLE_CHOICE,
-        answers: questionData?.data.answers ?? [DEFAULT_ANSWER],
-      },
-    });
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { dirtyFields },
+  } = useForm<UpdateQuestionFormValues>({
+    mode: "onChange",
+    values: {
+      text: questionData?.data.text ?? "",
+      mediaType: questionData?.data.mediaType ?? MEDIA_TYPE.NONE,
+      answerMode: questionData?.data.answerMode ?? ANSWER_MODE.SINGLE_CHOICE,
+      answers: questionData?.data.answers ?? [DEFAULT_ANSWER],
+    },
+  });
 
   const onSubmit: SubmitHandler<UpdateQuestionFormValues> = (formValues) => {
-    const diff = FormService.getDirtyValues(formState.dirtyFields, formValues);
+    const diff = FormService.getDirtyValues(dirtyFields, formValues);
 
     const answersChanged = FormService.isArrayFieldChanged(
       diff.answers,

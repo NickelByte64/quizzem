@@ -24,7 +24,7 @@ export function Header(): JSX.Element {
   const isSmallView = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down("md"),
   );
-  const { palette } = useTheme();
+  const { palette, shadow } = useTheme();
 
   return (
     <Stack
@@ -96,6 +96,7 @@ export function Header(): JSX.Element {
               width: "fit-content",
               borderRadius: 16,
               gap: 2,
+              boxShadow: shadow.xl,
             }}
           >
             {ROUTES.map((route) => (

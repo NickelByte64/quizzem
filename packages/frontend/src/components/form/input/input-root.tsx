@@ -11,14 +11,12 @@ import type {
   FieldValues,
   Path,
 } from "react-hook-form";
-import type { BgColorVariants } from "~/src/styling";
 
 type InputContextValues = {
   label: string;
   error: FieldError["message"];
   maxLength: number;
   field: ControllerRenderProps<FieldValues>;
-  bgColorVariant?: BgColorVariants;
   helperText?: string;
   isRequired?: boolean;
 };
@@ -30,7 +28,6 @@ type InputRootProps<T extends FieldValues> = PropsWithChildren & {
   error: FieldError["message"];
   maxLength: number;
   field: ControllerRenderProps<T, Path<T>>;
-  bgColorVariant?: BgColorVariants;
   helperText?: string;
   isRequired?: boolean;
 };
@@ -38,16 +35,8 @@ type InputRootProps<T extends FieldValues> = PropsWithChildren & {
 export function InputRoot<T extends FieldValues>(
   props: Readonly<InputRootProps<T>>,
 ): JSX.Element {
-  const {
-    error,
-    field,
-    label,
-    maxLength,
-    isRequired,
-    helperText,
-    children,
-    bgColorVariant = "default",
-  } = props;
+  const { error, field, label, maxLength, isRequired, helperText, children } =
+    props;
 
   const value = useMemo<InputContextValues>(
     () => ({
@@ -55,11 +44,10 @@ export function InputRoot<T extends FieldValues>(
       error,
       maxLength,
       field: field as ControllerRenderProps<FieldValues>,
-      bgColorVariant,
       isRequired,
       helperText,
     }),
-    [label, error, maxLength, field, bgColorVariant, isRequired, helperText],
+    [label, error, maxLength, field, isRequired, helperText],
   );
 
   return (

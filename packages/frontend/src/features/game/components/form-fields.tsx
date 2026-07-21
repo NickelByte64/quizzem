@@ -46,14 +46,12 @@ export function TitleInputText(
           error={fieldState.error?.message}
           maxLength={maxLength}
           isRequired
+          label="What is the name of the game?"
+          field={field}
         >
-          <Input.Label label="What is the name of the game?">
-            <Input {...field} />
+          <Input.Label>
+            <Input />
           </Input.Label>
-          <Input.Optionals>
-            <Input.Error />
-            <Input.Length value={field.value} />
-          </Input.Optionals>
         </Input.Root>
       )}
     />
@@ -78,30 +76,17 @@ export function DescriptionInputText(
         },
       }}
       render={({ field, fieldState }) => (
-        <Input.Root error={fieldState.error?.message} maxLength={maxLength}>
-          <Input.Label label="What is the description of the game?">
-            <Input {...field} />
+        <Input.Root
+          error={fieldState.error?.message}
+          maxLength={maxLength}
+          label="What is the description of the game?"
+          field={field}
+        >
+          <Input.Label>
+            <Input />
           </Input.Label>
-          <Input.Optionals>
-            <Input.Error />
-            <Input.Length value={field.value} />
-          </Input.Optionals>
         </Input.Root>
       )}
     />
   );
 }
-
-export const FORM_FIELDS: {
-  identifier: string;
-  Component: (props: { control: CreateGameControl }) => JSX.Element;
-}[] = [
-  {
-    identifier: "title-input",
-    Component: ({ control }) => <TitleInputText control={control} />,
-  },
-  {
-    identifier: "description-input",
-    Component: ({ control }) => <DescriptionInputText control={control} />,
-  },
-];

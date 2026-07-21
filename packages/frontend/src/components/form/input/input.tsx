@@ -12,7 +12,7 @@ import {
 import { useTheme } from "~/src/styling";
 
 export function Input(): JSX.Element {
-  const { field, bgColorVariant } = useInputContext();
+  const { field } = useInputContext();
 
   const { palette, shape } = useTheme();
 
@@ -21,10 +21,7 @@ export function Input(): JSX.Element {
       size="small"
       sx={{
         borderRadius: shape.borderRadiusLg,
-        backgroundColor:
-          bgColorVariant === "default"
-            ? palette.background.default
-            : palette.background.paper,
+        backgroundColor: palette.background.paper,
       }}
       {...field}
     />

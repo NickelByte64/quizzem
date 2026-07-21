@@ -107,14 +107,6 @@ export function CreateQuestion(): JSX.Element {
           </Dialog.Actions>
         </Dialog>
       </Dialog.Root>
-
-      {/* <ModalDialog
-          <ul className="flex flex-col">
-           
-          </ul>
-
-        </form>
-      </ModalDialog> */}
     </Box>
   );
 }

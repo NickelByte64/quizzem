@@ -17,7 +17,8 @@ export function QuestionPage(): JSX.Element {
   return (
     <Layout title={"Question Page"} breadcrumbs={breadcrumbs}>
       <CreateQuestion />
-      {id ? <EditQuestion id={id} /> : <ListQuestions />}
+      {id && <EditQuestion id={id} />}
+      <ListQuestions />
     </Layout>
   );
 }

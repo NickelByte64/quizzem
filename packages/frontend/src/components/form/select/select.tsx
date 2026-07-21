@@ -16,7 +16,7 @@ export type SelectOptions<T extends string = string> = {
 };
 
 export function Select(): JSX.Element {
-  const { options, field, bgColorVariant } = useSelectContext();
+  const { options, field } = useSelectContext();
 
   const { palette, shape } = useTheme();
 
@@ -26,10 +26,7 @@ export function Select(): JSX.Element {
       fullWidth
       sx={{
         borderRadius: shape.borderRadiusLg,
-        backgroundColor:
-          bgColorVariant === "default"
-            ? palette.background.default
-            : palette.background.paper,
+        backgroundColor: palette.background.paper,
       }}
       {...field}
     >

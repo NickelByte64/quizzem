@@ -52,7 +52,6 @@ export function QuestionInputText(
           error={fieldState.error?.message}
           maxLength={maxLength}
           field={field}
-          bgColorVariant="paper"
         >
           <Input.Label>
             <Input />
@@ -87,7 +86,6 @@ export function AnswerModeSelect(
           options={ANSWER_MODE_OPTIONS}
           field={field}
           error={fieldState.error?.message}
-          bgColorVariant="paper"
         >
           <Select.Label />
           <Select />
@@ -119,7 +117,6 @@ export function MediaTypeSelect(
           options={MEDIA_TYPE_OPTIONS}
           field={field}
           error={fieldState.error?.message}
-          bgColorVariant="paper"
         >
           <Select.Label />
           <Select />
@@ -158,7 +155,6 @@ export function AnswerInputText(
           maxLength={maxLength}
           isRequired
           field={field}
-          bgColorVariant="paper"
         >
           <Input.Label>
             <Input />

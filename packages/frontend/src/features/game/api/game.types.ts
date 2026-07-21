@@ -1,4 +1,5 @@
 import { type UUID } from "node:crypto";
+import type { PageableParamsDto } from "~/src/api/api.types";
 import type { QuestionDto } from "~/src/features/question/api/question.types";
 
 export const GAME_STATE = {
@@ -33,3 +34,11 @@ export type CreateGameDto = {
   description: string | null;
   questions: UUID[];
 };
+
+export type UpdateGameDto = {
+  title: string | null;
+  description: string | null;
+  questions: UUID[] | null;
+};
+
+export type GetAllGamesParamsDto = PageableParamsDto;

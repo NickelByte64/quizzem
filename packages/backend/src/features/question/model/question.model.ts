@@ -32,8 +32,8 @@ export class QuestionModel extends QuizzemModel {
   })
   mediaType: MediaType = MediaTypeEnum.NONE;
 
-  @ManyToMany(() => GameModel, (game) => game.questions, { lazy: true })
-  games: GameModel[] = [];
+  @ManyToMany(() => GameModel, (game) => game.questions)
+  games!: GameModel[];
 
   @OneToMany(() => AnswerModel, (answer) => answer.question, {
     cascade: true,

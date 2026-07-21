@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import { GlobalLayout } from "~/src/components/global/layout";
+import { GamePage } from "~/src/features/game/game.page";
 import { HomePage } from "~/src/features/home/home.page";
 import { QuestionPage } from "~/src/features/question/question.page";
 
@@ -21,16 +22,16 @@ export const ROUTER = createBrowserRouter([
       //   path: "host",
       //   element: <HostPage />,
       // },
-      // {
-      //   path: "games",
-      //   element: <GamePage />,
-      //   children: [
-      //     {
-      //       path: ":id",
-      //       element: <GamePage />,
-      //     },
-      //   ],
-      // },
+      {
+        path: "games",
+        element: <GamePage />,
+        children: [
+          {
+            path: ":id",
+            element: <GamePage />,
+          },
+        ],
+      },
       // {
       //   path: "player",
       //   element: <PlayerPage />,

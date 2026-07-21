@@ -21,11 +21,11 @@ export class GameModel extends QuizzemModel {
   @Column({ type: 'text', nullable: true })
   description: string | null = null;
 
-  @ManyToMany(() => QuestionModel, (question) => question.games, { lazy: true })
+  @ManyToMany(() => QuestionModel, (question) => question.games)
   @JoinTable({
     name: 'games_questions',
     joinColumn: { name: 'game_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'question_id', referencedColumnName: 'id' },
   })
-  questions: QuestionModel[] = [];
+  questions!: QuestionModel[];
 }

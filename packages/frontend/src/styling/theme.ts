@@ -1,6 +1,32 @@
 import { createTheme } from "@mui/material";
+import type { Shadows } from "@mui/material/styles";
+
+// Soft shadow scale: keeps offset/blur growth per elevation but with a light,
+// slightly green-tinted ink instead of MUI's default hard black layers.
+const SHADOW_INK = "33, 66, 51"; // desaturated variant of primary.dark
+
+function softShadow(elevation: number): string {
+  const y = Math.round(elevation * 0.8);
+  const blur = elevation * 2;
+  return [
+    `0px 1px 2px rgba(${SHADOW_INK}, 0.06)`,
+    `0px ${y}px ${blur}px -${Math.ceil(elevation / 3)}px rgba(${SHADOW_INK}, 0.14)`,
+  ].join(", ");
+}
+
+const shadows: Shadows = [
+  "none",
+  ...Array.from({ length: 24 }, (_, i) => softShadow(i + 1)),
+] as Shadows;
 
 export const THEME = createTheme({
+  shadows,
+  shadow: {
+    sm: softShadow(2),
+    md: softShadow(5),
+    lg: softShadow(10),
+    xl: softShadow(16),
+  },
   palette: {
     primary: {
       main: "#1f7a5c",
@@ -83,7 +109,22 @@ export const THEME = createTheme({
   },
 });
 
+interface ShadowTokens {
+  sm: string;
+  md: string;
+  lg: string;
+  xl: string;
+}
+
 declare module "@mui/material/styles" {
+  interface Theme {
+    shadow: ShadowTokens;
+  }
+
+  interface ThemeOptions {
+    shadow?: ShadowTokens;
+  }
+
   interface Shape {
     borderRadiusSm: number;
     borderRadiusMd: number;

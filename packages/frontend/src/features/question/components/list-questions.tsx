@@ -7,11 +7,10 @@ import type { HttpResponse } from "~/src/api/http";
 import { QUERY_CLIENT } from "~/src/api/query-client";
 import type { UseQuizzemQuery } from "~/src/api/useQuizzemApi";
 import {
-  Alert,
   Button,
   List,
   QueryBoundary,
-  Skeleton,
+  RetryAlert,
   Snackbar,
   Stack,
   Typography,
@@ -28,7 +27,6 @@ import {
   type MediaType,
   type QuestionDto,
 } from "~/src/features/question/api/question.types";
-import { useTheme } from "~/src/styling";
 
 export function ListQuestions(): JSX.Element {
   const [page, setPage] = useState(0);
@@ -67,7 +65,6 @@ function ListQuestionsContent(
   const { page, setPage, data } = props;
 
   const navigate = useNavigate();
-  const { shape, palette } = useTheme();
 
   function handlePageChange(newPage: number): void {
     setPage(newPage);
@@ -77,20 +74,7 @@ function ListQuestionsContent(
     <>
       <List sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 4 }}>
         {data.data.data.map((question) => (
-          <List.Item
-            key={question.id}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 4,
-              border: `1px solid ${palette.primary.main}`,
-              px: 2,
-              py: 1,
-              borderRadius: shape.borderRadiusMd,
-              backgroundColor: palette.background.paper,
-            }}
-          >
+          <List.ItemCard key={question.id}>
             <Typography component={"span"} ellipsis sx={{ flex: 1 }}>
               {question.text}
             </Typography>
@@ -106,14 +90,13 @@ function ListQuestionsContent(
             <Stack sx={{ flexDirection: "row", gap: 2 }}>
               <Button
                 variant="outlined"
-                colorVariant="secondary"
                 onClick={() => navigate(`/questions/${question.id}`)}
               >
                 Edit
               </Button>
               <DeleteButton id={question.id} />
             </Stack>
-          </List.Item>
+          </List.ItemCard>
         ))}
       </List>
 
@@ -135,7 +118,7 @@ function ListQuestionsSkeletons(): JSX.Element {
     <List sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 4 }}>
       {Array.from({ length: 5 }).map((_, i) => (
         <List.Item key={i}>
-          <Skeleton width={"100%"} height={"54.5px"} />
+          <List.ItemCardSkeleton />
         </List.Item>
       ))}
     </List>
@@ -150,18 +133,7 @@ function ListQuestionsContentError(
   props: Readonly<ListQuestionsContentErrorProps>,
 ): JSX.Element {
   const { refetch } = props;
-
-  return (
-    <Alert
-      severity="error"
-      title="We couldn't load your questions."
-      action={
-        <Button variant="outlined" onClick={() => refetch()}>
-          Retry
-        </Button>
-      }
-    />
-  );
+  return <RetryAlert refetch={refetch} />;
 }
 
 function DeleteButton(props: Readonly<{ id: UUID }>) {

@@ -11,6 +11,7 @@ type CheckboxContextValues = {
   isDisabled?: boolean;
   label: string;
   field: ControllerRenderProps<FieldValues>;
+  value?: string;
 };
 
 const CheckboxContext = createContext<CheckboxContextValues | undefined>(
@@ -21,24 +22,26 @@ type CheckboxRootProps<T extends FieldValues> = PropsWithChildren & {
   isDisabled?: boolean;
   label: string;
   field: ControllerRenderProps<T, Path<T>>;
+  value?: string;
 };
 
 export function CheckboxRoot<T extends FieldValues>(
   props: Readonly<CheckboxRootProps<T>>,
 ): JSX.Element {
-  const { field, label, isDisabled = false, children } = props;
+  const { field, label, isDisabled = false, value, children } = props;
 
-  const value = useMemo<CheckboxContextValues>(
+  const contextValue = useMemo<CheckboxContextValues>(
     () => ({
       label,
       isDisabled,
       field: field as ControllerRenderProps<FieldValues>,
+      value,
     }),
-    [label, field, isDisabled],
+    [label, field, isDisabled, value],
   );
 
   return (
-    <CheckboxContext.Provider value={value}>
+    <CheckboxContext.Provider value={contextValue}>
       {children}
     </CheckboxContext.Provider>
   );

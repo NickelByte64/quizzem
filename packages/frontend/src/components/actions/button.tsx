@@ -22,7 +22,7 @@ export function Button(props: Readonly<ButtonProps>) {
     ...rest
   } = props;
 
-  const { palette, typography } = useTheme();
+  const { palette, typography, shadow } = useTheme();
 
   const variants = {
     outlined: {
@@ -53,6 +53,7 @@ export function Button(props: Readonly<ButtonProps>) {
         borderRadius: "2rem",
         fontWeight: typography.fontWeightBold,
         ...variants[variant],
+        boxShadow: shadow.md,
         ...sx,
       }}
       {...rest}

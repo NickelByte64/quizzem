@@ -20,7 +20,6 @@ async function request<Req, Res>(
   let res: Response;
 
   try {
-    // TODO implement correct base URL handling in .env
     res = await fetch("http://localhost:3000" + target, {
       method,
       headers: {
