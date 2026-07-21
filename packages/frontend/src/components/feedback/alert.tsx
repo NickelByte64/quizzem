@@ -1,41 +1,48 @@
-import clsx from "clsx";
-import { AnimatePresence, HTMLMotionProps, motion } from "motion/react";
-import { JSX, PropsWithChildren } from "react";
+import {
+  Alert as MuiAlert,
+  useTheme,
+  type AlertProps as MuiAlertProps,
+} from "@mui/material";
+import {
+  RiCheckboxCircleLine,
+  RiCloseCircleLine,
+  RiErrorWarningLine,
+  RiInformationLine,
+  type RemixiconComponentType,
+} from "@remixicon/react";
+import type { JSX, ReactNode } from "react";
 
-type AlertProps = PropsWithChildren &
-  HTMLMotionProps<"div"> & {
-    variant: "success" | "error" | "info" | "warning";
-    show: boolean;
-  };
+export type Severity = "info" | "success" | "error" | "warning";
+
+export type AlertProps = Omit<
+  MuiAlertProps,
+  "children" | "severity" | "variant"
+> & {
+  title: ReactNode;
+  severity?: Severity;
+};
 
 export function Alert(props: Readonly<AlertProps>): JSX.Element {
-  const { show = false, children, variant, className, ...rest } = props;
+  const { severity = "info", title, ...rest } = props;
+
+  const { shape } = useTheme();
+  const Icon = severityIcon[severity];
 
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          initial={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          exit={{ opacity: 0, translateY: -20 }}
-          role="alert"
-          className={clsx(
-            "alert alert-soft",
-            alertVariants[variant],
-            className
-          )}
-          {...rest}
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <MuiAlert
+      severity={severity}
+      sx={{ borderRadius: shape.borderRadiusSm }}
+      icon={<Icon />}
+      {...rest}
+    >
+      {title}
+    </MuiAlert>
   );
 }
 
-const alertVariants = {
-  success: "alert-success",
-  error: "alert-error",
-  info: "alert-info",
-  warning: "alert-warning",
+const severityIcon: Record<Severity, RemixiconComponentType> = {
+  success: RiCheckboxCircleLine,
+  info: RiInformationLine,
+  warning: RiErrorWarningLine,
+  error: RiCloseCircleLine,
 };

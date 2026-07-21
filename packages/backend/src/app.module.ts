@@ -1,52 +1,9 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  OnModuleInit,
-} from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { APP_PIPE } from '@nestjs/core';
-import { ClsModule, ClsService } from 'nestjs-cls';
-import { resolve } from 'path';
-import { ValidationPipe } from 'src/common/pipes/validation.pipe';
-import { DbModule } from 'src/db/db.module';
-import { RequestContext } from 'src/request-context/request-context';
-import { RequestContextMiddleware } from 'src/request-context/request-context.middleware';
-import { AuthModule } from './auth/auth.module';
-import { QuestionModule } from './question/question.module';
-import { RedisModule } from './redis/redis.module';
-import { SessionModule } from './session/session.module';
-import { UserModule } from './user/user.module';
-import { CategoryModule } from './category/category.module';
+import { Module } from '@nestjs/common';
+import { DbModule } from 'src/core/db/db.module';
+import { GameModule } from 'src/features/game/game.module';
+import { QuestionModule } from 'src/features/question/question.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: resolve(process.cwd(), '../..', '.env.development'),
-    }),
-    ClsModule.forRoot({
-      global: true,
-      middleware: { mount: false },
-    }),
-    DbModule,
-    RedisModule,
-    UserModule,
-    SessionModule,
-    QuestionModule,
-    AuthModule,
-    CategoryModule,
-  ],
-  providers: [{ provide: APP_PIPE, useValue: ValidationPipe }],
+  imports: [DbModule, QuestionModule, GameModule],
 })
-export class AppModule implements NestModule, OnModuleInit {
-  constructor(private readonly clsService: ClsService) {}
-
-  onModuleInit(): void {
-    RequestContext.setClsService(this.clsService);
-  }
-
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(RequestContextMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}

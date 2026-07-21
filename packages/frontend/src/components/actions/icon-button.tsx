@@ -1,54 +1,19 @@
-import clsx from "clsx";
 import {
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-  JSX,
-  PropsWithChildren,
-} from "react";
+  IconButton as MuiIconButton,
+  type IconButtonProps as MuiIconButtonProps,
+} from "@mui/material";
+import type { RemixiconComponentType } from "@remixicon/react";
+import type { JSX } from "react";
 
-type IconButtonProps = DetailedHTMLProps<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> &
-  PropsWithChildren & {
-    variant?:
-      | "primary"
-      | "secondary"
-      | "accent"
-      | "outline"
-      | "error"
-      | "neutral";
-  };
+type IconButtonProps = Omit<MuiIconButtonProps, "children"> & {
+  Icon: RemixiconComponentType;
+};
 
 export function IconButton(props: Readonly<IconButtonProps>): JSX.Element {
-  const {
-    children,
-    variant = "neutral",
-    className,
-    type = "button",
-    ...rest
-  } = props;
-
+  const { Icon, ...rest } = props;
   return (
-    <button
-      className={clsx(
-        "btn btn-sm btn-circle p-1.5",
-        buttonStyles[variant],
-        className
-      )}
-      type={type}
-      {...rest}
-    >
-      {children}
-    </button>
+    <MuiIconButton {...rest}>
+      <Icon />
+    </MuiIconButton>
   );
 }
-
-const buttonStyles = {
-  neutral: "btn-neutral",
-  primary: "btn-primary",
-  secondary: "btn-secondary",
-  accent: "btn-accent",
-  outline: "btn-outline",
-  error: "btn-error",
-};

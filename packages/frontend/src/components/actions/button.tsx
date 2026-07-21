@@ -1,48 +1,64 @@
-import clsx from "clsx";
 import {
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-  JSX,
-  PropsWithChildren,
-} from "react";
+  Button as MuiButton,
+  useTheme,
+  type ButtonProps as MuiButtonProps,
+} from "@mui/material";
+import type { MainColorVariants } from "~/src/styling";
 
-type ButtonProps = DetailedHTMLProps<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> &
-  PropsWithChildren & {
-    variant?: "primary" | "secondary" | "accent" | "neutral" | "error";
-    outline?: boolean;
-  };
+export type ButtonVariants = "contained" | "outlined";
 
-export function Button(props: Readonly<ButtonProps>): JSX.Element {
+type ButtonProps = Omit<MuiButtonProps, "variant"> & {
+  variant?: ButtonVariants;
+  colorVariant?: MainColorVariants;
+};
+
+export function Button(props: Readonly<ButtonProps>) {
   const {
+    variant = "contained",
+    colorVariant = "primary",
     children,
-    variant = "primary",
-    outline = true,
-    className,
+    sx,
+    fullWidth = false,
     ...rest
   } = props;
 
+  const { palette, typography, shadow } = useTheme();
+
+  const variants = {
+    outlined: {
+      borderColor:
+        colorVariant === "primary"
+          ? palette.primary.main
+          : palette.secondary.main,
+      color:
+        colorVariant === "primary"
+          ? palette.primary.main
+          : palette.secondary.main,
+    },
+    contained: {
+      backgroundColor:
+        colorVariant === "primary"
+          ? palette.primary.main
+          : palette.secondary.main,
+      color: palette.common.white,
+    },
+  };
+
   return (
-    <button
-      className={clsx(
-        "btn",
-        outline && "btn-outline",
-        buttonStyles[variant],
-        className
-      )}
+    <MuiButton
+      variant={variant}
+      size="medium"
+      fullWidth={fullWidth}
+      sx={{
+        borderRadius: "2rem",
+        fontWeight: typography.fontWeightBold,
+        ...variants[variant],
+        boxShadow: shadow.md,
+        ...sx,
+      }}
       {...rest}
     >
       {children}
-    </button>
+    </MuiButton>
   );
 }
-
-const buttonStyles = {
-  neutral: "",
-  primary: "btn-primary",
-  secondary: "btn-secondary",
-  accent: "btn-accent",
-  error: "btn-error",
-};

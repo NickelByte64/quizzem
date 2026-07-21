@@ -1,7 +1,16 @@
-import { JSX, PropsWithChildren } from "react";
+import { Box, Container } from "@mui/material";
+import { Outlet } from "react-router";
+import { Header } from "~/src/components/global/header";
 
-export function Layout(props: Readonly<PropsWithChildren>): JSX.Element {
-  const { children } = props;
+export function GlobalLayout() {
+  return (
+    <Container maxWidth="xl">
+      <Header />
 
-  return <main className="px-4 pt-20 pb-8">{children}</main>;
+      <Box component={"main"}>
+        <Outlet />
+      </Box>
+      <footer className="p-4 bg-bg-200">footer</footer>
+    </Container>
+  );
 }

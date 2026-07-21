@@ -1,6 +1,6 @@
 {
   "name": "quizzem",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "HollywoodNickel",
   "scripts": {
     "docker:database": "sudo docker compose up -d"
@@ -8,7 +8,12 @@
   "workspaces": [
     "packages/*"
   ],
+  "dependencies": {
+    "eslint": "^10.4.0",
+    "prettier": "^3.8.3"
+  },
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "@types/node": "^25.9.1",
+    "typescript": "^6.0.3"
   }
 }

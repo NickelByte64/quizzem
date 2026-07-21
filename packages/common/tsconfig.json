@@ -1,21 +1,22 @@
 {
   "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "ESNext",
-    "rootDir": "./src",
-    "moduleResolution": "node",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
     "declaration": true,
-    "declarationMap": true,
-    "outDir": "./dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "emitDeclarationOnly": false,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "rootDir": "./",
+    "outDir": "dist",
+    "types": ["node"]
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"],
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
-  }
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "backend/**/*", "dist/**/*"]
 }
