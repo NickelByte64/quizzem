@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1 · Produktvision &amp; Anforderungen – Quizzem</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="topnav">
+      <a class="brand" href="index.html">🎯 Quizzem</a>
+      <a href="index.html">Übersicht</a>
+      <a class="active" href="01-produktvision.html">1 · Produktvision</a>
+      <a href="02-architektur.html">2 · Architektur</a>
+      <a href="03-mvp-anleitung.html">3 · MVP-Anleitung</a>
+      <a href="04-backlog.html">4 · Backlog</a>
+    </nav>
+
+    <main>
+      <h1>1 · Produktvision &amp; Anforderungen</h1>
+      <p class="lead">
+        Was Quizzem ist, für wen es gebaut wird und wo die Grenze des MVP
+        verläuft.
+      </p>
+
+      <h2>Vision</h2>
+      <p>
+        Quizzem macht aus jedem Kneipenabend ein moderiertes Live-Quiz –
+        <strong
+          >ohne Zettelwirtschaft, ohne App-Installation, ohne Internet</strong
+        >. Der Quizmaster bringt seinen Laptop mit, öffnet einen WLAN-Hotspot,
+        und innerhalb von einer Minute spielen alle Gäste über ihr Smartphone
+        mit. Punkte werden automatisch gezählt, das Scoreboard ist immer
+        aktuell, und am Ende steht der Sieger fest.
+      </p>
+
+      <h2>Rollen</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>🎙️ Quizmaster (Host)</h3>
+          <ul>
+            <li>
+              Erstellt und verwaltet Quizzes (Fragen mit je einer richtigen
+              Antwort)
+            </li>
+            <li>
+              Startet eine Quiz-Session und teilt die Beitritts-URL / den
+              QR-Code
+            </li>
+            <li>
+              Steuert den Spielfluss: nächste Frage, Antwort aufdecken,
+              Scoreboard zeigen
+            </li>
+            <li>Sieht live, wer geantwortet hat</li>
+            <li>
+              Nutzt den <strong>Laptop</strong> – die Ansicht ist für einen
+              großen Bildschirm gedacht
+            </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>📱 Teilnehmende (Player)</h3>
+          <ul>
+            <li>
+              Treten per URL oder QR-Code bei und wählen einen Anzeigenamen
+            </li>
+            <li>Sehen die aktuelle Frage und tippen ihre Antwort an</li>
+            <li>
+              Bekommen sofort Feedback (richtig/falsch) und ihren Punktestand
+            </li>
+            <li>Sehen das Scoreboard und am Ende die Siegerehrung</li>
+            <li>
+              Nutzen das <strong>Smartphone</strong> – die Ansicht ist
+              mobile-first
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>User Stories (MVP)</h2>
+
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>#</th>
+            <th>Als …</th>
+            <th>möchte ich …</th>
+            <th>damit …</th>
+          </tr>
+          <tr>
+            <td>U1</td>
+            <td>Quizmaster</td>
+            <td>
+              ein Quiz mit Fragen, Antwortoptionen und je einer richtigen
+              Antwort anlegen und speichern
+            </td>
+            <td>ich es am Quizabend fertig vorbereitet habe.</td>
+          </tr>
+          <tr>
+            <td>U2</td>
+            <td>Quizmaster</td>
+            <td>
+              eine Session starten und eine Beitritts-URL samt QR-Code angezeigt
+              bekommen
+            </td>
+            <td>Gäste in Sekunden beitreten können.</td>
+          </tr>
+          <tr>
+            <td>U3</td>
+            <td>Teilnehmer</td>
+            <td>
+              die URL öffnen, einen Namen eingeben und sofort in der Lobby
+              landen
+            </td>
+            <td>ich ohne Registrierung mitspielen kann.</td>
+          </tr>
+          <tr>
+            <td>U4</td>
+            <td>Quizmaster</td>
+            <td>
+              in der Lobby sehen, wer beigetreten ist, und das Quiz starten
+            </td>
+            <td>ich weiß, wann alle bereit sind.</td>
+          </tr>
+          <tr>
+            <td>U5</td>
+            <td>Quizmaster</td>
+            <td>
+              Fragen einzeln freigeben und den Spielfluss steuern (Frage → Timer
+              starten → Auflösung → Scoreboard → nächste Frage)
+            </td>
+            <td>ich das Tempo des Abends bestimme.</td>
+          </tr>
+          <tr>
+            <td>U6</td>
+            <td>Teilnehmer</td>
+            <td>innerhalb des Zeitlimits genau eine Antwort abgeben</td>
+            <td>meine Antwort gewertet wird.</td>
+          </tr>
+          <tr>
+            <td>U7</td>
+            <td>Teilnehmer</td>
+            <td>
+              nach der Auflösung sehen, ob ich richtig lag und wie viele Punkte
+              ich habe
+            </td>
+            <td>ich meinen Stand kenne.</td>
+          </tr>
+          <tr>
+            <td>U8</td>
+            <td>Quizmaster</td>
+            <td>nach jeder Frage ein Live-Scoreboard zeigen können</td>
+            <td>die Spannung im Raum steigt.</td>
+          </tr>
+          <tr>
+            <td>U9</td>
+            <td>Teilnehmer</td>
+            <td>am Ende die Endplatzierung mit dem Gewinner sehen</td>
+            <td>der Abend einen klaren Abschluss hat.</td>
+          </tr>
+          <tr>
+            <td>U10</td>
+            <td>Teilnehmer</td>
+            <td>
+              nach einem Verbindungsabbruch (z.&nbsp;B. Handy gesperrt)
+              automatisch wieder in die laufende Session zurückkehren
+            </td>
+            <td>ich Punkte und Anschluss nicht verliere.</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>U10 ist bewusst im MVP.</strong> In einem
+        Kneipen-Hotspot-Szenario sind kurze Verbindungsabbrüche (Display aus,
+        WLAN-Wackler) der Normalfall, nicht die Ausnahme. Ohne Reconnect ist die
+        App im Feld praktisch unbrauchbar.
+      </div>
+
+      <h2>MVP-Abgrenzung</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3><span class="badge mvp">Im MVP</span></h3>
+          <ul class="checklist">
+            <li>Multiple-Choice-Fragen (2–6 Optionen, genau 1 richtig)</li>
+            <li>
+              Einfacher Quiz-Editor (Fragen anlegen, ändern, löschen, sortieren)
+            </li>
+            <li>Quizzes lokal als JSON-Dateien gespeichert</li>
+            <li>Eine Session zur Zeit, Beitritt per URL + QR-Code</li>
+            <li>
+              Zeitlimit pro Frage (je Frage einstellbar), Start per Knopfdruck
+              des Quizmasters
+            </li>
+            <li>Feste Punktzahl pro richtiger Antwort</li>
+            <li>Live-Scoreboard und Endstand mit Siegerehrung</li>
+            <li>Reconnect für Teilnehmer in laufender Session</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3><span class="badge later">Bewusst nicht im MVP</span></h3>
+          <ul>
+            <li>Speed-Bonus (schnellere Antwort = mehr Punkte)</li>
+            <li>Teams / Gruppenwertung</li>
+            <li>Bild-, Audio- oder Schätzfragen</li>
+            <li>Separate Beamer-/Projektor-Ansicht</li>
+            <li>Mehrere parallele Sessions</li>
+            <li>Accounts, Logins, Quiz-Historie, Statistiken</li>
+            <li>Datenbank, Cloud-Hosting, HTTPS</li>
+          </ul>
+          <p>
+            Details und Priorisierung: <a href="04-backlog.html">Backlog</a>.
+          </p>
+        </div>
+      </div>
+
+      <h2>Getroffene Annahmen – bitte als PO prüfen</h2>
+      <p>
+        Diese Entscheidungen wurden getroffen, um planen zu können. Jede lässt
+        sich jetzt noch billig ändern – nach dem MVP wird es teurer.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Annahme</th>
+            <th>Default im Plan</th>
+            <th>Alternative</th>
+          </tr>
+          <tr>
+            <td>Zeitlimit pro Frage</td>
+            <td>
+              Ja, je Frage konfigurierbar (Default 30&nbsp;s) – aber der Timer
+              startet <strong>per Knopfdruck des Quizmasters</strong>: sofort
+              nach Anzeige der Frage (dann sind es exakt 30&nbsp;s) oder später,
+              wenn er den Moment für gekommen hält (z.&nbsp;B. nach dem
+              Vorlesen). Antworten sind ab Anzeige der Frage möglich; nach
+              Timer-Ablauf sind sie gesperrt.
+            </td>
+            <td>
+              Timer startet automatisch mit der Fragenanzeige (straffer, nimmt
+              dem Quizmaster aber das Tempo aus der Hand).
+            </td>
+          </tr>
+          <tr>
+            <td>Punktevergabe</td>
+            <td>
+              Fix: 100 Punkte pro richtiger Antwort. Punktwert je Frage
+              überschreibbar.
+            </td>
+            <td>
+              Speed-Bonus schon im MVP (mehr Implementierungs- und
+              Erklärungsaufwand).
+            </td>
+          </tr>
+          <tr>
+            <td>Antwort ändern</td>
+            <td>
+              Nein – die erste abgegebene Antwort zählt und ist verbindlich.
+            </td>
+            <td>
+              Ändern bis Timer-Ende erlaubt (bei Speed-Bonus später
+              problematisch).
+            </td>
+          </tr>
+          <tr>
+            <td>Späteinsteiger</td>
+            <td>
+              Beitritt auch während des laufenden Quiz möglich; verpasste Fragen
+              = 0 Punkte.
+            </td>
+            <td>
+              Lobby schließt beim Start (strenger, aber unpraktisch in der
+              Kneipe).
+            </td>
+          </tr>
+          <tr>
+            <td>Namenskonflikte</td>
+            <td>
+              Namen müssen pro Session eindeutig sein; sonst Hinweis bei
+              Eingabe.
+            </td>
+            <td>Duplikate erlauben und intern per ID unterscheiden.</td>
+          </tr>
+          <tr>
+            <td>Teilnehmerzahl</td>
+            <td>
+              Ausgelegt auf bis zu ~40 gleichzeitige Teilnehmer (typischer
+              Hotspot-Rahmen).
+            </td>
+            <td>
+              Mehr ist technisch drin, aber Windows-Hotspots limitieren oft bei
+              ~8–32 Geräten – siehe
+              <a href="02-architektur.html#netzwerk">Netzwerk-Setup</a>.
+            </td>
+          </tr>
+          <tr>
+            <td>Sprache der Oberfläche</td>
+            <td>Deutsch, ohne Umschaltung.</td>
+            <td>Zweisprachig / i18n-Framework (Backlog).</td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>Nicht-funktionale Anforderungen</h2>
+      <ul>
+        <li>
+          <strong>Offline-fähig:</strong> Die App funktioniert vollständig ohne
+          Internetzugang – nur Laptop + Hotspot.
+        </li>
+        <li>
+          <strong>Beitritt in unter 60 Sekunden:</strong> QR scannen → Name
+          eingeben → drin. Keine Registrierung, kein Download.
+        </li>
+        <li>
+          <strong>Latenz:</strong> Frage erscheint bei allen Teilnehmern gefühlt
+          gleichzeitig (&lt; 500 ms nach Freigabe).
+        </li>
+        <li>
+          <strong>Robustheit:</strong> Ein abstürzendes Teilnehmer-Handy darf
+          die Session nie beeinflussen; Reconnect stellt den Zustand wieder her.
+        </li>
+        <li>
+          <strong>Fairness:</strong> Die richtige Antwort verlässt den Server
+          erst zur Auflösung – Schummeln per Browser-DevTools ist zwecklos.
+        </li>
+        <li>
+          <strong>Wartbarkeit (Solo-Dev):</strong> Ein Repo, ein Prozess, keine
+          externe Infrastruktur. Alles, was der Quizmaster braucht, ist
+          <code>node</code> und ein Befehl.
+        </li>
+      </ul>
+
+      <h2>Erfolgskriterium für das MVP</h2>
+      <div class="note">
+        <strong>Der Feldtest zählt:</strong> Ein echter Quizabend mit mindestens
+        5 Personen, 10 Fragen, über einen echten Laptop-Hotspot – ohne dass der
+        Entwickler eingreifen muss. Wenn das klappt, ist das MVP fertig. Genau
+        darauf läuft
+        <a href="03-mvp-anleitung.html">Phase 5 der Anleitung</a> hinaus.
+      </div>
+    </main>
+
+    <footer>
+      Quizzem · <a href="index.html">Übersicht</a> · Weiter:
+      <a href="02-architektur.html">2 · Architektur</a>
+    </footer>
+  </body>
+</html>

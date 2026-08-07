@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3 · Schritt-für-Schritt zum MVP – Quizzem</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="topnav">
+      <a class="brand" href="index.html">🎯 Quizzem</a>
+      <a href="index.html">Übersicht</a>
+      <a href="01-produktvision.html">1 · Produktvision</a>
+      <a href="02-architektur.html">2 · Architektur</a>
+      <a class="active" href="03-mvp-anleitung.html">3 · MVP-Anleitung</a>
+      <a href="04-backlog.html">4 · Backlog</a>
+    </nav>
+
+    <main>
+      <h1>3 · Schritt-für-Schritt zum MVP</h1>
+      <p class="lead">
+        Sechs Phasen vom leeren Ordner bis zum bestandenen Feldtest. Jede Phase
+        hat ein klares Ziel, ihre User Stories, Akzeptanzkriterien und eine
+        Definition of Done – und jede endet mit etwas, das man
+        <em>vorführen</em> kann.
+      </p>
+
+      <h2>Wie dieser Plan gedacht ist</h2>
+      <ul>
+        <li>
+          <strong>Risiko zuerst:</strong> Das technisch Unsicherste ist die
+          Echtzeit-Spielschleife über echtes WLAN – deshalb kommt sie vor dem
+          Quiz-Editor. Ein Editor ohne funktionierendes Spiel ist wertlos; ein
+          Spiel mit handgeschriebener JSON-Datei ist bereits ein Quizabend.
+        </li>
+        <li>
+          <strong>Jede Phase ist demofähig:</strong> Am Ende jeder Phase kannst
+          du jemandem etwas zeigen. Das hält die Motivation als Solo-Dev hoch
+          und deckt Denkfehler früh auf.
+        </li>
+        <li>
+          <strong>Aufwand:</strong> Die Schätzungen gehen von
+          Feierabend-/Wochenendarbeit aus (2–4 h pro Abend). Gesamtrahmen:
+          <strong>ca. 4–6 Wochen</strong> nebenberuflich.
+        </li>
+        <li>
+          <strong>Arbeitsweise:</strong> Ein Git-Repository ab Tag 1, kleine
+          Commits, <code>main</code> ist immer lauffähig. Kein Branching-Theater
+          – du bist allein.
+        </li>
+      </ul>
+
+      <div class="note">
+        <strong>PO-Hausaufgabe vor Phase 0:</strong> Die
+        <a href="01-produktvision.html">Annahmen in der Produktvision</a>
+        durchgehen und festzurren. Außerdem:
+        <strong>Schreibe dein erstes echtes Quiz</strong> (10 Fragen auf Papier
+        oder in einer Textdatei). Es wird ab Phase 2 dein Testdatensatz – und
+        zwingt dich früh zu merken, welche Frage-Eigenschaften du wirklich
+        brauchst.
+      </div>
+
+      <!-- ================= PHASE 0 ================= -->
+      <h2>
+        <span class="badge phase">Phase 0</span> Projektfundament &amp; Walking
+        Skeleton <small>· ~2–3 Abende</small>
+      </h2>
+
+      <p>
+        <strong>Ziel:</strong> Das komplette Grundgerüst steht und ein Handy im
+        selben WLAN kann eine vom Laptop ausgelieferte Seite öffnen, die per
+        WebSocket live ein Signal empfängt. Damit ist die riskanteste Annahme
+        („Handys erreichen meinen Node-Server im Hotspot“) am ersten Wochenende
+        verifiziert – nicht in Woche 5.
+      </p>
+
+      <h3>Aufgaben</h3>
+      <ol>
+        <li>
+          Git-Repo anlegen, npm-Workspace mit <code>server/</code>,
+          <code>client/</code>, <code>shared/</code> aufsetzen (Struktur: siehe
+          <a href="02-architektur.html">Architektur</a>).
+        </li>
+        <li>
+          TypeScript, Vitest und ein Formatter (Prettier) konfigurieren –
+          einmal, dann nie wieder anfassen.
+        </li>
+        <li>
+          Express-Server, der den Vite-Build statisch ausliefert und an
+          <code>0.0.0.0:3000</code> bindet.
+        </li>
+        <li>
+          WebSocket-Server (<code>ws</code>) einbinden: Server broadcastet jede
+          Sekunde die Uhrzeit als JSON-Nachricht, eine Mini-React-Seite zeigt
+          sie an.
+        </li>
+        <li>
+          Die eine WebSocket-Anbindung des Clients bauen
+          (<code>client/src/lib/ws.ts</code>): Reconnect-Schleife mit
+          exponentiellem Backoff; dazu serverseitig Ping/Pong-Heartbeat. Dieses
+          Modul nutzen später beide Ansichten – es ist der wichtigste Baustein
+          des Projekts.
+        </li>
+        <li>
+          Server ermittelt beim Start die lokale IP und loggt die erreichbare
+          URL.
+        </li>
+        <li>
+          Windows-Hotspot aktivieren und den Durchstich mit dem eigenen Handy
+          testen (inkl. Firewall-Freigabe).
+        </li>
+      </ol>
+
+      <h3>Akzeptanzkriterien</h3>
+      <ul class="checklist">
+        <li><code>npm start</code> startet alles mit einem Befehl.</li>
+        <li>
+          Ein Handy im Hotspot-WLAN öffnet
+          <code>http://&lt;laptop-ip&gt;:3000</code> und sieht die live tickende
+          Server-Uhr.
+        </li>
+        <li>
+          Handy-Display 30 s sperren und entsperren → die Uhr läuft ohne
+          Neuladen weiter (die eigene Reconnect-Schleife greift).
+        </li>
+      </ul>
+
+      <!-- ================= PHASE 1 ================= -->
+      <h2>
+        <span class="badge phase">Phase 1</span> Session, Beitritt &amp; Lobby
+        <small>· ~3–4 Abende</small>
+      </h2>
+
+      <p>
+        <strong>Ziel:</strong> Der Quizmaster erstellt eine Session und
+        Teilnehmer treten ihr bei. Beide Ansichten existieren und zeigen live
+        dieselbe Lobby. Umgesetzte Stories:
+        <strong>U2, U3, U4</strong> (teilweise) aus der
+        <a href="01-produktvision.html">Produktvision</a>.
+      </p>
+
+      <h3>Aufgaben</h3>
+      <ol>
+        <li>
+          Datenmodell in <code>shared/</code> anlegen: <code>Quiz</code>,
+          <code>Question</code>, <code>GameState</code>, <code>Player</code> +
+          Event-Typen.
+        </li>
+        <li>
+          GameEngine-Grundgerüst: Zustand <code>LOBBY</code>, Aktionen
+          <code>createSession</code>, <code>join</code>,
+          <code>disconnect</code>, <code>reconnect</code> – als reine Funktionen
+          mit Vitest-Tests.
+        </li>
+        <li>
+          Host-Ansicht (<code>/host</code>): Button „Session starten“ → zeigt
+          Join-URL + QR-Code + Live-Teilnehmerliste.
+        </li>
+        <li>
+          Spieler-Ansicht (<code>/play/:sessionId</code>): Namenseingabe → Lobby
+          („Warten auf Start … 7 Spieler dabei“).
+        </li>
+        <li>
+          Namensvalidierung: eindeutig pro Session, 1–20 Zeichen, mit
+          verständlicher Fehlermeldung.
+        </li>
+        <li>
+          Reconnect-Grundlage: Server vergibt <code>playerId</code>, Client
+          speichert sie in localStorage und sendet sie bei jedem
+          <code>player:join</code> mit.
+        </li>
+        <li>
+          Der <code>state</code>-Broadcast-Mechanismus (ein Snapshot-Event für
+          alles) steht ab jetzt – jede spätere Phase baut nur noch darauf auf.
+        </li>
+      </ol>
+
+      <h3>Akzeptanzkriterien</h3>
+      <ul class="checklist">
+        <li>
+          Zwei Handys treten per QR-Code bei; beide Namen erscheinen &lt; 1 s
+          später auf dem Laptop.
+        </li>
+        <li>
+          Doppelter Name wird beim Beitritt abgelehnt, mit klarer Meldung auf
+          dem Handy.
+        </li>
+        <li>
+          Browser-Tab auf dem Handy schließen und URL neu öffnen → derselbe
+          Spieler ist wieder da (kein Duplikat in der Lobby).
+        </li>
+        <li>
+          Engine-Tests decken ab: join, doppelter Name, reconnect mit
+          bekannter/unbekannter <code>playerId</code>.
+        </li>
+      </ul>
+
+      <!-- ================= PHASE 2 ================= -->
+      <h2>
+        <span class="badge phase">Phase 2</span> Die Spielschleife
+        <small>· ~4–5 Abende · Herzstück</small>
+      </h2>
+
+      <p>
+        <strong>Ziel:</strong> Ein komplettes Quiz lässt sich durchspielen:
+        Frage → antworten → Auflösung → nächste Frage → Ende. Punkte gibt es
+        noch nicht. Das Quiz kommt aus einer handgeschriebenen JSON-Datei in
+        <code>quizzes/</code> – dein PO-Testquiz aus der Vorbereitung. Stories:
+        <strong>U5, U6</strong>.
+      </p>
+
+      <h3>Aufgaben</h3>
+      <ol>
+        <li>
+          State-Machine vervollständigen:
+          <code>LOBBY → QUESTION → REVEAL → SCOREBOARD → … → FINAL</code>
+          (Scoreboard zeigt vorerst nur „wer hat geantwortet“).
+        </li>
+        <li>
+          Serverseitiger Frage-Timer mit <strong>manuellem Start</strong>: Beim
+          Anzeigen der Frage läuft noch keine Uhr (<code
+            >questionEndsAt = null</code
+          >), Antworten sind aber schon möglich. Erst der Host-Knopf „Timer
+          starten“ setzt <code>questionEndsAt</code>; Ablauf oder „alle haben
+          geantwortet“ löst automatisch <code>REVEAL</code> aus.
+        </li>
+        <li>
+          Host-Steuerung: „Quiz starten“, „Timer starten“, „Auflösen“ (jederzeit
+          möglich), „Weiter“; Anzeige der Antwortquote („12/17 haben
+          geantwortet“) und der Restzeit.
+        </li>
+        <li>
+          Spieler-Ansicht: Frage + große Antwort-Buttons; der Countdown
+          erscheint, sobald der Quizmaster den Timer startet; nach Abgabe
+          gesperrt („Antwort gespeichert ✓“); bei <code>REVEAL</code> Markierung
+          richtig/falsch.
+        </li>
+        <li>
+          Antwort-Validierung im Server: nur in Phase <code>QUESTION</code>, nur
+          zur aktuellen Frage, nur einmal pro Spieler, und bei laufendem Timer
+          nur vor <code>questionEndsAt</code>.
+        </li>
+        <li>
+          Rollenfilter im Snapshot: <code>correctIndex</code> verlässt den
+          Server erst ab <code>REVEAL</code> (siehe
+          <a href="02-architektur.html">Architektur → Fairness</a>).
+        </li>
+        <li>
+          Engine-Tests für die gesamte State-Machine inkl. Timer-Ablauf und
+          verspäteter Antworten.
+        </li>
+      </ol>
+
+      <h3>Akzeptanzkriterien</h3>
+      <ul class="checklist">
+        <li>
+          Ein 5-Fragen-Quiz lässt sich mit 2 Handys vollständig durchspielen,
+          ohne Neuladen, ohne Entwicklereingriff.
+        </li>
+        <li>
+          Vor dem Timerstart können Teilnehmer bereits antworten; drückt der
+          Host „Timer starten“, erscheint der Countdown auf allen Geräten
+          synchron.
+        </li>
+        <li>
+          Nach Timer-Ablauf werden Antworten serverseitig abgelehnt – auch wenn
+          ein manipulierter Client sie sendet.
+        </li>
+        <li>
+          In den DevTools eines Teilnehmers ist die richtige Antwort vor der
+          Auflösung nirgends zu finden.
+        </li>
+        <li>
+          Handy mitten in der Frage sperren, nach der Auflösung entsperren →
+          Client zeigt korrekt den <code>REVEAL</code>-Zustand.
+        </li>
+      </ul>
+
+      <!-- ================= PHASE 3 ================= -->
+      <h2>
+        <span class="badge phase">Phase 3</span> Punkte, Scoreboard &amp;
+        Siegerehrung <small>· ~2–3 Abende</small>
+      </h2>
+
+      <p>
+        <strong>Ziel:</strong> Aus dem Durchklick-Spiel wird ein Wettbewerb.
+        Stories: <strong>U7, U8, U9</strong>.
+      </p>
+
+      <h3>Aufgaben</h3>
+      <ol>
+        <li>
+          <code>scoring.ts</code>: richtige Antwort = Punktwert der Frage
+          (Default 100). Als reine, getestete Funktion – hier ist später der
+          einzige Anbaupunkt für den Speed-Bonus.
+        </li>
+        <li>
+          Scoreboard-Phase mit echten Daten: Rangliste mit Punkten und
+          Veränderung („+100“), auf dem Laptop groß und vorlesbar.
+        </li>
+        <li>
+          Spieler-Ansicht: eigener Punktestand permanent sichtbar, eigene
+          Platzierung im Scoreboard hervorgehoben.
+        </li>
+        <li>
+          <code>FINAL</code>-Ansicht: Top 3 als Siegertreppchen auf dem Laptop,
+          jeder Teilnehmer sieht die eigene Endplatzierung.
+        </li>
+        <li>
+          Gleichstand-Regel festlegen und umsetzen (Empfehlung: gleicher Rang,
+          alphabetische Anzeige).
+        </li>
+      </ol>
+
+      <h3>Akzeptanzkriterien</h3>
+      <ul class="checklist">
+        <li>
+          Punktestände sind über Laptop und alle Handys hinweg jederzeit
+          identisch.
+        </li>
+        <li>
+          Ein Spieler, der eine Frage verpasst (Späteinsteiger oder offline),
+          bekommt 0 Punkte dafür – ohne Fehler im Ablauf.
+        </li>
+        <li>
+          Scoring-Funktion ist vollständig durch Tests abgedeckt (richtig,
+          falsch, keine Antwort, Gleichstand).
+        </li>
+      </ul>
+
+      <!-- ================= PHASE 4 ================= -->
+      <h2>
+        <span class="badge phase">Phase 4</span> Quiz-Editor
+        <small>· ~3–4 Abende</small>
+      </h2>
+
+      <p>
+        <strong>Ziel:</strong> Der Quizmaster braucht keine JSON-Dateien mehr
+        von Hand zu schreiben. Story: <strong>U1</strong>.
+      </p>
+
+      <h3>Aufgaben</h3>
+      <ol>
+        <li>
+          Quiz-Übersicht in der Host-Ansicht: Liste aller Quizzes aus
+          <code>quizzes/</code>, Aktionen: neu, bearbeiten, duplizieren,
+          löschen, „Session starten“.
+        </li>
+        <li>
+          Editor-Formular: Titel; je Frage Text, 2–6 Optionen, Markierung der
+          richtigen Antwort, Zeitlimit, Punktwert; Fragen sortieren und löschen.
+        </li>
+        <li>
+          Speichern über kleine REST-Routen (<code>GET/PUT /api/quizzes</code>)
+          in den <code>quizStore</code>; Validierung mit klaren Fehlermeldungen
+          (z.&nbsp;B. „Frage 3 hat keine richtige Antwort markiert“).
+        </li>
+        <li>
+          Schutz vor Datenverlust: Warnung beim Verlassen mit ungespeicherten
+          Änderungen.
+        </li>
+      </ol>
+
+      <h3>Akzeptanzkriterien</h3>
+      <ul class="checklist">
+        <li>
+          Ein 10-Fragen-Quiz lässt sich komplett im Browser anlegen und direkt
+          danach spielen.
+        </li>
+        <li>
+          Unvollständige Fragen können nicht gespeichert werden; die
+          Fehlermeldung benennt die betroffene Frage.
+        </li>
+        <li>
+          Die erzeugte JSON-Datei ist menschenlesbar und von Hand editierbar
+          (Notfall-Weg bleibt offen).
+        </li>
+      </ul>
+
+      <!-- ================= PHASE 5 ================= -->
+      <h2>
+        <span class="badge phase">Phase 5</span> Härtung &amp; Feldtest
+        <small>· ~2–3 Abende + 1 Quizabend</small>
+      </h2>
+
+      <p>
+        <strong>Ziel:</strong> Das MVP besteht das
+        <a href="01-produktvision.html">Erfolgskriterium</a>: ein echter
+        Quizabend mit ≥ 5 Personen über echten Hotspot, ohne Entwicklereingriff.
+        Story: <strong>U10</strong> (Feinschliff) + alles zusammen.
+      </p>
+
+      <h3>Aufgaben</h3>
+      <ol>
+        <li>
+          Reconnect-Härtetest: Flugmodus an/aus, Display lange gesperrt, Browser
+          gewechselt – Spieler muss immer in den aktuellen Zustand zurückfinden.
+        </li>
+        <li>
+          Host-Neustart-Absicherung: Was passiert, wenn der Laptop-Browser
+          (nicht der Server!) neu lädt? Die Host-Ansicht muss sich wie ein
+          Client reconnecten können.
+        </li>
+        <li>
+          Join-Hilfe für Teilnehmer: Hinweis auf die „Verbunden, kein
+          Internet“-Meldung (siehe
+          <a href="02-architektur.html#netzwerk">Netzwerk-Stolpersteine</a>).
+        </li>
+        <li>
+          Mini-Lasttest: Skript, das 40 WebSocket-Clients simuliert, die
+          gleichzeitig beitreten und antworten (30 Zeilen mit dem
+          <code>ws</code>-Paket als Client).
+        </li>
+        <li>
+          UI-Politur nur, wo es den Abend rettet: Lesbarkeit der Laptop-Ansicht
+          aus 3 m Entfernung, Tap-Flächen auf kleinen Handys,
+          Verbindungsstatus-Anzeige („offline – verbinde neu …“).
+        </li>
+        <li>
+          <strong>Generalprobe:</strong> Quizabend mit Freunden/Familie, echter
+          Hotspot, 10 Fragen. Du bist nur Quizmaster, nicht Entwickler. Alle
+          Reibungspunkte notieren.
+        </li>
+      </ol>
+
+      <h3>Akzeptanzkriterien = Definition of Done des MVP</h3>
+      <ul class="checklist">
+        <li>
+          Der Feldtest wurde ohne Codeänderung und ohne Server-Neustart
+          durchgestanden.
+        </li>
+        <li>
+          Jeder Verbindungsabbruch im Test endete in erfolgreicher Rückkehr ins
+          Spiel.
+        </li>
+        <li>
+          40 simulierte Clients: Beitritt und Antworten ohne Fehler,
+          Snapshot-Versand &lt; 500 ms.
+        </li>
+        <li>
+          Die Reibungspunkte der Generalprobe sind als priorisierte Liste im
+          <a href="04-backlog.html">Backlog</a> erfasst.
+        </li>
+      </ul>
+
+      <!-- ================= Übersicht ================= -->
+      <h2>Gesamtübersicht</h2>
+
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Phase</th>
+            <th>Ergebnis („demofähig“)</th>
+            <th>Stories</th>
+            <th>Aufwand</th>
+          </tr>
+          <tr>
+            <td>0 · Fundament</td>
+            <td>
+              Handy zeigt live die Server-Uhr über den Hotspot (inkl. Reconnect)
+            </td>
+            <td>–</td>
+            <td>~2–3 Abende</td>
+          </tr>
+          <tr>
+            <td>1 · Lobby</td>
+            <td>Beitritt per QR, Live-Teilnehmerliste</td>
+            <td>U2–U4</td>
+            <td>~3–4 Abende</td>
+          </tr>
+          <tr>
+            <td>2 · Spielschleife</td>
+            <td>Komplettes Quiz durchspielbar (ohne Punkte)</td>
+            <td>U5, U6</td>
+            <td>~4–5 Abende</td>
+          </tr>
+          <tr>
+            <td>3 · Scoring</td>
+            <td>Wettbewerb mit Scoreboard und Siegerehrung</td>
+            <td>U7–U9</td>
+            <td>~2–3 Abende</td>
+          </tr>
+          <tr>
+            <td>4 · Editor</td>
+            <td>Quiz komplett im Browser erstellbar</td>
+            <td>U1</td>
+            <td>~3–4 Abende</td>
+          </tr>
+          <tr>
+            <td>5 · Feldtest</td>
+            <td>Bestandener echter Quizabend 🏆</td>
+            <td>U10 + alle</td>
+            <td>~2–3 Abende + 1 Abend</td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>Durchgängige Arbeitsregeln (Definition of Done je Phase)</h2>
+      <ul>
+        <li>
+          Alle Akzeptanzkriterien der Phase sind erfüllt und
+          <strong>am echten Gerät</strong> (Handy im Hotspot) geprüft, nicht nur
+          in zwei Browser-Tabs.
+        </li>
+        <li>
+          Die Engine-/Scoring-Logik der Phase ist mit Vitest getestet; UI wird
+          manuell geprüft (UI-Tests lohnen sich für einen Solo-Dev-MVP nicht).
+        </li>
+        <li><code>main</code> ist lauffähig, <code>npm start</code> genügt.</li>
+        <li>
+          Neue Erkenntnisse und verschobene Ideen wandern sofort ins
+          <a href="04-backlog.html">Backlog</a> statt in den Code.
+        </li>
+      </ul>
+
+      <div class="warn">
+        <strong>Die zwei größten Solo-Dev-Fallen bei diesem Projekt:</strong>
+        <ol style="margin-bottom: 0">
+          <li>
+            <strong>UI-Perfektionismus vor Phase 5.</strong> Hübsche Animationen
+            sind Backlog. Ein Quizabend scheitert an Reconnect-Bugs, nie an
+            fehlendem Konfetti.
+          </li>
+          <li>
+            <strong>„Nur schnell“ Features aus dem Backlog vorziehen</strong>
+            (Teams! Speed-Bonus!). Jede Erweiterung der Spielregeln vervielfacht
+            die Zustände der State-Machine. Erst den Feldtest bestehen, dann
+            erweitern.
+          </li>
+        </ol>
+      </div>
+    </main>
+
+    <footer>
+      Quizzem · <a href="02-architektur.html">Zurück: 2 · Architektur</a> ·
+      Weiter: <a href="04-backlog.html">4 · Backlog</a>
+    </footer>
+  </body>
+</html>

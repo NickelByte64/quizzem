@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2 · Architektur &amp; Techstack – Quizzem</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="topnav">
+      <a class="brand" href="index.html">🎯 Quizzem</a>
+      <a href="index.html">Übersicht</a>
+      <a href="01-produktvision.html">1 · Produktvision</a>
+      <a class="active" href="02-architektur.html">2 · Architektur</a>
+      <a href="03-mvp-anleitung.html">3 · MVP-Anleitung</a>
+      <a href="04-backlog.html">4 · Backlog</a>
+    </nav>
+
+    <main>
+      <h1>2 · Architektur &amp; Techstack</h1>
+      <p class="lead">
+        Ein einzelner Node.js-Prozess als autoritativer Spielserver, Echtzeit
+        über native WebSockets, Spielzustand im Arbeitsspeicher, Quizzes als
+        JSON-Dateien. So einfach wie möglich – und für dieses Szenario genau
+        richtig.
+      </p>
+
+      <h2>Leitprinzipien</h2>
+      <ol>
+        <li>
+          <strong>Ein Prozess, ein Rechner.</strong> Alles läuft auf dem Laptop
+          des Quizmasters. Keine Datenbank, kein Docker, keine Cloud. Damit
+          entfällt 80&nbsp;% der üblichen Komplexität.
+        </li>
+        <li>
+          <strong>Der Server ist die einzige Wahrheit.</strong> Der komplette
+          Spielzustand (Phase, Antworten, Punkte) lebt ausschließlich im Server.
+          Clients sind „dumme“ Renderer, die Zustands-Snapshots anzeigen und
+          Absichten (<em>„ich antworte B“</em>) melden. Das macht Reconnect
+          trivial und Schummeln unmöglich.
+        </li>
+        <li>
+          <strong>Klein dimensioniert, bewusst.</strong> 40 Teilnehmer, die alle
+          30 Sekunden eine Antwort schicken, sind für einen Node-Prozess
+          Leerlauf. Es braucht keine Skalierungs-Architektur – es braucht
+          Robustheit gegen wackliges WLAN.
+        </li>
+      </ol>
+
+      <h2>Systemübersicht</h2>
+
+      <figure class="diagram">
+        <svg
+          viewBox="0 0 720 340"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Systemdiagramm: Laptop des Quizmasters mit Node.js-Server, verbunden per WLAN-Hotspot mit den Smartphones der Teilnehmer"
+        >
+          <defs>
+            <marker
+              id="arrowhead"
+              markerWidth="8"
+              markerHeight="8"
+              refX="7"
+              refY="4"
+              orient="auto"
+            >
+              <path d="M0,0 L8,4 L0,8 z" fill="currentColor" opacity="0.6" />
+            </marker>
+          </defs>
+
+          <!-- Laptop -->
+          <rect class="box" x="20" y="30" width="300" height="280" rx="12" />
+          <text x="170" y="55" text-anchor="middle" font-weight="700">
+            💻 Laptop des Quizmasters
+          </text>
+
+          <rect
+            class="box-soft"
+            x="45"
+            y="75"
+            width="250"
+            height="150"
+            rx="8"
+          />
+          <text x="170" y="98" text-anchor="middle" font-weight="600">
+            Node.js-Prozess (Port 3000)
+          </text>
+          <text x="60" y="122" class="small">
+            • Express: statische Client-Dateien + wenige REST-Routen
+          </text>
+          <text x="60" y="142" class="small">
+            • WebSocket-Server (ws): alle Echtzeit-Nachrichten
+          </text>
+          <text x="60" y="162" class="small">
+            • GameEngine: State-Machine + Scoring (In-Memory)
+          </text>
+          <text x="60" y="182" class="small">
+            • QuizStore: liest/schreibt ./quizzes/*.json
+          </text>
+          <text x="60" y="202" class="small">
+            • Timer: serverseitig, Start per Host-Knopfdruck
+          </text>
+
+          <rect
+            class="box-soft"
+            x="45"
+            y="240"
+            width="250"
+            height="52"
+            rx="8"
+          />
+          <text x="170" y="262" text-anchor="middle" font-weight="600">
+            Browser: Quizmaster-Ansicht
+          </text>
+          <text x="170" y="281" text-anchor="middle" class="small">
+            http://localhost:3000/host
+          </text>
+
+          <!-- WLAN -->
+          <path class="arrow" d="M320 150 H 420" stroke-dasharray="5,4" />
+          <text x="370" y="138" text-anchor="middle" class="small">
+            WLAN-Hotspot
+          </text>
+          <text x="370" y="170" text-anchor="middle" class="small">
+            HTTP + WebSocket
+          </text>
+
+          <!-- Phones -->
+          <rect class="box" x="420" y="30" width="280" height="280" rx="12" />
+          <text x="560" y="55" text-anchor="middle" font-weight="700">
+            📱 Teilnehmer-Smartphones
+          </text>
+
+          <rect
+            class="box-soft"
+            x="445"
+            y="75"
+            width="230"
+            height="46"
+            rx="8"
+          />
+          <text x="560" y="95" text-anchor="middle" font-weight="600">
+            Browser: Spieler-Ansicht
+          </text>
+          <text x="560" y="112" text-anchor="middle" class="small">
+            http://192.168.x.x:3000/play/SESSION
+          </text>
+
+          <rect
+            class="box-soft"
+            x="445"
+            y="135"
+            width="230"
+            height="46"
+            rx="8"
+          />
+          <text x="560" y="155" text-anchor="middle" font-weight="600">
+            Browser: Spieler-Ansicht
+          </text>
+          <text x="560" y="172" text-anchor="middle" class="small">
+            … bis zu ~40 Geräte
+          </text>
+
+          <rect
+            class="box-soft"
+            x="445"
+            y="195"
+            width="230"
+            height="46"
+            rx="8"
+            opacity="0.55"
+          />
+          <text x="560" y="222" text-anchor="middle" class="small">⋯</text>
+
+          <text x="560" y="285" text-anchor="middle" class="small">
+            Beitritt per QR-Code / URL – keine Installation
+          </text>
+        </svg>
+        <figcaption>
+          Alles läuft auf einem Gerät. Die Smartphones sind reine
+          Browser-Clients im lokalen Netz.
+        </figcaption>
+      </figure>
+
+      <h2>Techstack &amp; Begründung</h2>
+
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Baustein</th>
+            <th>Wahl</th>
+            <th>Warum (für dieses Projekt)</th>
+          </tr>
+          <tr>
+            <td>Runtime</td>
+            <td>Node.js LTS (≥ 22)</td>
+            <td>
+              Vorgabe. Event-Loop passt perfekt zu „viele Verbindungen, wenig
+              Rechenarbeit“.
+            </td>
+          </tr>
+          <tr>
+            <td>Sprache</td>
+            <td>TypeScript</td>
+            <td>
+              Ein gemeinsames <code>shared/</code>-Paket typisiert alle
+              Socket-Events und den Spielzustand – Client und Server können gar
+              nicht auseinanderlaufen. Für einen Solo-Dev der billigste
+              Bug-Schutz überhaupt.
+            </td>
+          </tr>
+          <tr>
+            <td>HTTP-Server</td>
+            <td>Express 5</td>
+            <td>
+              Braucht fast nichts können: statische Dateien ausliefern + 2–3
+              REST-Routen für den Quiz-Editor. Express ist das am besten
+              dokumentierte Werkzeug dafür. (Fastify wäre schneller –
+              Performance ist hier aber irrelevant.)
+            </td>
+          </tr>
+          <tr>
+            <td>Echtzeit</td>
+            <td>
+              Native WebSockets (<code>ws</code> auf dem Server,
+              Browser-<code>WebSocket</code>-API im Client)
+            </td>
+            <td>
+              Standardnah, ohne Abstraktionsschicht und ohne eigenes
+              Wire-Protokoll. Der Preis:
+              <strong>Reconnect und Heartbeat bauen wir selbst</strong> (~100
+              Zeilen, einmalig in <code>client/src/lib/ws.ts</code> bzw.
+              serverseitigem Ping/Pong) – im Kneipen-WLAN sind das Kernfeatures,
+              siehe <a href="#robustheit">Robustheit</a>. Alle Nachrichten sind
+              JSON im Umschlag <code>{ type, payload }</code>, typisiert in
+              <code>shared/</code>.
+            </td>
+          </tr>
+          <tr>
+            <td>Frontend</td>
+            <td>Vite + React</td>
+            <td>
+              Bekanntes Werkzeug des Entwicklers – für einen Solo-Dev das
+              stärkste Argument überhaupt. Vite baut beide Ansichten als
+              statische Dateien, die Express ausliefert. Die Architektur
+              („Zustands-Snapshot rein, UI raus“) ist Framework-neutral.
+            </td>
+          </tr>
+          <tr>
+            <td>Client-State</td>
+            <td>zustand</td>
+            <td>
+              Ein einziger Store hält den jeweils letzten Server-Snapshot plus
+              lokalen UI-Zustand (z.&nbsp;B. „Antwort abgeschickt“). Jede
+              WebSocket-<code>state</code>-Nachricht ruft einmal
+              <code>setState</code> auf, die Komponenten subscriben gezielt.
+              Mehr Client-State-Management braucht diese App nicht.
+            </td>
+          </tr>
+          <tr>
+            <td>Spielzustand</td>
+            <td>In-Memory (ein JS-Objekt)</td>
+            <td>
+              Eine Session lebt Minuten bis Stunden auf einem Rechner. Eine
+              Datenbank würde nur Komplexität addieren. Stürzt der Server ab,
+              ist die Session weg – akzeptables MVP-Risiko (Absicherung: siehe
+              Backlog „Session-Snapshot“).
+            </td>
+          </tr>
+          <tr>
+            <td>Quiz-Speicherung</td>
+            <td>JSON-Dateien in <code>./quizzes/</code></td>
+            <td>
+              Menschenlesbar, per Git versionierbar, trivial zu sichern und von
+              Hand editierbar, falls der Editor mal klemmt.
+            </td>
+          </tr>
+          <tr>
+            <td>QR-Code</td>
+            <td>npm-Paket <code>qrcode</code></td>
+            <td>
+              Erzeugt den Beitritts-QR serverseitig als Data-URL – funktioniert
+              offline.
+            </td>
+          </tr>
+          <tr>
+            <td>Tests</td>
+            <td>Vitest</td>
+            <td>
+              Ein Test-Runner für Client und Server. Fokus: GameEngine und
+              Scoring als reine Funktionen testen – da stecken die Fehler, die
+              einen Quizabend ruinieren.
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>Projektstruktur</h2>
+
+      <pre><code>quizzem/
+├── package.json              # npm workspaces: server, client, shared
+├── shared/                   # von Client UND Server importiert
+│   └── src/
+│       ├── messages.ts       # alle WebSocket-Message-Typen + Payloads
+│       └── types.ts          # Quiz, Question, GameState, PlayerView …
+├── server/
+│   └── src/
+│       ├── index.ts          # Express + ws Bootstrap
+│       ├── game/
+│       │   ├── engine.ts     # State-Machine (reine Logik, ohne I/O!)
+│       │   └── scoring.ts    # Punkteberechnung (reine Funktion)
+│       ├── ws.ts             # Message-Handler: verdrahtet ws ↔ Engine, Ping/Pong
+│       └── quizStore.ts      # JSON-Dateien lesen/schreiben/validieren
+├── client/
+│   └── src/
+│       ├── host/             # Quizmaster-Ansicht (Editor, Lobby, Steuerung)
+│       ├── play/             # Teilnehmer-Ansicht (mobile-first)
+│       ├── store.ts          # zustand-Store: letzter Server-Snapshot + UI-State
+│       └── lib/ws.ts         # WebSocket-Anbindung inkl. Reconnect-Schleife
+└── quizzes/                  # gespeicherte Quizzes (*.json)
+</code></pre>
+
+      <div class="note">
+        <strong>Wichtigste Regel der Struktur:</strong>
+        <code>engine.ts</code> und <code>scoring.ts</code> kennen weder
+        WebSockets noch Express. Sie sind reine Funktionen:
+        <code>(zustand, aktion) → neuer Zustand</code>. Dadurch sind sie ohne
+        Netzwerk testbar – und genau dort liegt die Logik, die stimmen muss.
+      </div>
+
+      <h2>Spielablauf als State-Machine</h2>
+
+      <figure class="diagram">
+        <svg
+          viewBox="0 0 740 150"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Zustandsdiagramm: Lobby, Frage läuft, Auflösung, Scoreboard, Endstand"
+        >
+          <defs>
+            <marker
+              id="ah2"
+              markerWidth="8"
+              markerHeight="8"
+              refX="7"
+              refY="4"
+              orient="auto"
+            >
+              <path d="M0,0 L8,4 L0,8 z" fill="currentColor" opacity="0.6" />
+            </marker>
+          </defs>
+          <rect
+            class="box-soft"
+            x="15"
+            y="45"
+            width="110"
+            height="46"
+            rx="10"
+          />
+          <text x="70" y="73" text-anchor="middle" font-weight="600">
+            LOBBY
+          </text>
+
+          <rect
+            class="box-soft"
+            x="175"
+            y="45"
+            width="130"
+            height="46"
+            rx="10"
+          />
+          <text x="240" y="66" text-anchor="middle" font-weight="600">
+            QUESTION
+          </text>
+          <text x="240" y="82" text-anchor="middle" class="small">
+            Antworten offen
+          </text>
+
+          <rect
+            class="box-soft"
+            x="355"
+            y="45"
+            width="120"
+            height="46"
+            rx="10"
+          />
+          <text x="415" y="66" text-anchor="middle" font-weight="600">
+            REVEAL
+          </text>
+          <text x="415" y="82" text-anchor="middle" class="small">
+            Auflösung
+          </text>
+
+          <rect
+            class="box-soft"
+            x="525"
+            y="45"
+            width="120"
+            height="46"
+            rx="10"
+          />
+          <text x="585" y="66" text-anchor="middle" font-weight="600">
+            SCOREBOARD
+          </text>
+          <text x="585" y="82" text-anchor="middle" class="small">
+            Zwischenstand
+          </text>
+
+          <rect class="box" x="620" y="120" width="105" height="26" rx="8" />
+          <text
+            x="672"
+            y="138"
+            text-anchor="middle"
+            font-weight="600"
+            font-size="12"
+          >
+            FINAL 🏆
+          </text>
+
+          <path class="arrow" d="M125 68 H 173" marker-end="url(#ah2)" />
+          <text x="149" y="60" text-anchor="middle" class="small">Start</text>
+
+          <path class="arrow" d="M305 68 H 353" marker-end="url(#ah2)" />
+          <text x="329" y="60" text-anchor="middle" class="small">
+            Timer/alle
+          </text>
+
+          <path class="arrow" d="M475 68 H 523" marker-end="url(#ah2)" />
+          <text x="499" y="60" text-anchor="middle" class="small">weiter</text>
+
+          <path
+            class="arrow"
+            d="M585 45 C 570 12, 260 12, 242 43"
+            marker-end="url(#ah2)"
+          />
+          <text x="415" y="18" text-anchor="middle" class="small">
+            nächste Frage (solange Fragen übrig)
+          </text>
+
+          <path
+            class="arrow"
+            d="M645 91 C 655 100, 660 108, 665 118"
+            marker-end="url(#ah2)"
+          />
+          <text x="700" y="108" text-anchor="middle" class="small">
+            letzte Frage
+          </text>
+        </svg>
+        <figcaption>
+          Alle Übergänge löst ausschließlich der Quizmaster (oder der
+          Server-Timer) aus. Teilnehmer können den Zustand nie verändern – nur
+          Antworten einreichen.
+        </figcaption>
+      </figure>
+
+      <p>
+        <strong>Timer als Substate von <code>QUESTION</code>:</strong> Beim
+        Anzeigen der Frage ist <code>questionEndsAt = null</code> – Antworten
+        sind bereits möglich, aber es läuft noch keine Uhr. Erst wenn der
+        Quizmaster <em>„Timer starten“</em> drückt (sofort oder z.&nbsp;B. nach
+        dem Vorlesen der Frage), setzt der Server
+        <code>questionEndsAt = jetzt + timeLimitSec</code> und broadcastet den
+        neuen Snapshot – ab da läuft auf allen Geräten der Countdown.
+        Timer-Ablauf oder „alle haben geantwortet“ löst <code>REVEAL</code> aus;
+        manuell auflösen kann der Quizmaster jederzeit, auch ganz ohne Timer.
+      </p>
+
+      <h2>Nachrichten-Protokoll (WebSocket)</h2>
+
+      <p>
+        Jede Nachricht ist ein JSON-Objekt im Umschlag
+        <code>{ type: string, payload: object }</code>. Alle Typen sind als
+        diskriminierte Union in <code>shared/src/messages.ts</code> definiert –
+        Client und Server parsen und versenden ausschließlich über diese Typen.
+      </p>
+
+      <h3>Client → Server</h3>
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Message-Typ</th>
+            <th>Sender</th>
+            <th>Payload</th>
+            <th>Wirkung</th>
+          </tr>
+          <tr>
+            <td><code>player:join</code></td>
+            <td>Teilnehmer</td>
+            <td><code>{ sessionId, name, playerId? }</code></td>
+            <td>
+              Beitritt bzw. Reconnect (mit vorhandener <code>playerId</code> aus
+              localStorage).
+            </td>
+          </tr>
+          <tr>
+            <td><code>player:answer</code></td>
+            <td>Teilnehmer</td>
+            <td><code>{ questionIndex, optionIndex }</code></td>
+            <td>
+              Antwort abgeben. Server prüft: richtige Frage? Timer offen? Noch
+              nicht geantwortet?
+            </td>
+          </tr>
+          <tr>
+            <td><code>host:createSession</code></td>
+            <td>Quizmaster</td>
+            <td><code>{ quizId }</code></td>
+            <td>Session anlegen, Join-URL + QR zurückgeben.</td>
+          </tr>
+          <tr>
+            <td><code>host:start</code></td>
+            <td>Quizmaster</td>
+            <td>–</td>
+            <td>LOBBY → erste Frage.</td>
+          </tr>
+          <tr>
+            <td><code>host:startTimer</code></td>
+            <td>Quizmaster</td>
+            <td>–</td>
+            <td>
+              Startet den Countdown der aktuellen Frage (<code
+                >questionEndsAt</code
+              >
+              wird gesetzt).
+            </td>
+          </tr>
+          <tr>
+            <td><code>host:reveal</code></td>
+            <td>Quizmaster</td>
+            <td>–</td>
+            <td>
+              Frage schließen und auflösen (jederzeit, auch ohne/vor
+              Timer-Ablauf).
+            </td>
+          </tr>
+          <tr>
+            <td><code>host:next</code></td>
+            <td>Quizmaster</td>
+            <td>–</td>
+            <td>Scoreboard → nächste Frage bzw. FINAL.</td>
+          </tr>
+        </table>
+      </div>
+
+      <h3>Server → Clients</h3>
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Message-Typ</th>
+            <th>Empfänger</th>
+            <th>Payload (Kern)</th>
+          </tr>
+          <tr>
+            <td><code>state</code></td>
+            <td>alle (Broadcast)</td>
+            <td>
+              Der komplette,
+              <strong>rollenspezifisch gefilterte</strong> Zustands-Snapshot –
+              siehe unten.
+            </td>
+          </tr>
+          <tr>
+            <td><code>player:answerAck</code></td>
+            <td>einzelner Teilnehmer</td>
+            <td>
+              <code>{ accepted: boolean }</code> – sofortige Bestätigung fürs
+              UI.
+            </td>
+          </tr>
+          <tr>
+            <td><code>error</code></td>
+            <td>einzelner Client</td>
+            <td>
+              <code>{ code, message }</code> – z.&nbsp;B. „Name schon vergeben“.
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="note">
+        <p style="margin-top: 0">
+          <strong>Eine Nachricht statt zwanzig:</strong> Nach jeder
+          Zustandsänderung broadcastet der Server einfach den neuen Snapshot als
+          <code>state</code>. Clients rendern stumpf, was ankommt (im
+          zustand-Store: ein <code>setState</code> pro Nachricht). Das
+          eliminiert die ganze Klasse von „Client hat Nachricht X verpasst“-Bugs
+          – und ein frisch verbundener (oder reconnecteter) Client ist mit dem
+          ersten <code>state</code> sofort synchron.
+        </p>
+        <p style="margin-bottom: 0">
+          <strong>Rollenfilter als Fairness-Garantie:</strong> Der Snapshot für
+          Teilnehmer enthält während <code>QUESTION</code> nur Fragetext und
+          Optionen – <em>nie</em> die richtige Antwort. Die kommt erst im
+          <code>REVEAL</code>-Snapshot. Der Quizmaster-Snapshot enthält
+          zusätzlich Antwortstatistik („17 von 23 haben geantwortet“).
+        </p>
+      </div>
+
+      <h2>Datenmodell</h2>
+
+      <pre><code>// shared/src/types.ts (Auszug)
+
+interface Quiz {
+  id: string;
+  title: string;
+  questions: Question[];
+}
+
+interface Question {
+  text: string;
+  options: string[];        // 2–6 Antwortoptionen
+  correctIndex: number;     // genau eine richtige
+  timeLimitSec: number;     // Default 30
+  points: number;           // Default 100
+}
+
+interface GameState {
+  phase: "LOBBY" | "QUESTION" | "REVEAL" | "SCOREBOARD" | "FINAL";
+  quiz: Quiz;
+  currentQuestionIndex: number;
+  questionEndsAt: number | null;   // null, bis der Host den Timer startet;
+                                   // danach Unix-Timestamp – Clients rechnen selbst runter
+  players: Map&lt;string, Player&gt;;    // key: playerId
+}
+
+interface Player {
+  id: string;               // vom Server vergeben, Client speichert in localStorage
+  name: string;
+  score: number;
+  answers: (number | null)[];      // gewählter optionIndex je Frage
+  connected: boolean;
+}</code></pre>
+
+      <h2 id="robustheit">Performance &amp; Robustheit im Hotspot-Szenario</h2>
+      <p>
+        Die eigentliche Herausforderung ist nicht Last, sondern
+        <strong>instabiles WLAN und Handy-Browser, die Tabs einfrieren</strong>.
+        Diese fünf Entscheidungen adressieren das:
+      </p>
+      <ol>
+        <li>
+          <strong>Serverseitiger Timer, keine Tick-Broadcasts.</strong> Beim
+          Timerstart verschickt der Server einmal
+          <code>questionEndsAt</code> (Timestamp); jeder Client rechnet die
+          Restzeit lokal herunter. Kein „jede Sekunde ein Broadcast an 40
+          Geräte“ – und ob eine Antwort rechtzeitig kam, entscheidet allein die
+          Server-Uhr.
+        </li>
+        <li>
+          <strong>Selbst gebauter Reconnect als Kernfeature.</strong> Da wir
+          rohe WebSockets statt Socket.IO nutzen, liegt der Reconnect bei uns –
+          einmalig gebaut in <code>client/src/lib/ws.ts</code>: bei
+          <code>close</code>/<code>error</code> neu verbinden mit exponentiellem
+          Backoff (0,5&nbsp;s → max. 5&nbsp;s), beim Wiederverbinden die
+          <code>playerId</code> (localStorage) per
+          <code>player:join</code> mitschicken. Der Server ordnet sie dem
+          bestehenden Player-Objekt zu und antwortet mit dem aktuellen Snapshot
+          – Display aus → Display an → weiterspielen. Serverseitig erkennt ein
+          Ping/Pong-Heartbeat (alle 15&nbsp;s) tote Verbindungen und markiert
+          Spieler als <code>connected: false</code>.
+        </li>
+        <li>
+          <strong>Kleine Payloads.</strong> Der Teilnehmer-Snapshot enthält
+          keine Spielerliste mit allen Antworten, sondern nur: Phase, Frage,
+          eigener Punktestand, Top-Scoreboard. Bei 40 Geräten im 2,4-GHz-Hotspot
+          zählt jedes Kilobyte.
+        </li>
+        <li>
+          <strong>Idempotente, validierende Handler.</strong> Jedes eingehende
+          Event wird gegen den Zustand geprüft (richtige Frage? Phase offen?
+          schon geantwortet?). Doppelte oder verspätete Events werden still
+          verworfen – wackliges Netz erzeugt genau solche Duplikate.
+        </li>
+        <li>
+          <strong>Statisches Frontend, einmal geladen.</strong> Vite-Build als
+          kleine statische Dateien (Ziel: &lt; 200 kB), danach läuft alles über
+          die eine WebSocket-Verbindung. Kein Nachladen mitten im Spiel.
+        </li>
+      </ol>
+
+      <h2 id="netzwerk">Netzwerk-Setup am Quizabend</h2>
+
+      <div class="card">
+        <h3>Ablauf für den Quizmaster</h3>
+        <ol>
+          <li>
+            Windows:
+            <em>Einstellungen → Netzwerk → Mobiler Hotspot</em> aktivieren (Name
+            + Passwort einmalig festlegen).
+          </li>
+          <li>
+            App starten: <code>npm start</code> – der Server bindet an
+            <code>0.0.0.0:3000</code>, ermittelt die eigene Hotspot-IP und zeigt
+            die Join-URL samt QR-Code in der Host-Ansicht an.
+          </li>
+          <li>
+            Teilnehmer: Hotspot-WLAN beitreten → QR scannen → Name eingeben →
+            spielen.
+          </li>
+        </ol>
+      </div>
+
+      <div class="warn">
+        <strong
+          >Bekannte Stolpersteine (im Feldtest, Phase 5, explizit
+          prüfen):</strong
+        >
+        <ul style="margin-bottom: 0">
+          <li>
+            <strong>Windows-Firewall:</strong> Beim ersten Start fragt Windows
+            nach Netzwerk-Freigabe für Node – „Privates Netzwerk“ erlauben,
+            sonst erreicht kein Handy den Server.
+          </li>
+          <li>
+            <strong>Hotspot-Gerätelimit:</strong> Der Windows-Mobile-Hotspot
+            erlaubt oft nur 8 Geräte gleichzeitig. Für größere Runden: einen
+            kleinen Reise-Router (~30&nbsp;€) mitnehmen und den Laptop per
+            Kabel/WLAN dranhängen – die App ändert sich dadurch nicht.
+          </li>
+          <li>
+            <strong>Kein HTTPS nötig – und das ist gut so:</strong> Im lokalen
+            Netz über IP-Adresse ist HTTP der reibungsloseste Weg.
+            Selbstsignierte Zertifikate würden auf jedem Handy Warnungen
+            produzieren.
+          </li>
+          <li>
+            <strong>„Kein Internet“-Warnung:</strong> Handys melden im Hotspot
+            ohne Uplink gern „Verbunden, kein Internet“ und fragen, ob man
+            verbunden bleiben will – die Teilnehmer-Ansicht sollte in der
+            Join-Hilfe kurz darauf hinweisen.
+          </li>
+        </ul>
+      </div>
+
+      <h2>Bewusst verworfene Alternativen</h2>
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Alternative</th>
+            <th>Warum verworfen</th>
+          </tr>
+          <tr>
+            <td>Cloud-Hosting (z.&nbsp;B. Railway, Fly.io)</td>
+            <td>
+              Widerspricht dem Kernszenario „funktioniert im Keller einer Kneipe
+              ohne Internet“. Kann später als Option dazukommen – die
+              Architektur (ein Node-Prozess) ist dafür bereits deploybar.
+            </td>
+          </tr>
+          <tr>
+            <td>Datenbank (SQLite, Postgres)</td>
+            <td>
+              Es gibt keine Daten, die eine Session überleben müssen, außer
+              Quizzes – und die sind als JSON-Dateien besser aufgehoben
+              (editierbar, versionierbar).
+            </td>
+          </tr>
+          <tr>
+            <td>Socket.IO statt nativer WebSockets</td>
+            <td>
+              Brächte Reconnect, Heartbeat und Long-Polling-Fallback fertig mit
+              – dafür ein eigenes Wire-Protokoll und eine Abstraktionsschicht
+              auf beiden Seiten. Entscheidung: standardnah bleiben und
+              Reconnect/Heartbeat selbst bauen (~100 Zeilen, siehe
+              <a href="#robustheit">Robustheit</a>). Der Long-Polling-Fallback
+              ist verzichtbar: Alle relevanten Mobilbrowser können WebSockets,
+              und es gibt keine Firmen-Proxies im eigenen Hotspot.
+            </td>
+          </tr>
+          <tr>
+            <td>State-Machine-Bibliothek (z.&nbsp;B. XState) im Server</td>
+            <td>
+              Die GameEngine ist eine handgeschriebene State-Machine: eine
+              diskriminierte Union für die Phasen + reine Übergangsfunktionen.
+              Bei 5 Zuständen und einer Handvoll Übergängen wäre eine Bibliothek
+              mehr Lernaufwand als Nutzen. Im Client übernimmt
+              <strong>zustand</strong> das State-<em>Management</em>
+              (Snapshot-Store) – eine State-<em>Machine</em> braucht das
+              Frontend nicht, denn die Zustandslogik lebt komplett im Server.
+            </td>
+          </tr>
+          <tr>
+            <td>Next.js / Nuxt / Full-Stack-Framework</td>
+            <td>
+              SSR, Routing-Magie und Server-Components lösen Probleme, die diese
+              App nicht hat, und koppeln den Server an ein Framework. Express +
+              Vite bleibt durchschaubar.
+            </td>
+          </tr>
+          <tr>
+            <td>WebRTC / Peer-to-Peer</td>
+            <td>
+              Ein zentraler Server existiert sowieso (der Laptop). P2P würde nur
+              Verbindungs-Komplexität importieren.
+            </td>
+          </tr>
+        </table>
+      </div>
+    </main>
+
+    <footer>
+      Quizzem · <a href="01-produktvision.html">Zurück: 1 · Produktvision</a> ·
+      Weiter: <a href="03-mvp-anleitung.html">3 · MVP-Anleitung</a>
+    </footer>
+  </body>
+</html>

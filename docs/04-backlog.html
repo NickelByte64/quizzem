@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4 · Backlog &amp; Ausbaustufen – Quizzem</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="topnav">
+      <a class="brand" href="index.html">🎯 Quizzem</a>
+      <a href="index.html">Übersicht</a>
+      <a href="01-produktvision.html">1 · Produktvision</a>
+      <a href="02-architektur.html">2 · Architektur</a>
+      <a href="03-mvp-anleitung.html">3 · MVP-Anleitung</a>
+      <a class="active" href="04-backlog.html">4 · Backlog</a>
+    </nav>
+
+    <main>
+      <h1>4 · Backlog &amp; Ausbaustufen</h1>
+      <p class="lead">
+        Alles, was bewusst hinter dem MVP zurücksteht – priorisiert nach dem
+        Wert für einen echten Quizabend und dem Aufwand für einen
+        Solo-Developer. Nach dem bestandenen Feldtest ist dies die
+        Einkaufsliste.
+      </p>
+
+      <div class="note">
+        <strong>Priorisierungslogik:</strong> P1 = macht den Quizabend spürbar
+        besser und ist auf der bestehenden Architektur billig zu haben. P2 =
+        klarer Mehrwert, aber echter Aufwand. P3 = nice-to-have oder verändert
+        den Produktcharakter. Die Einschätzungen bitte nach dem Feldtest gegen
+        die dort gesammelten Reibungspunkte prüfen – echte Beobachtungen
+        schlagen jede Vorab-Priorisierung.
+      </div>
+
+      <h2>P1 – Erste Ausbaustufe nach dem MVP</h2>
+
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Feature</th>
+            <th>Beschreibung</th>
+            <th>Warum P1 / Aufwand</th>
+          </tr>
+          <tr>
+            <td><strong>Speed-Bonus</strong></td>
+            <td>
+              Schnellere richtige Antworten bringen mehr Punkte (z.&nbsp;B.
+              linear abfallend von 100&nbsp;% auf 50&nbsp;%, gemessen ab
+              Timerstart durch den Quizmaster). Pro Quiz an-/abschaltbar.
+            </td>
+            <td>
+              Größter Spannungs-Hebel fürs Spielgefühl. Dank reiner
+              <code>scoring.ts</code>-Funktion und serverseitiger Zeitstempel
+              ein kleiner Eingriff. ~1–2 Abende.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Beamer-Ansicht</strong></td>
+            <td>
+              Dritte, rein lesende Ansicht (<code>/screen</code>) für
+              Projektor/TV: große Frage, Countdown-Balken, Scoreboard,
+              Siegertreppchen. Der Quizmaster behält seine Steuer-Ansicht.
+            </td>
+            <td>
+              Verwandelt das Produkt vom „Handy-Quiz“ zum Bühnen-Erlebnis.
+              Architektonisch nur ein weiterer Snapshot-Konsument mit eigener
+              Rolle. ~2–3 Abende.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Session-Snapshot auf Platte</strong></td>
+            <td>
+              Server schreibt den Spielzustand nach jeder Zustandsänderung in
+              eine Datei; nach Absturz/Neustart wird die Session
+              wiederhergestellt.
+            </td>
+            <td>
+              Versicherung gegen den Worst Case „Laptop stürzt bei Frage 8 ab“.
+              Da der Zustand ein serialisierbares Objekt ist: ~1 Abend.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Spieler entfernen / umbenennen</strong></td>
+            <td>
+              Quizmaster kann Störenfriede kicken und Tippfehler in Namen
+              korrigieren.
+            </td>
+            <td>Wird in der Kneipe garantiert gebraucht. Trivial. ~1 Abend.</td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>P2 – Zweite Ausbaustufe</h2>
+
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Feature</th>
+            <th>Beschreibung</th>
+            <th>Hinweise</th>
+          </tr>
+          <tr>
+            <td><strong>Teams</strong></td>
+            <td>
+              Teilnehmer wählen beim Beitritt ein Team; Wertung wahlweise pro
+              Person, pro Team (Summe oder Durchschnitt).
+            </td>
+            <td>
+              Klassisches Kneipenquiz-Format. Verändert Scoring, Scoreboard und
+              Join-Flow – sauber als eigenes Konzept planen, nicht
+              „dranschrauben“.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Bildfragen</strong></td>
+            <td>
+              Frage mit Bild (z.&nbsp;B. „Welches Wahrzeichen ist das?“). Bilder
+              liegen lokal in <code>quizzes/assets/</code>.
+            </td>
+            <td>
+              Editor braucht Upload, Spieler-Ansicht ein Layout mit Bild.
+              Achtung Payload-Größe im Hotspot – Bilder beim Import verkleinern.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Weitere Fragetypen</strong></td>
+            <td>
+              Schätzfrage (nächste Antwort gewinnt), Wahr/Falsch, Sortierfrage.
+            </td>
+            <td>
+              Jeder Typ = eigene Antwort-UI + eigene Scoring-Regel. Mit
+              Schätzfrage beginnen – beliebtester Kneipenquiz-Typ.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Quiz-Import/Export</strong></td>
+            <td>
+              Quizzes als Datei teilen; ggf. Import aus CSV („Fragen in Excel
+              vorbereiten“).
+            </td>
+            <td>
+              JSON-Dateien machen Export trivial; CSV-Import ist der eigentliche
+              Nutzen für Nicht-Techniker-Quizmaster.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Ergebnis-Export</strong></td>
+            <td>
+              Endstand nach dem Quiz als Datei/Ausdruck (Name, Punkte, Platz).
+            </td>
+            <td>
+              Für Siegerehrung mit Preisen und für Quiz-Reihen mit
+              Gesamtwertung.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Sound &amp; Feedback</strong></td>
+            <td>
+              Countdown-Sound, Auflösungs-Jingle, Konfetti fürs Treppchen (auf
+              der Beamer-Ansicht).
+            </td>
+            <td>
+              Reine Politur, aber großer Stimmungs-Effekt. Erst nach der
+              Beamer-Ansicht sinnvoll.
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>P3 – Später / nur bei Bedarf</h2>
+
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Feature</th>
+            <th>Beschreibung</th>
+            <th>Warum zurückgestellt</th>
+          </tr>
+          <tr>
+            <td><strong>Mehrere parallele Sessions</strong></td>
+            <td>
+              Ein Server, mehrere gleichzeitige Quizze (Session-Codes wie bei
+              Kahoot).
+            </td>
+            <td>
+              Widerspricht dem Ein-Laptop-Szenario; nur relevant, falls die App
+              mal gehostet wird. Architektur (Session-Objekt, Broadcast an die
+              Clients einer Session) lässt die Tür offen.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Cloud-Deployment</strong></td>
+            <td>
+              Gehostete Variante mit HTTPS, damit Teilnehmer übers Internet
+              mitspielen.
+            </td>
+            <td>
+              Anderes Produkt (Accounts? Missbrauch? Kosten?). Der
+              Ein-Prozess-Monolith wäre immerhin ohne Umbau deploybar.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Quiz-Historie &amp; Statistiken</strong></td>
+            <td>
+              Vergangene Abende speichern, Fragen-Schwierigkeit auswerten („nur
+              12 % wussten das“).
+            </td>
+            <td>
+              Braucht Persistenz über Sessions hinaus – erst dann lohnt sich der
+              Gedanke an SQLite.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>PWA / Installierbarkeit</strong></td>
+            <td>Teilnehmer-App als PWA mit Offline-Cache.</td>
+            <td>
+              Löst kein reales Problem: Die Seite lädt in Sekunden aus dem
+              lokalen Netz.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>i18n / Mehrsprachigkeit</strong></td>
+            <td>Umschaltbare Oberflächensprache.</td>
+            <td>
+              Erst relevant, wenn die App den eigenen Freundeskreis verlässt.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Buzzer-Modus</strong></td>
+            <td>
+              Wer zuerst buzzert, darf antworten (mündlich); App wertet nur
+              Buzzer-Reihenfolge und Punkte.
+            </td>
+            <td>
+              Spannendes anderes Spielformat – aber eine zweite State-Machine.
+              Als eigenes „Spielmodus“-Konzept angehen.
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>Technische Schulden-Wache</h2>
+      <p>
+        Kein separater „Refactoring-Sprint“ – stattdessen drei stehende Regeln,
+        die das Backlog begleiten:
+      </p>
+      <ul>
+        <li>
+          <strong>Jede neue Spielregel läuft durch die Engine.</strong> Sobald
+          Logik in Socket-Handlern oder UI-Komponenten landet, ist das ein Bug –
+          auch wenn es funktioniert.
+        </li>
+        <li>
+          <strong>Shared Types zuerst.</strong> Jedes neue Feature beginnt mit
+          der Typ-Änderung in <code>shared/</code>; Compiler-Fehler zeigen dann
+          alle betroffenen Stellen in Client und Server.
+        </li>
+        <li>
+          <strong>Der Feldtest bleibt der Maßstab.</strong> Nach jeder größeren
+          Ausbaustufe einmal den kompletten Hotspot-Durchlauf aus
+          <a href="03-mvp-anleitung.html">Phase 5</a> wiederholen.
+        </li>
+      </ul>
+
+      <h2>Nach dem Feldtest hierher</h2>
+      <div class="card">
+        <p style="margin: 0.25rem 0">
+          Die in der Generalprobe (Phase 5) gesammelten Reibungspunkte gehören
+          als eigene Zeilen in dieses Backlog – <em>vor</em> die P1-Features,
+          wenn sie einen echten Quizabend stören. Beobachtete Probleme echter
+          Nutzer schlagen geplante Features. Immer.
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      Quizzem · <a href="03-mvp-anleitung.html">Zurück: 3 · MVP-Anleitung</a> ·
+      <a href="index.html">Zur Übersicht</a>
+    </footer>
+  </body>
+</html>

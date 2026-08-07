@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quizzem – Projektdokumentation</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="topnav">
+      <a class="brand" href="index.html">🎯 Quizzem</a>
+      <a class="active" href="index.html">Übersicht</a>
+      <a href="01-produktvision.html">1 · Produktvision</a>
+      <a href="02-architektur.html">2 · Architektur</a>
+      <a href="03-mvp-anleitung.html">3 · MVP-Anleitung</a>
+      <a href="04-backlog.html">4 · Backlog</a>
+    </nav>
+
+    <main>
+      <h1>Quizzem – Echtzeit-Quiz für Kneipenabende</h1>
+      <p class="lead">
+        Projektdokumentation für den Bau eines MVP: eine Echtzeit-Quiz-App, bei
+        der ein Quizmaster ein Trivia-Quiz moderiert und Teilnehmende über ihr
+        Smartphone per URL mitspielen. Geplant für einen Solo-Developer im
+        Node.js-Ökosystem.
+      </p>
+
+      <div class="note">
+        <strong>Kernidee:</strong> Der Quizmaster startet die App auf seinem
+        Laptop, öffnet einen WLAN-Hotspot, und alle Teilnehmenden verbinden sich
+        über ihren Browser – ohne Installation, ohne Internet, ohne Cloud.
+      </div>
+
+      <h2>Die Dokumente</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>
+            <a href="01-produktvision.html"
+              >1 · Produktvision &amp; Anforderungen</a
+            >
+          </h3>
+          <p>
+            Was gebaut wird und warum: Rollen, User Stories, MVP-Abgrenzung (was
+            ist drin, was bewusst nicht) und die getroffenen Annahmen, die du
+            als Product Owner absegnen oder ändern solltest.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>
+            <a href="02-architektur.html">2 · Architektur &amp; Techstack</a>
+          </h3>
+          <p>
+            Wie das System aufgebaut ist: ein einzelner Node.js-Prozess als
+            autoritativer Spielserver, native WebSockets für Echtzeit,
+            In-Memory-State, Datenmodell, Event-Protokoll und das
+            Hotspot-Netzwerk-Setup.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>
+            <a href="03-mvp-anleitung.html">3 · Schritt-für-Schritt zum MVP</a>
+          </h3>
+          <p>
+            Der Bauplan aus Product-Owner-Sicht: sechs Phasen mit klaren Zielen,
+            User Stories, Akzeptanzkriterien und Definition of Done – geordnet
+            nach Risiko, damit das Kritischste zuerst funktioniert.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3><a href="04-backlog.html">4 · Backlog &amp; Ausbaustufen</a></h3>
+          <p>
+            Alles, was bewusst <em>nicht</em> im MVP ist: Speed-Bonus, Teams,
+            Beamer-Ansicht, Bildfragen, weitere Fragetypen und mehr –
+            priorisiert, damit du nach dem MVP weißt, was sich als Nächstes
+            lohnt.
+          </p>
+        </div>
+      </div>
+
+      <h2>Das Wichtigste in 30 Sekunden</h2>
+
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Produkt</th>
+            <td>
+              Echtzeit-Quiz-App für Kneipenquiz / Trivia-Abende, zwei Ansichten
+              (Quizmaster &amp; Teilnehmer), Punkte-Tracking,
+              Gewinner-Ermittlung.
+            </td>
+          </tr>
+          <tr>
+            <th>Betrieb</th>
+            <td>
+              Lokal auf dem Laptop des Quizmasters, Teilnahme über WLAN-Hotspot
+              + URL/QR-Code. Kein Internet nötig.
+            </td>
+          </tr>
+          <tr>
+            <th>Techstack</th>
+            <td>
+              Node.js + Express + native WebSockets (<code>ws</code>) im Server,
+              Vite + React + zustand im Client, TypeScript, In-Memory-State,
+              Quizzes als JSON-Dateien.
+            </td>
+          </tr>
+          <tr>
+            <th>Team</th>
+            <td>
+              1 Solo-Developer. Architektur und Plan sind konsequent darauf
+              ausgelegt: ein Prozess, ein Repo, keine Datenbank, keine
+              Infrastruktur.
+            </td>
+          </tr>
+          <tr>
+            <th>MVP-Umfang</th>
+            <td>
+              Quiz anlegen (einfacher Editor), Session starten, Beitritt per
+              URL/QR, Multiple-Choice-Fragen mit Timer, Live-Scoreboard,
+              Endstand mit Sieger.
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>Empfohlene Lesereihenfolge</h2>
+      <ol>
+        <li>
+          <a href="01-produktvision.html">Produktvision</a> lesen und die
+          <strong>getroffenen Annahmen</strong> prüfen – dort stehen die
+          Entscheidungen, die du noch kippen kannst, bevor Code entsteht.
+        </li>
+        <li>
+          <a href="02-architektur.html">Architektur</a> überfliegen, um das
+          Systembild im Kopf zu haben.
+        </li>
+        <li>
+          Mit
+          <a href="03-mvp-anleitung.html">Phase 0 der MVP-Anleitung</a>
+          loslegen.
+        </li>
+      </ol>
+    </main>
+
+    <footer>Quizzem · Projektdokumentation · Stand: August 2026</footer>
+  </body>
+</html>
