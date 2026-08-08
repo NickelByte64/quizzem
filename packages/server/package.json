@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "module",
+  "author": "NickelByte64",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.2.1",
+    "helmet": "^8.3.0",
+    "tsx": "^4.23.11"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6"
+  }
+}
+

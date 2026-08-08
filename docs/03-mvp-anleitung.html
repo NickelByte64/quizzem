@@ -86,8 +86,13 @@
           einmal, dann nie wieder anfassen.
         </li>
         <li>
-          Express-Server, der den Vite-Build statisch ausliefert und an
-          <code>0.0.0.0:3000</code> bindet.
+          Express-Server (Backend, läuft separat via <code>tsx</code>), der an
+          <code>0.0.0.0:3000</code> bindet und den Vite-Build des Frontends
+          (<code>client/dist/</code>) statisch ausliefert. Vite baut nur den
+          React-Client – das Backend wird nicht von Vite gebaut. Zwei
+          npm-Skripte: <code>npm run dev</code> (Vite-Dev-Server mit Proxy auf
+          Express, für die Entwicklung) und <code>npm start</code>
+          (<code>vite build</code> + ein Express-Prozess für den Quizabend).
         </li>
         <li>
           WebSocket-Server (<code>ws</code>) einbinden: Server broadcastet jede

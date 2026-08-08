@@ -1,0 +1,15 @@
+{
+  "name": "quizzem",
+  "version": "0.0.0",
+  "description": "Real-time quiz app for pub quizzes and trivia nights. A quizmaster hosts the app locally on their laptop, whilst participants join in via a URL or QR code on their smartphones – completely offline via a Wi-Fi hotspot.",
+  "author": "NickelByte64",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "prettier": "^3.9.6",
+    "typescript": "^7.0.2"
+  }
+}
