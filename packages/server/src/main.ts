@@ -2,6 +2,8 @@ import { server } from './http.server.ts';
 import { wss } from './ws.server.ts';
 
 wss.on('connection', (ws) => {
+  ws.on('error', console.error);
+
   console.log('New WebSocket connection established on server side');
 });
 
