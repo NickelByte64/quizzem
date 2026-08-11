@@ -1,14 +1,11 @@
-import express, { type Express } from 'express';
-import helmet from 'helmet';
-import { resolve } from 'node:path';
+import { server } from './http.server.ts';
+import { wss } from './ws.server.ts';
 
-const app: Express = express();
+wss.on('connection', (ws) => {
+  console.log('New WebSocket connection established on server side');
+});
 
-app.use(helmet());
-app.disable('x-powered-by');
-
-app.use('/', express.static(resolve(import.meta.dirname, '../../client/dist')));
-
-app.listen(3000, () => {
+server.listen(3000, '0.0.0.0', () => {
   console.log('Server is running on port 3000');
 });
+
