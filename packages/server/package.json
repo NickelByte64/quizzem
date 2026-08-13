@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@quizzem/server",
   "version": "0.0.0",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,7 @@
   "author": "NickelByte64",
   "license": "MIT",
   "dependencies": {
+    "@quizzem/shared": "workspace:*",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "helmet": "^8.3.0",
@@ -23,3 +24,4 @@
     "@types/ws": "^8.18.1"
   }
 }
+
