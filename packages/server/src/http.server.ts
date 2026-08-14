@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import { createServer } from 'node:http';
 import { resolve } from 'node:path';
 
-export const app: Express = express();
+const app: Express = express();
 export const server = createServer(app);
 
 app.use(
@@ -24,3 +24,9 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 app.disable('x-powered-by');
 
 app.use('/', express.static(resolve(import.meta.dirname, '../../client/dist')));
+
+export function startHttpServer() {
+  server.listen(3000, '0.0.0.0', () => {
+    console.log('Server is running on port 3000');
+  });
+}
