@@ -1,14 +1,14 @@
-import { type SocketMessageData } from '@quizzem/shared';
+import { type ClientMessage, type ServerMessage } from '@quizzem/shared';
 import { useCallback, useEffect, useRef } from 'react';
 
 const MAX_RETRY_ATTEMPTS: number = 10;
 
-type UseWebSocketProps<T> = {
+type UseWebSocketProps = {
   reconnect?: boolean;
-  onMessage?: (data: SocketMessageData<T>) => void;
+  onMessage?: (data: ServerMessage) => void;
 };
 
-export function useWebSocket<T>(props: Readonly<UseWebSocketProps<T>>) {
+export function useWebSocket(props: Readonly<UseWebSocketProps>) {
   const { onMessage, reconnect = true } = props;
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -21,6 +21,7 @@ export function useWebSocket<T>(props: Readonly<UseWebSocketProps<T>>) {
   onMessageRef.current = onMessage;
   const reconnectRef = useRef(reconnect);
   reconnectRef.current = reconnect;
+  const pendingRef = useRef<string[]>([]);
 
   useEffect(() => {
     function connect() {
@@ -30,6 +31,10 @@ export function useWebSocket<T>(props: Readonly<UseWebSocketProps<T>>) {
       WS_CLIENT.onopen = () => {
         console.log('WebSocket connection established on client side');
         attemptRef.current = 0;
+
+        // send pending messages
+        for (const message of pendingRef.current) WS_CLIENT.send(message);
+        pendingRef.current = [];
       };
 
       WS_CLIENT.onmessage = (event) => {
@@ -71,9 +76,13 @@ export function useWebSocket<T>(props: Readonly<UseWebSocketProps<T>>) {
     };
   }, []);
 
-  const send = useCallback((data: unknown) => {
+  const send = useCallback((data: ClientMessage) => {
+    const message = JSON.stringify(data);
+
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(data));
+      wsRef.current.send(message);
+    } else {
+      pendingRef.current.push(message);
     }
   }, []);
 

@@ -1,5 +1,6 @@
-import { type SocketServerClockData } from '@quizzem/shared';
+import { type ServerMessage } from '@quizzem/shared';
 import { WebSocket, WebSocketServer } from 'ws';
+import { GameRoomHandler } from './features/game-room/api/game.handler.ts';
 import { server } from './http.server.ts';
 
 const wss = new WebSocketServer({ server, path: '/ws' });
@@ -7,7 +8,7 @@ const wss = new WebSocketServer({ server, path: '/ws' });
 const displayHeartbeat = false;
 
 export function startWebSocketServer() {
-  wss.on('connection', (ws, req) => {
+  wss.on('connection', async (ws, req) => {
     console.log('New WebSocket connection established on server side for', req.socket.remoteAddress);
     ws.isAlive = true;
 
@@ -15,16 +16,17 @@ export function startWebSocketServer() {
       ws.isAlive = true;
       displayHeartbeat && console.log('[heartbeat] pong received');
     });
+
+    await GameRoomHandler.connectToGameRoom(ws, req);
   });
 
   // Broadcast the current time to all connected clients every second
   setInterval(() => {
-    const payload: SocketServerClockData = { type: 'CLOCK', payload: { now: Date.now() } };
-    const message = JSON.stringify(payload);
+    const message: ServerMessage = { type: 'CLOCK', payload: { now: Date.now() } };
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
+        client.send(JSON.stringify(message));
       }
     });
   }, 1_000);
