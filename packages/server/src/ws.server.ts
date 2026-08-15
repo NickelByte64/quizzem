@@ -18,6 +18,7 @@ export function startWebSocketServer() {
     });
 
     await GameRoomHandler.connectToGameRoom(ws, req);
+    await GameRoomHandler.createGameRoom(ws, req);
   });
 
   // Broadcast the current time to all connected clients every second

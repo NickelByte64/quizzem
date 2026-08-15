@@ -1,7 +1,7 @@
 // ---- Server → Client ----
 type ServerMessages = {
   CLOCK: { now: number };
-  SEND_QR_CODE: { qrCode: string };
+  'QR_CODE:SEND': { qrCode: string };
 };
 
 export type ServerMessage = {
@@ -9,8 +9,14 @@ export type ServerMessage = {
 }[keyof ServerMessages];
 
 // ---- Client → Server ----
-// Noch ohne Payloads – sobald welche dazukommen, dasselbe Map-Pattern wie oben.
-export type ClientMessages = 'REQUEST_QR_CODE';
-export type ClientMessage = {
-  type: ClientMessages;
+// Eine Zeile pro Message: Name → Payload, `undefined` = Message ohne Payload.
+type ClientMessages = {
+  'QR_CODE:REQUEST': undefined;
+  'GAME_ROOM:CREATE': { name: string };
 };
+
+export type ClientMessage = {
+  [K in keyof ClientMessages]: undefined extends ClientMessages[K]
+    ? { type: K; payload?: ClientMessages[K] }
+    : { type: K; payload: ClientMessages[K] };
+}[keyof ClientMessages];
