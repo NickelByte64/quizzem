@@ -9,7 +9,7 @@ import {
   type JSX,
   type PropsWithChildren,
 } from 'react';
-import { useWebSocket } from '../../lib/useWebSocket';
+import { useWebSocket } from '../../api/use-web-socket';
 
 type SendHandler = (data: ClientMessage) => void;
 type MessageListener = (msg: ServerMessage) => void;

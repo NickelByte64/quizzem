@@ -2,3 +2,4 @@ packages:
   - "packages/*"
 allowBuilds:
   esbuild: true
+  sqlite3: true

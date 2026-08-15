@@ -5,11 +5,12 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./index.ts",
-      "default": "./index.ts"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
     }
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   }
 }
+

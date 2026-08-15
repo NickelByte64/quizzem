@@ -1,6 +1,6 @@
 import { type ServerMessage } from '@quizzem/shared';
 import { WebSocket, WebSocketServer } from 'ws';
-import { GameRoomHandler } from './features/game-room/api/game.handler.ts';
+import { GameRoomHandler } from './features/game-room/api/game-room.handler.ts';
 import { server } from './http.server.ts';
 
 const wss = new WebSocketServer({ server, path: '/ws' });
@@ -18,7 +18,6 @@ export function startWebSocketServer() {
     });
 
     await GameRoomHandler.connectToGameRoom(ws, req);
-    await GameRoomHandler.createGameRoom(ws, req);
   });
 
   // Broadcast the current time to all connected clients every second

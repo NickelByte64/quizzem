@@ -1,16 +1,11 @@
-import { useState, type JSX } from 'react';
-import { useClientMessages, useServerMessages } from '../../contexts/web-socket/web-socket.context';
+import type { CreateGameRoomDto } from '@quizzem/shared';
+import { type JSX } from 'react';
+import { useGetQuizzemData, usePostQuizzemData } from '../../api/use-quizzem-api';
 
 export function HostPage(): JSX.Element {
-  const [serverTime, setServerTime] = useState<number | null>(null);
-  const [qrCode, setQrCode] = useState<string | null>(null);
-
-  useServerMessages((msg) => {
-    if (msg.type === 'CLOCK') setServerTime(msg.payload.now);
-    if (msg.type === 'QR_CODE:SEND') setQrCode(msg.payload.qrCode);
-  });
-
-  const send = useClientMessages();
+  const { data } = useGetQuizzemData('/game-room');
+  const { mutate } = usePostQuizzemData<CreateGameRoomDto, void>('/game-room');
+  console.log(data);
 
   return (
     <div>
@@ -21,10 +16,12 @@ export function HostPage(): JSX.Element {
         <button
           type="button"
           onClick={() => {
-            send({ type: 'GAME_ROOM:CREATE', payload: { name: 'This is a test game room' } });
+            mutate({ name: 'test name' });
           }}>
           Create a game room
         </button>
+
+        <pre>{JSON.stringify(data, null, 2)}</pre>
       </div>
     </div>
   );

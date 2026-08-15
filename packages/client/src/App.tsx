@@ -1,31 +1,18 @@
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { type JSX } from 'react';
+import { QUERY_CLIENT } from './api/query-client';
 import { WebSocketProvider } from './contexts/web-socket/web-socket.context';
 import { HostPage } from './features/host/host.page';
 
 export function App(): JSX.Element {
-  // const [serverTime, setServerTime] = useState<number | null>(null);
-  // const [qrCode, setQrCode] = useState<string | null>(null);
-
-  // const { send } = useWebSocket({
-  //   onMessage: (data) => {
-  //     if (data.type === 'CLOCK') setServerTime(data.payload.now);
-  //     if (data.type === 'QR_CODE:SEND') setQrCode(data.payload.qrCode);
-  //   },
-  // });
-
-  // useEffect(() => {
-  //   send({ type: 'QR_CODE:REQUEST' });
-  // }, [qrCode, send]);
-
   return (
-    <WebSocketProvider>
-      {/* <div>
-        <div>{serverTime ? new Date(serverTime).toLocaleTimeString() : 'Loading...'}</div>
-        {qrCode && <img src={qrCode} />} */}
-
-      <HostPage />
-      {/* </div> */}
-    </WebSocketProvider>
+    <QueryClientProvider client={QUERY_CLIENT}>
+      <WebSocketProvider>
+        <HostPage />
+        <ReactQueryDevtools initialIsOpen={false} position="bottom" buttonPosition="bottom-left" />
+      </WebSocketProvider>
+    </QueryClientProvider>
   );
 }
 

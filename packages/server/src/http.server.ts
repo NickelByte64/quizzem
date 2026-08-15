@@ -3,6 +3,7 @@ import express, { type Express } from 'express';
 import helmet from 'helmet';
 import { createServer } from 'node:http';
 import { resolve } from 'node:path';
+import GameRoomController from './features/game-room/api/game-room.controller.ts';
 
 const app: Express = express();
 export const server = createServer(app);
@@ -22,8 +23,11 @@ app.use(
 );
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.disable('x-powered-by');
+app.use(express.json());
 
 app.use('/', express.static(resolve(import.meta.dirname, '../../client/dist')));
+
+app.use('/game-room', GameRoomController);
 
 export function startHttpServer() {
   server.listen(3000, '0.0.0.0', () => {
