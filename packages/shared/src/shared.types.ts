@@ -15,17 +15,3 @@ export type ServerMessage = {
     ? { type: K; payload?: ServerMessages[K] }
     : { type: K; payload: ServerMessages[K] };
 }[keyof ServerMessages];
-
-// ---- Client → Server ----
-// Eine Zeile pro Message: Name → Payload, `undefined` = Message ohne Payload.
-type ClientMessages = {
-  'QR_CODE:REQUEST': undefined;
-  'SESSION:REQUEST': undefined;
-  'SESSION:JOIN': { player: { name: string } };
-};
-
-export type ClientMessage = {
-  [K in keyof ClientMessages]: undefined extends ClientMessages[K]
-    ? { type: K; payload?: ClientMessages[K] }
-    : { type: K; payload: ClientMessages[K] };
-}[keyof ClientMessages];

@@ -25,9 +25,8 @@ export function startWebSocketServer() {
       displayHeartbeat && console.log('[heartbeat] pong received');
     });
 
-    await GameRoomHandler.connectToGameRoom(ws, req);
-    await SessionHandler.createSession(ws, req);
-    await SessionHandler.joinSession(ws, req);
+    await GameRoomHandler(ws, req);
+    await SessionHandler(ws, req);
   });
 
   // Broadcast the current time to all connected clients every second

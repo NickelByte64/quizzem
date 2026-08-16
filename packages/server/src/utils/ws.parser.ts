@@ -1,15 +1,14 @@
-import type { ClientMessage } from '@quizzem/shared';
+import { clientMessageSchema, type ClientMessage } from '@quizzem/shared';
 import type { RawData } from 'ws';
 
-function parseClientMessage(raw: RawData): ClientMessage {
-  let msg: ClientMessage;
+function parseClientMessage(raw: RawData): ClientMessage | null {
   try {
-    msg = JSON.parse(raw.toString());
+    const result = clientMessageSchema.safeParse(JSON.parse(raw.toString()));
+    return result.success ? result.data : null;
   } catch (e) {
     console.error(e);
-    throw new Error('Could not parse the client message');
+    return null;
   }
-  return msg;
 }
 
 export const WsParser = { parseClientMessage };
