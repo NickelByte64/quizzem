@@ -22,3 +22,9 @@ export async function SessionHandler(ws: WebSocket, req: IncomingMessage): Promi
     }
   });
 }
+
+async function handleDisconnect(ws: WebSocket) {
+  SessionService.handleDisconnect(ws);
+}
+
+SessionHandler.handleDisconnect = handleDisconnect;

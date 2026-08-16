@@ -27,6 +27,10 @@ export function startWebSocketServer() {
 
     await GameRoomHandler(ws, req);
     await SessionHandler(ws, req);
+
+    ws.on('close', () => {
+      SessionHandler.handleDisconnect(ws);
+    });
   });
 
   // Broadcast the current time to all connected clients every second

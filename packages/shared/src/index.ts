@@ -1,3 +1,2 @@
-export * from './schema.ts';
-export * from './session.types.ts';
-export * from './shared.types.ts';
+export * from './schemas/session.schema.ts';
+export * from './schemas/ws.schema.ts';

@@ -12,6 +12,8 @@ const session: Session = {
   createdAt: Date.now(),
 };
 
+export const playersBySocket = new Map<WebSocket, Player['id']>();
+
 async function createSession(ws: WebSocket) {
   const address = Object.values(networkInterfaces())
     .flat()
@@ -31,28 +33,58 @@ async function createSession(ws: WebSocket) {
 }
 
 async function joinSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:JOIN'>) {
-  const playerName = clientMessage.payload.player.name;
+  const { player, playerId } = clientMessage.payload;
 
-  const playerIsInSession = session.players.map((sessionPlayer) => sessionPlayer.name).includes(playerName);
-  if (playerIsInSession) {
-    console.log(`player ${playerName} is already in session`);
+  // reconnect if ID is known
+  const existingPlayer = playerId ? session.players.find((p) => p.id === playerId) : undefined;
+  if (existingPlayer) {
+    existingPlayer.connected = true;
+    existingPlayer.name = player.name;
+    playersBySocket.set(ws, existingPlayer.id);
+
+    ws.send(
+      JSON.stringify({ type: 'SESSION:JOINED', payload: { playerId: existingPlayer.id } } satisfies ServerMessage),
+    );
+    broadcast({ type: 'SESSION:STATE', payload: { session } });
     return;
   }
 
-  const playerId = randomUUID();
-  const playerIdMessage: ServerMessage = { type: 'SESSION:JOINED', payload: { playerId } };
-  ws.send(JSON.stringify(playerIdMessage));
+  const nameTaken = session.players.some((p) => p.name.toLowerCase() === player.name.toLowerCase());
+  if (nameTaken) {
+    ws.send(
+      JSON.stringify({
+        type: 'SESSION:ERROR',
+        payload: { message: 'Name has already been taken.' },
+      } satisfies ServerMessage),
+    );
+    return;
+  }
 
   const newPlayer: Player = {
-    id: playerId,
-    name: playerName,
+    id: randomUUID(),
+    name: player.name,
     connected: true,
   };
-
   session.players.push(newPlayer);
 
-  const message: ServerMessage = { type: 'SESSION:STATE', payload: { session } };
-  broadcast(message);
+  playersBySocket.set(ws, newPlayer.id);
+  ws.send(JSON.stringify({ type: 'SESSION:JOINED', payload: { playerId: newPlayer.id } } satisfies ServerMessage));
+  broadcast({ type: 'SESSION:STATE', payload: { session } });
 }
 
-export const SessionService = { createSession, joinSession };
+function handleDisconnect(ws: WebSocket): void {
+  const id = playersBySocket.get(ws);
+  playersBySocket.delete(ws);
+  if (!id) return;
+
+  // Player might be back through a new Socket
+  if ([...playersBySocket.values()].includes(id)) return;
+
+  const player = session.players.find((p) => p.id === id);
+  if (!player) return;
+
+  player.connected = false;
+  broadcast({ type: 'SESSION:STATE', payload: { session } });
+}
+
+export const SessionService = { createSession, joinSession, handleDisconnect };
