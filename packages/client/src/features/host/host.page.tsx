@@ -1,28 +1,28 @@
-import type { CreateGameRoomDto } from '@quizzem/shared';
-import { type JSX } from 'react';
-import { useGetQuizzemData, usePostQuizzemData } from '../../api/use-quizzem-api';
+import type { Session } from '@quizzem/shared';
+import { useState, type JSX } from 'react';
+import { useClientMessages, useServerMessages } from '../../contexts/web-socket/web-socket.context';
 
 export function HostPage(): JSX.Element {
-  const { data } = useGetQuizzemData('/game-room');
-  const { mutate } = usePostQuizzemData<CreateGameRoomDto, void>('/game-room');
-  console.log(data);
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+
+  useServerMessages((msg) => {
+    if (msg.type === 'SESSION:CREATE') setQrCode(msg.payload.qrCode);
+    if (msg.type === 'SESSION:STATE') setSession(msg.payload.session);
+  });
+  const send = useClientMessages();
 
   return (
     <div>
       <h1>Host</h1>
-      <h3>Create a room</h3>
+      <h3>Create a quiz session</h3>
 
-      <div>
-        <button
-          type="button"
-          onClick={() => {
-            mutate({ name: 'test name' });
-          }}>
-          Create a game room
-        </button>
+      <button type="button" onClick={() => send({ type: 'SESSION:REQUEST' })}>
+        Create session
+      </button>
 
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      </div>
+      {qrCode && <img src={qrCode} alt="Join via qr code" />}
+      {session && <pre>{JSON.stringify(session, null, 2)}</pre>}
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import cors from 'cors';
-import express, { type Express } from 'express';
+import express, { type Express, type Request, type Response } from 'express';
 import helmet from 'helmet';
 import { createServer } from 'node:http';
 import { resolve } from 'node:path';
 import GameRoomController from './features/game-room/api/game-room.controller.ts';
+import QuizController from './features/quiz/api/quiz.controller.ts';
 
 const app: Express = express();
 export const server = createServer(app);
@@ -25,9 +26,16 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 app.disable('x-powered-by');
 app.use(express.json());
 
-app.use('/', express.static(resolve(import.meta.dirname, '../../client/dist')));
+const CLIENT_DIST = resolve(import.meta.dirname, '../../client/dist');
 
-app.use('/game-room', GameRoomController);
+app.use('/', express.static(CLIENT_DIST));
+
+app.use('/api/game-room', GameRoomController);
+app.use('/api/quiz', QuizController);
+
+app.get('/*splat', (req: Request, res: Response) => {
+  res.sendFile(resolve(CLIENT_DIST, 'index.html'));
+});
 
 export function startHttpServer() {
   server.listen(3000, '0.0.0.0', () => {
