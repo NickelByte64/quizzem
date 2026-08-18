@@ -17,7 +17,7 @@ export async function SessionHandler(ws: WebSocket, req: IncomingMessage): Promi
           SessionService.joinSession(ws, clientMessage);
           break;
         case 'SESSION:RETRIEVE':
-          SessionService.retrieveSession(ws, clientMessage);
+          await SessionService.retrieveSession(ws, clientMessage);
           break;
       }
     } catch (err) {

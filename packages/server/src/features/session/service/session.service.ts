@@ -18,28 +18,18 @@ export const playersBySocket = new Map<WebSocket, Player['id']>();
 async function createSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:CREATE'>): Promise<void> {
   const { host } = clientMessage.payload;
 
-  const address = Object.values(networkInterfaces())
-    .flat()
-    .find((ni) => ni?.family === 'IPv4' && !ni.internal)?.address;
-  if (!address) throw new Error('No ipv4 found');
-
   // create a new session
   session.id = randomBytes(4).toString('hex');
   session.host = host;
   session.createdAt = Date.now();
   session.players = [];
 
-  const joinUrl = `http://${address}:3000/play/${session.id}`;
-
-  const qrCode = await QrCodeServices.generateQR(joinUrl);
-  if (!qrCode) return;
-
-  ws.send(JSON.stringify({ type: 'SESSION:QR_CODE', payload: { qrCode, plainUrl: joinUrl } } satisfies ServerMessage));
+  await sendJoinInfo(ws);
 
   broadcast({ type: 'SESSION:STATE', payload: { session } });
 }
 
-function retrieveSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:RETRIEVE'>): void {
+async function retrieveSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:RETRIEVE'>): Promise<void> {
   const { sessionId } = clientMessage.payload;
 
   if (sessionId !== session.id) {
@@ -53,6 +43,7 @@ function retrieveSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:
   }
 
   ws.send(JSON.stringify({ type: 'SESSION:STATE', payload: { session } } satisfies ServerMessage));
+  await sendJoinInfo(ws);
 }
 
 function joinSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:JOIN'>): void {
@@ -135,6 +126,25 @@ function handleDisconnect(ws: WebSocket): void {
 
   player.connected = false;
   broadcast({ type: 'SESSION:STATE', payload: { session } });
+}
+
+function buildJoinUrl(sessionId: string): string {
+  const address = Object.values(networkInterfaces())
+    .flat()
+    .find((ni) => ni?.family === 'IPv4' && !ni.internal)?.address;
+  if (!address) throw new Error('No ipv4 found');
+
+  return `http://${address}:3000/play/${sessionId}`;
+}
+
+async function sendJoinInfo(ws: WebSocket): Promise<void> {
+  const joinUrl = buildJoinUrl(session.id);
+  const qrCode = await QrCodeServices.generateQR(joinUrl);
+  if (!qrCode) return;
+
+  ws.send(
+    JSON.stringify({ type: 'SESSION:JOIN_INFO', payload: { qrCode, plainUrl: joinUrl } } satisfies ServerMessage),
+  );
 }
 
 export const SessionService = { createSession, joinSession, handleDisconnect, retrieveSession, setHostConnected };

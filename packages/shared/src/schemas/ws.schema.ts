@@ -21,7 +21,7 @@ export type ClientMessageOf<K extends ClientMessage['type']> = Extract<ClientMes
 
 export const serverMessageSchema = z.discriminatedUnion('type', [
   z.object({
-    type: z.literal('SESSION:QR_CODE'),
+    type: z.literal('SESSION:JOIN_INFO'),
     payload: z.object({
       qrCode: z.string(),
       plainUrl: z.string(),

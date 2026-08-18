@@ -15,7 +15,7 @@ export function HostPage(): JSX.Element {
   const [host, setHost] = useState<Player | null>(null);
 
   useServerMessages((msg) => {
-    if (msg.type === 'SESSION:QR_CODE') setSessionJoin(msg.payload);
+    if (msg.type === 'SESSION:JOIN_INFO') setSessionJoin(msg.payload);
     if (msg.type === 'SESSION:STATE') setSession(msg.payload.session);
     if (msg.type === 'HOST:RETRIEVE') setHost(msg.payload.host);
   });
