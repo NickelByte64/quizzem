@@ -34,26 +34,25 @@ async function createSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESS
   const qrCode = await QrCodeServices.generateQR(joinUrl);
   if (!qrCode) return;
 
-  const qrMessage: ServerMessage = { type: 'SESSION:QR_CODE', payload: { qrCode, plainUrl: joinUrl } };
-  ws.send(JSON.stringify(qrMessage));
+  ws.send(JSON.stringify({ type: 'SESSION:QR_CODE', payload: { qrCode, plainUrl: joinUrl } } satisfies ServerMessage));
 
-  const sessionStateMessage: ServerMessage = { type: 'SESSION:STATE', payload: { session } };
-  broadcast(sessionStateMessage);
+  broadcast({ type: 'SESSION:STATE', payload: { session } });
 }
 
 function retrieveSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:RETRIEVE'>): void {
   const { sessionId } = clientMessage.payload;
 
   if (sessionId !== session.id) {
-    const errorMessage: ServerMessage = {
-      type: 'SESSION:ERROR',
-      payload: { message: 'This session does not exist anymore.' },
-    };
-    ws.send(JSON.stringify(errorMessage));
+    ws.send(
+      JSON.stringify({
+        type: 'SESSION:ERROR',
+        payload: { message: 'This session does not exist anymore.' },
+      } satisfies ServerMessage),
+    );
     return;
   }
 
-  ws.send(JSON.stringify({ type: 'SESSION:STATE', payload: { session } }));
+  ws.send(JSON.stringify({ type: 'SESSION:STATE', payload: { session } } satisfies ServerMessage));
 }
 
 function joinSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:JOIN'>): void {

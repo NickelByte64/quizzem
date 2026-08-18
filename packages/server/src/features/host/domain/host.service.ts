@@ -18,8 +18,7 @@ function createHost(ws: WebSocket, clientMessage: ClientMessageOf<'HOST:CREATE'>
   hostsById.set(newHost.id, newHost);
   hostIdBySocket.set(ws, newHost.id);
 
-  const hostMessage: ServerMessage = { type: 'HOST:RETRIEVE', payload: { host: newHost } };
-  ws.send(JSON.stringify(hostMessage));
+  ws.send(JSON.stringify({ type: 'HOST:RETRIEVE', payload: { host: newHost } } satisfies ServerMessage));
 }
 
 function retrieveHost(ws: WebSocket, clientMessage: ClientMessageOf<'HOST:RETRIEVE'>): void {
@@ -28,8 +27,9 @@ function retrieveHost(ws: WebSocket, clientMessage: ClientMessageOf<'HOST:RETRIE
   const host = hostsById.get(hostId);
 
   if (!host) {
-    const hostMessage: ServerMessage = { type: 'HOST:ERROR', payload: { message: 'Host does not exist.' } };
-    ws.send(JSON.stringify(hostMessage));
+    ws.send(
+      JSON.stringify({ type: 'HOST:ERROR', payload: { message: 'Host does not exist.' } } satisfies ServerMessage),
+    );
     return;
   }
 
@@ -38,8 +38,7 @@ function retrieveHost(ws: WebSocket, clientMessage: ClientMessageOf<'HOST:RETRIE
   hostIdBySocket.set(ws, host.id);
   SessionService.setHostConnected(host.id, true);
 
-  const hostMessage: ServerMessage = { type: 'HOST:RETRIEVE', payload: { host } };
-  ws.send(JSON.stringify(hostMessage));
+  ws.send(JSON.stringify({ type: 'HOST:RETRIEVE', payload: { host } } satisfies ServerMessage));
 }
 
 function handleDisconnect(ws: WebSocket): void {
