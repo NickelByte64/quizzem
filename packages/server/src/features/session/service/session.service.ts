@@ -1,39 +1,73 @@
 import type { ClientMessageOf, Player, ServerMessage, Session } from '@quizzem/shared';
-import { randomUUID } from 'node:crypto';
+import { randomBytes, randomUUID } from 'node:crypto';
 import { networkInterfaces } from 'node:os';
 import WebSocket from 'ws';
 import { broadcast } from '../../../ws.server.ts';
 import { QrCodeServices } from '../../qr-code/service/qr-code.service.ts';
 
-const session: Session = {
-  id: 'kq7x',
+let session: Session = {
+  id: '',
   state: 'LOBBY',
+  host: null,
   players: [],
   createdAt: Date.now(),
 };
 
 export const playersBySocket = new Map<WebSocket, Player['id']>();
 
-async function createSession(ws: WebSocket) {
+async function createSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:CREATE'>): Promise<void> {
+  const { host } = clientMessage.payload;
+
   const address = Object.values(networkInterfaces())
     .flat()
     .find((ni) => ni?.family === 'IPv4' && !ni.internal)?.address;
   if (!address) throw new Error('No ipv4 found');
+
+  // create a new session
+  session.id = randomBytes(4).toString('hex');
+  session.host = host;
+  session.createdAt = Date.now();
+  session.players = [];
 
   const joinUrl = `http://${address}:3000/play/${session.id}`;
 
   const qrCode = await QrCodeServices.generateQR(joinUrl);
   if (!qrCode) return;
 
-  const qrMessage: ServerMessage = { type: 'SESSION:CREATE', payload: { qrCode } };
+  const qrMessage: ServerMessage = { type: 'SESSION:QR_CODE', payload: { qrCode, plainUrl: joinUrl } };
   ws.send(JSON.stringify(qrMessage));
 
   const sessionStateMessage: ServerMessage = { type: 'SESSION:STATE', payload: { session } };
   broadcast(sessionStateMessage);
 }
 
-async function joinSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:JOIN'>) {
-  const { player, playerId } = clientMessage.payload;
+function retrieveSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:RETRIEVE'>): void {
+  const { sessionId } = clientMessage.payload;
+
+  if (sessionId !== session.id) {
+    const errorMessage: ServerMessage = {
+      type: 'SESSION:ERROR',
+      payload: { message: 'This session does not exist anymore.' },
+    };
+    ws.send(JSON.stringify(errorMessage));
+    return;
+  }
+
+  ws.send(JSON.stringify({ type: 'SESSION:STATE', payload: { session } }));
+}
+
+function joinSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:JOIN'>): void {
+  const { player, playerId, sessionId } = clientMessage.payload;
+
+  if (sessionId !== session.id) {
+    ws.send(
+      JSON.stringify({
+        type: 'SESSION:ERROR',
+        payload: { message: "This session doesn't exist (anymore)" },
+      } satisfies ServerMessage),
+    );
+    return;
+  }
 
   // reconnect if ID is known
   const existingPlayer = playerId ? session.players.find((p) => p.id === playerId) : undefined;
@@ -43,7 +77,10 @@ async function joinSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSIO
     playersBySocket.set(ws, existingPlayer.id);
 
     ws.send(
-      JSON.stringify({ type: 'SESSION:JOINED', payload: { playerId: existingPlayer.id } } satisfies ServerMessage),
+      JSON.stringify({
+        type: 'SESSION:JOINED',
+        payload: { playerId: existingPlayer.id },
+      } satisfies ServerMessage),
     );
     broadcast({ type: 'SESSION:STATE', payload: { session } });
     return;
@@ -68,7 +105,21 @@ async function joinSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSIO
   session.players.push(newPlayer);
 
   playersBySocket.set(ws, newPlayer.id);
-  ws.send(JSON.stringify({ type: 'SESSION:JOINED', payload: { playerId: newPlayer.id } } satisfies ServerMessage));
+  ws.send(
+    JSON.stringify({
+      type: 'SESSION:JOINED',
+      payload: { playerId: newPlayer.id },
+    } satisfies ServerMessage),
+  );
+  broadcast({ type: 'SESSION:STATE', payload: { session } });
+}
+
+// Reflects the host’s connection status in the session and notifies everyone of it.
+function setHostConnected(hostId: Player['id'], connected: boolean): void {
+  if (session.host?.id !== hostId) return;
+  if (session.host.connected === connected) return;
+
+  session.host.connected = connected;
   broadcast({ type: 'SESSION:STATE', payload: { session } });
 }
 
@@ -87,4 +138,4 @@ function handleDisconnect(ws: WebSocket): void {
   broadcast({ type: 'SESSION:STATE', payload: { session } });
 }
 
-export const SessionService = { createSession, joinSession, handleDisconnect };
+export const SessionService = { createSession, joinSession, handleDisconnect, retrieveSession, setHostConnected };

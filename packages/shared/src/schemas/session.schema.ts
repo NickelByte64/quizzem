@@ -12,5 +12,6 @@ export const sessionSchema = z.object({
   state: z.literal('LOBBY'),
   players: z.array(playerSchema),
   createdAt: z.number(),
+  host: playerSchema.nullable(),
 });
 export type Session = z.infer<typeof sessionSchema>;

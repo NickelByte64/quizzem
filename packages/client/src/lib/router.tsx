@@ -17,7 +17,7 @@ export const ROUTER = createBrowserRouter([
         Component: HostPage,
       },
       {
-        path: 'play/:id',
+        path: 'play/:sessionId',
         Component: PlayPage,
       },
     ],

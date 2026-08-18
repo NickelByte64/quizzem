@@ -1,15 +1,19 @@
 import { z } from 'zod';
-import { sessionSchema } from './session.schema.ts';
+import { playerSchema, sessionSchema } from './session.schema.ts';
 
 export const clientMessageSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('SESSION:REQUEST') }),
+  z.object({ type: z.literal('SESSION:CREATE'), payload: z.object({ host: playerSchema }) }),
   z.object({
     type: z.literal('SESSION:JOIN'),
     payload: z.object({
       playerId: z.uuid().optional(),
+      sessionId: z.string().optional(),
       player: z.object({ name: z.string().trim().min(1).max(20) }),
     }),
   }),
+  z.object({ type: z.literal('SESSION:RETRIEVE'), payload: z.object({ sessionId: z.string().optional() }) }),
+  z.object({ type: z.literal('HOST:CREATE'), payload: z.object({ name: z.string() }) }),
+  z.object({ type: z.literal('HOST:RETRIEVE'), payload: z.object({ hostId: z.uuid() }) }),
 ]);
 
 export type ClientMessage = z.infer<typeof clientMessageSchema>;
@@ -17,15 +21,10 @@ export type ClientMessageOf<K extends ClientMessage['type']> = Extract<ClientMes
 
 export const serverMessageSchema = z.discriminatedUnion('type', [
   z.object({
-    type: z.literal('CLOCK'),
-    payload: z.object({
-      now: z.number(),
-    }),
-  }),
-  z.object({
-    type: z.literal('SESSION:CREATE'),
+    type: z.literal('SESSION:QR_CODE'),
     payload: z.object({
       qrCode: z.string(),
+      plainUrl: z.string(),
     }),
   }),
   z.object({
@@ -42,6 +41,18 @@ export const serverMessageSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     type: z.literal('SESSION:ERROR'),
+    payload: z.object({
+      message: z.string(),
+    }),
+  }),
+  z.object({
+    type: z.literal('HOST:RETRIEVE'),
+    payload: z.object({
+      host: playerSchema,
+    }),
+  }),
+  z.object({
+    type: z.literal('HOST:ERROR'),
     payload: z.object({
       message: z.string(),
     }),

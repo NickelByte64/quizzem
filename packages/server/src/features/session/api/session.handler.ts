@@ -10,11 +10,14 @@ export async function SessionHandler(ws: WebSocket, req: IncomingMessage): Promi
 
     try {
       switch (clientMessage.type) {
-        case 'SESSION:REQUEST':
-          await SessionService.createSession(ws);
+        case 'SESSION:CREATE':
+          await SessionService.createSession(ws, clientMessage);
           break;
         case 'SESSION:JOIN':
-          await SessionService.joinSession(ws, clientMessage);
+          SessionService.joinSession(ws, clientMessage);
+          break;
+        case 'SESSION:RETRIEVE':
+          SessionService.retrieveSession(ws, clientMessage);
           break;
       }
     } catch (err) {

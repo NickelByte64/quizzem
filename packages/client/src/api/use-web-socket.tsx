@@ -6,10 +6,11 @@ const MAX_RETRY_ATTEMPTS: number = 10;
 type UseWebSocketProps = {
   reconnect?: boolean;
   onMessage?: (data: ServerMessage) => void;
+  onOpen?: () => void;
 };
 
 export function useWebSocket(props: Readonly<UseWebSocketProps>) {
-  const { onMessage, reconnect = true } = props;
+  const { onMessage, onOpen, reconnect = true } = props;
 
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimer = useRef<number | null>(null);
@@ -19,6 +20,8 @@ export function useWebSocket(props: Readonly<UseWebSocketProps>) {
   // connection effect below never has to re-run when the caller re-renders.
   const onMessageRef = useRef(onMessage);
   onMessageRef.current = onMessage;
+  const onOpenRef = useRef(onOpen);
+  onOpenRef.current = onOpen;
   const reconnectRef = useRef(reconnect);
   reconnectRef.current = reconnect;
   const pendingRef = useRef<string[]>([]);
@@ -35,6 +38,9 @@ export function useWebSocket(props: Readonly<UseWebSocketProps>) {
         // send pending messages
         for (const message of pendingRef.current) WS_CLIENT.send(message);
         pendingRef.current = [];
+
+        // runs after the flush – consumers can subscribe to the server here after every (re-)connection
+        onOpenRef.current?.();
       };
 
       WS_CLIENT.onmessage = (event) => {
