@@ -2,24 +2,30 @@ import { z } from 'zod';
 import { playerSchema, sessionSchema } from './session.schema.ts';
 
 export const clientMessageSchema = z.discriminatedUnion('type', [
+  // session schemas
   z.object({ type: z.literal('SESSION:CREATE'), payload: z.object({ host: playerSchema }) }),
+  // A player identity is owned by the player feature, so joining only references it by id.
   z.object({
     type: z.literal('SESSION:JOIN'),
     payload: z.object({
-      playerId: z.uuid().optional(),
-      sessionId: z.string().optional(),
-      player: z.object({ name: z.string().trim().min(1).max(20) }),
+      playerId: z.uuid(),
+      sessionId: z.string(),
     }),
   }),
   z.object({ type: z.literal('SESSION:RETRIEVE'), payload: z.object({ sessionId: z.string().optional() }) }),
+  // host schemas
   z.object({ type: z.literal('HOST:CREATE'), payload: z.object({ name: z.string() }) }),
   z.object({ type: z.literal('HOST:RETRIEVE'), payload: z.object({ hostId: z.uuid() }) }),
+  // player schemas
+  z.object({ type: z.literal('PLAYER:RETRIEVE'), payload: z.object({ playerId: z.uuid() }) }),
+  z.object({ type: z.literal('PLAYER:CREATE'), payload: z.object({ name: z.string().trim().min(1).max(20) }) }),
 ]);
 
 export type ClientMessage = z.infer<typeof clientMessageSchema>;
 export type ClientMessageOf<K extends ClientMessage['type']> = Extract<ClientMessage, { type: K }>;
 
 export const serverMessageSchema = z.discriminatedUnion('type', [
+  // session schemas
   z.object({
     type: z.literal('SESSION:JOIN_INFO'),
     payload: z.object({
@@ -45,6 +51,7 @@ export const serverMessageSchema = z.discriminatedUnion('type', [
       message: z.string(),
     }),
   }),
+  // host schemas
   z.object({
     type: z.literal('HOST:RETRIEVE'),
     payload: z.object({
@@ -53,6 +60,14 @@ export const serverMessageSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     type: z.literal('HOST:ERROR'),
+    payload: z.object({
+      message: z.string(),
+    }),
+  }),
+  // player schemas
+  z.object({ type: z.literal('PLAYER:RETRIEVE'), payload: z.object({ player: playerSchema }) }),
+  z.object({
+    type: z.literal('PLAYER:ERROR'),
     payload: z.object({
       message: z.string(),
     }),

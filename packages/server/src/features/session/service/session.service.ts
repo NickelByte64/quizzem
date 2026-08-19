@@ -1,8 +1,9 @@
 import type { ClientMessageOf, Player, ServerMessage, Session } from '@quizzem/shared';
-import { randomBytes, randomUUID } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
 import { networkInterfaces } from 'node:os';
 import WebSocket from 'ws';
 import { broadcast } from '../../../ws.server.ts';
+import { PlayerService } from '../../player/domain/player.service.ts';
 import { QrCodeServices } from '../../qr-code/service/qr-code.service.ts';
 
 let session: Session = {
@@ -47,7 +48,7 @@ async function retrieveSession(ws: WebSocket, clientMessage: ClientMessageOf<'SE
 }
 
 function joinSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:JOIN'>): void {
-  const { player, playerId, sessionId } = clientMessage.payload;
+  const { playerId, sessionId } = clientMessage.payload;
 
   if (sessionId !== session.id) {
     ws.send(
@@ -59,19 +60,26 @@ function joinSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:JOIN
     return;
   }
 
-  // reconnect if ID is known
-  const existingPlayer = playerId ? session.players.find((p) => p.id === playerId) : undefined;
-  if (existingPlayer) {
-    existingPlayer.connected = true;
-    existingPlayer.name = player.name;
-    playersBySocket.set(ws, existingPlayer.id);
-
+  // The player has to identify itself via the player feature first – the session only
+  // manages the membership, never the identity itself.
+  const player = PlayerService.getPlayer(playerId);
+  if (!player) {
     ws.send(
       JSON.stringify({
-        type: 'SESSION:JOINED',
-        payload: { playerId: existingPlayer.id },
+        type: 'SESSION:ERROR',
+        payload: { message: 'Unknown player – please join again.' },
       } satisfies ServerMessage),
     );
+    return;
+  }
+
+  // Reconnect: the player is already a member, so only the socket has to be re-registered
+  const isMember = session.players.some((p) => p.id === player.id);
+  if (isMember) {
+    player.connected = true;
+    playersBySocket.set(ws, player.id);
+
+    ws.send(JSON.stringify({ type: 'SESSION:JOINED', payload: { playerId: player.id } } satisfies ServerMessage));
     broadcast({ type: 'SESSION:STATE', payload: { session } });
     return;
   }
@@ -87,20 +95,12 @@ function joinSession(ws: WebSocket, clientMessage: ClientMessageOf<'SESSION:JOIN
     return;
   }
 
-  const newPlayer: Player = {
-    id: randomUUID(),
-    name: player.name,
-    connected: true,
-  };
-  session.players.push(newPlayer);
+  // Stored by reference on purpose: the connection state maintained by the player feature
+  // is then part of the broadcast session state without any synchronisation.
+  session.players.push(player);
 
-  playersBySocket.set(ws, newPlayer.id);
-  ws.send(
-    JSON.stringify({
-      type: 'SESSION:JOINED',
-      payload: { playerId: newPlayer.id },
-    } satisfies ServerMessage),
-  );
+  playersBySocket.set(ws, player.id);
+  ws.send(JSON.stringify({ type: 'SESSION:JOINED', payload: { playerId: player.id } } satisfies ServerMessage));
   broadcast({ type: 'SESSION:STATE', payload: { session } });
 }
 

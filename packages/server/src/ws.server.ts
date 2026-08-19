@@ -2,6 +2,7 @@ import { type ServerMessage } from '@quizzem/shared';
 import { WebSocket, WebSocketServer } from 'ws';
 import { GameRoomHandler } from './features/game-room/api/game-room.handler.ts';
 import { HostHandler } from './features/host/api/host.handler.ts';
+import { PlayerHandler } from './features/player/api/player.handler.ts';
 import { SessionHandler } from './features/session/api/session.handler.ts';
 import { server } from './http.server.ts';
 
@@ -29,10 +30,12 @@ export function startWebSocketServer() {
     await GameRoomHandler(ws, req);
     await HostHandler(ws, req);
     await SessionHandler(ws, req);
+    await PlayerHandler(ws, req);
 
     ws.on('close', () => {
       SessionHandler.handleDisconnect(ws);
       HostHandler.handleDisconnect(ws);
+      PlayerHandler.handleDisconnect(ws);
     });
   });
 }
