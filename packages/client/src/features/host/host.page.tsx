@@ -2,6 +2,7 @@ import type { Player, Session } from '@quizzem/shared';
 import { useEffect, useState, type JSX } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useClientMessages, useConnectionOpen, useServerMessages } from '../../contexts/web-socket/web-socket.context';
+import { SessionView } from './components/session.view';
 
 type HostCreateFormValues = {
   name: string;
@@ -79,7 +80,8 @@ export function HostPage(): JSX.Element {
             <div>{sessionJoin.plainUrl}</div>
           </>
         )}
-        {session && <pre>{JSON.stringify(session, null, 2)}</pre>}
+
+        <SessionView session={session} />
       </div>
     </div>
   );

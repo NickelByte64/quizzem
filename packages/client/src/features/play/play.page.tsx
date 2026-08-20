@@ -69,11 +69,11 @@ export function PlayPage(): JSX.Element {
     send({ type: 'PLAYER:CREATE', payload: { name: data.name } });
   };
 
+  if (error) return <p role="alert">{error}</p>;
+
   return (
     <div>
       <h1>Quiz Page</h1>
-
-      {error && <p role="alert">{error}</p>}
 
       {!joined && (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -91,8 +91,22 @@ export function PlayPage(): JSX.Element {
         </form>
       )}
 
-      <pre>{JSON.stringify({ player }, null, 2)}</pre>
-      <pre>{JSON.stringify({ session }, null, 2)}</pre>
+      {session && (
+        <>
+          <h2>Session</h2>
+          <p>Session State:</p>
+          <p>{session.state}</p>
+
+          <p>Host:</p>
+          {session.host?.name}
+          <p>Players:</p>
+          <ul>
+            {session.players.map((player) => (
+              <li key={player.id}>{player.name}</li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }
