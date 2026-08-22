@@ -3,7 +3,6 @@ import express, { type Express, type Request, type Response } from 'express';
 import helmet from 'helmet';
 import { createServer } from 'node:http';
 import { resolve } from 'node:path';
-import GameRoomController from './features/game-room/api/game-room.controller.ts';
 import QuizController from './features/quiz/api/quiz.controller.ts';
 
 const app: Express = express();
@@ -30,7 +29,6 @@ const CLIENT_DIST = resolve(import.meta.dirname, '../../client/dist');
 
 app.use('/', express.static(CLIENT_DIST));
 
-app.use('/api/game-room', GameRoomController);
 app.use('/api/quiz', QuizController);
 
 app.get('/*splat', (req: Request, res: Response) => {
