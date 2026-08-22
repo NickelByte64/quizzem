@@ -1,7 +1,6 @@
 import type { ClientMessageOf, Player, ServerMessage } from '@quizzem/shared';
 import { randomUUID } from 'node:crypto';
 import WebSocket from 'ws';
-import { SessionService } from '../../session/service/session.service.ts';
 
 export const hostsById = new Map<Player['id'], Player>();
 const hostIdBySocket = new Map<WebSocket, Player['id']>();
@@ -13,6 +12,7 @@ function createHost(ws: WebSocket, clientMessage: ClientMessageOf<'HOST:CREATE'>
     id: randomUUID(),
     name,
     connected: true,
+    ready: true,
   };
 
   hostsById.set(newHost.id, newHost);
@@ -21,38 +21,49 @@ function createHost(ws: WebSocket, clientMessage: ClientMessageOf<'HOST:CREATE'>
   ws.send(JSON.stringify({ type: 'HOST:RETRIEVE', payload: { host: newHost } } satisfies ServerMessage));
 }
 
-function retrieveHost(ws: WebSocket, clientMessage: ClientMessageOf<'HOST:RETRIEVE'>): void {
+// Returns the restored host so the caller can reflect the new connection state in the session.
+function retrieveHost(ws: WebSocket, clientMessage: ClientMessageOf<'HOST:RETRIEVE'>): Player | null {
   const { hostId } = clientMessage.payload;
 
-  const host = hostsById.get(hostId);
+  const host = getHost(hostId);
 
   if (!host) {
     ws.send(
       JSON.stringify({ type: 'HOST:ERROR', payload: { message: 'Host does not exist.' } } satisfies ServerMessage),
     );
-    return;
+    return null;
   }
 
   // Re-registration after a reload or reconnect: assign a new socket
   host.connected = true;
   hostIdBySocket.set(ws, host.id);
-  SessionService.setHostConnected(host.id, true);
 
   ws.send(JSON.stringify({ type: 'HOST:RETRIEVE', payload: { host } } satisfies ServerMessage));
+  return host;
 }
 
-function handleDisconnect(ws: WebSocket): void {
-  const hostId = hostIdBySocket.get(ws);
+function getHost(hostId: Player['id']): Player | undefined {
+  return hostsById.get(hostId);
+}
+
+// Which host a socket has identified itself as – the basis for every ownership check.
+function getHostIdBySocket(ws: WebSocket): Player['id'] | undefined {
+  return hostIdBySocket.get(ws);
+}
+
+// Returns the host that actually went offline, so the caller can broadcast the change.
+function handleDisconnect(ws: WebSocket): Player['id'] | null {
+  const hostId = getHostIdBySocket(ws);
   hostIdBySocket.delete(ws);
-  if (!hostId) return;
+  if (!hostId) return null;
 
   // The host may already be back via a new socket
-  if ([...hostIdBySocket.values()].includes(hostId)) return;
+  if ([...hostIdBySocket.values()].includes(hostId)) return null;
 
-  const host = hostsById.get(hostId);
+  const host = getHost(hostId);
   if (host) host.connected = false;
 
-  SessionService.setHostConnected(hostId, false);
+  return hostId;
 }
 
-export const HostService = { createHost, retrieveHost, handleDisconnect };
+export const HostService = { createHost, retrieveHost, getHost, getHostIdBySocket, handleDisconnect };

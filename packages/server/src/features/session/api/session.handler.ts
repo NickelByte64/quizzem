@@ -19,6 +19,9 @@ export async function SessionHandler(ws: WebSocket, req: IncomingMessage): Promi
         case 'SESSION:RETRIEVE':
           await SessionService.retrieveSession(ws, clientMessage);
           break;
+        case 'SESSION:START':
+          SessionService.startSession(ws, clientMessage);
+          break;
       }
     } catch (err) {
       console.error('[ws] handler failed', err);

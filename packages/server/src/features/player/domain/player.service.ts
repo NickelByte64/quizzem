@@ -12,6 +12,7 @@ function createPlayer(ws: WebSocket, clientMessage: ClientMessageOf<'PLAYER:CREA
     id: randomUUID(),
     name,
     connected: true,
+    ready: false,
   };
 
   playersById.set(newPlayer.id, newPlayer);
@@ -44,16 +45,57 @@ function getPlayer(playerId: Player['id']): Player | undefined {
   return playersById.get(playerId);
 }
 
-function handleDisconnect(ws: WebSocket): void {
+// Reports whether the player state actually changed, so the caller can broadcast it.
+function handleDisconnect(ws: WebSocket): boolean {
   const playerId = playerIdBySocket.get(ws);
   playerIdBySocket.delete(ws);
-  if (!playerId) return;
+  if (!playerId) return false;
 
   // The player may already be back via a new socket
-  if ([...playerIdBySocket.values()].includes(playerId)) return;
+  if ([...playerIdBySocket.values()].includes(playerId)) return false;
 
   const player = playersById.get(playerId);
-  if (player) player.connected = false;
+  if (!player) return false;
+
+  player.connected = false;
+  player.ready = false;
+  return true;
 }
 
-export const PlayerService = { retrievePlayer, createPlayer, getPlayer, handleDisconnect };
+// Reports whether the ready state actually changed, so the caller can broadcast it.
+// Returning instead of broadcasting keeps this feature free of a session import – the
+// api layer owns the wiring, so the domain dependency stays one-way (session -> player).
+function readyPlayer(
+  ws: WebSocket,
+  clientMessage: ClientMessageOf<'PLAYER:SET_READY'> | ClientMessageOf<'PLAYER:SET_NOT_READY'>,
+): boolean {
+  const { payload, type } = clientMessage;
+
+  // A socket may only change the ready state of the player it identified itself as –
+  // otherwise anyone could ready up the rest of the lobby and have the quiz started.
+  if (playerIdBySocket.get(ws) !== payload.playerId) {
+    ws.send(
+      JSON.stringify({
+        type: 'PLAYER:ERROR',
+        payload: { message: 'You can only change your own ready state.' },
+      } satisfies ServerMessage),
+    );
+    return false;
+  }
+
+  const player = playersById.get(payload.playerId);
+  if (!player) {
+    ws.send(
+      JSON.stringify({
+        type: 'PLAYER:ERROR',
+        payload: { message: 'Player does not exist.' },
+      } satisfies ServerMessage),
+    );
+    return false;
+  }
+
+  player.ready = type === 'PLAYER:SET_READY';
+  return true;
+}
+
+export const PlayerService = { retrievePlayer, createPlayer, getPlayer, handleDisconnect, readyPlayer };

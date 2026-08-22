@@ -2,7 +2,6 @@ import type { Player, Session } from '@quizzem/shared';
 import { useEffect, useState, type JSX } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useClientMessages, useConnectionOpen, useServerMessages } from '../../contexts/web-socket/web-socket.context';
-import { SessionView } from './components/session.view';
 
 type HostCreateFormValues = {
   name: string;
@@ -14,11 +13,16 @@ export function HostPage(): JSX.Element {
   const [sessionJoin, setSessionJoin] = useState<{ qrCode: string; plainUrl: string } | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [host, setHost] = useState<Player | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useServerMessages((msg) => {
     if (msg.type === 'SESSION:JOIN_INFO') setSessionJoin(msg.payload);
-    if (msg.type === 'SESSION:STATE') setSession(msg.payload.session);
+    if (msg.type === 'SESSION:STATE') {
+      setSession(msg.payload.session);
+      setError(null);
+    }
     if (msg.type === 'HOST:RETRIEVE') setHost(msg.payload.host);
+    if (msg.type === 'SESSION:ERROR' || msg.type === 'HOST:ERROR') setError(msg.payload.message);
   });
   const send = useClientMessages();
 
@@ -53,6 +57,8 @@ export function HostPage(): JSX.Element {
       <h1>Host</h1>
       <h3>Create a quiz session</h3>
 
+      {error && <p role="alert">{error}</p>}
+
       {!host && (
         <form onSubmit={handleSubmit(onSubmit)}>
           <label>
@@ -68,7 +74,7 @@ export function HostPage(): JSX.Element {
         {host && !session && (
           <>
             <pre>{JSON.stringify(host, null, 2)}</pre>
-            <button type="button" onClick={() => send({ type: 'SESSION:CREATE', payload: { host } })}>
+            <button type="button" onClick={() => send({ type: 'SESSION:CREATE', payload: { hostId: host.id } })}>
               Create session
             </button>
           </>
@@ -81,8 +87,62 @@ export function HostPage(): JSX.Element {
           </>
         )}
 
-        <SessionView session={session} />
+        <SessionView session={session} host={host} />
       </div>
     </div>
+  );
+}
+
+type SessionViewProps = {
+  session: Session | null;
+  host: Player | null;
+};
+
+function SessionView(props: Readonly<SessionViewProps>): JSX.Element | null {
+  const { session, host } = props;
+
+  const send = useClientMessages();
+
+  if (!session || !host) return null;
+
+  // Mirrors the server rule: disconnected players are ignored, so one player leaving
+  // the lobby cannot block the start.
+  const presentPlayers = session.players.filter((p) => p.connected);
+  const allPlayersReady = presentPlayers.length > 0 && presentPlayers.every((p) => p.ready);
+
+  return (
+    <>
+      <h2>Session</h2>
+      <p>Session State:</p>
+      <p>{session.state}</p>
+
+      <p>Host:</p>
+      {session.host?.name}
+      <p>Players:</p>
+
+      {session.players.length === 0 ? (
+        <p>No players have joined yet.</p>
+      ) : (
+        <ul>
+          {session.players.map((player) => (
+            <li key={player.id}>
+              {player.name} - {player.ready ? 'ready' : 'not ready'}
+              {!player.connected && ' (offline)'}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {session.state === 'LOBBY' && (
+        <button
+          type="button"
+          disabled={!allPlayersReady}
+          onClick={() => {
+            send({ type: 'SESSION:START', payload: { hostId: host.id } });
+          }}>
+          Start Quiz
+        </button>
+      )}
+    </>
   );
 }

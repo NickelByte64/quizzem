@@ -69,11 +69,12 @@ export function PlayPage(): JSX.Element {
     send({ type: 'PLAYER:CREATE', payload: { name: data.name } });
   };
 
-  if (error) return <p role="alert">{error}</p>;
+  const isPlayerReady = session?.players.find((p) => p.id === player?.id)?.ready;
 
   return (
     <div>
       <h1>Quiz Page</h1>
+      {error && <p role="alert">{error}</p>}
 
       {!joined && (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -91,6 +92,20 @@ export function PlayPage(): JSX.Element {
         </form>
       )}
 
+      {joined && player && (
+        <button
+          type="button"
+          onClick={() => {
+            if (isPlayerReady) {
+              send({ type: 'PLAYER:SET_NOT_READY', payload: { playerId: player.id } });
+            } else {
+              send({ type: 'PLAYER:SET_READY', payload: { playerId: player.id } });
+            }
+          }}>
+          {isPlayerReady ? 'Not ready' : 'Ready up'}
+        </button>
+      )}
+
       {session && (
         <>
           <h2>Session</h2>
@@ -100,11 +115,18 @@ export function PlayPage(): JSX.Element {
           <p>Host:</p>
           {session.host?.name}
           <p>Players:</p>
-          <ul>
-            {session.players.map((player) => (
-              <li key={player.id}>{player.name}</li>
-            ))}
-          </ul>
+          {session.players.length === 0 ? (
+            <p>No players have joined yet.</p>
+          ) : (
+            <ul>
+              {session.players.map((player) => (
+                <li key={player.id}>
+                  {player.name} - {player.ready ? 'ready' : 'not ready'}
+                  {!player.connected && ' (offline)'}
+                </li>
+              ))}
+            </ul>
+          )}
         </>
       )}
     </div>
