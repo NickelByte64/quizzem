@@ -1,0 +1,186 @@
+[
+  {
+    "difficulty": "EASY",
+    "question": "As of the year 2026, how many known moons does Jupiter have?",
+    "correct_answer": "97",
+    "incorrect_answers": ["11", "43", "104"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "In Overwatch, what is L&uacute;cio&#039;s full name?",
+    "correct_answer": "L&uacute;cio Correia Dos Santos",
+    "incorrect_answers": [
+      "L&uacute;cio Luiz L&oacute;s Guilherme",
+      "L&uacute;cio Jo&atilde;o Lucas",
+      "L&uacute;cio Chupar Prima"
+    ]
+  },
+  {
+    "difficulty": "HARD",
+    "question": "When did Canada leave the confederation to become their own nation?",
+    "correct_answer": "July 1st, 1867",
+    "incorrect_answers": ["July 1st, 1763", "July 1st, 1832", "July 1st, 1902"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "What caused the titular mascot of Yo-Kai Watch, Jibanyan, to become a yokai?",
+    "correct_answer": "Being run over by a truck",
+    "incorrect_answers": ["Ate one too many chocobars", "Through a magical ritual", "When he put on the harmaki"]
+  },
+  {
+    "difficulty": "HARD",
+    "question": "The painting &quot;Guernica&quot; by Pablo Picasso expressed emotions of dread in response to which war?",
+    "correct_answer": "Spanish Civil War",
+    "incorrect_answers": ["World War I", "The Crimean War", "Spanish-American War"]
+  },
+  {
+    "difficulty": "HARD",
+    "question": "Which scientific unit is named after an Italian nobleman?",
+    "correct_answer": "Volt",
+    "incorrect_answers": ["Pascal", "Ohm", "Hertz"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "How many dots are on a single die?",
+    "correct_answer": "21",
+    "incorrect_answers": ["24", "15", "18"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "Which of these places is a location in Cornwall?",
+    "correct_answer": "Barcelona",
+    "incorrect_answers": ["Madrid", "Alicante", "Lisbon"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "Earth is located in which galaxy?",
+    "correct_answer": "The Milky Way Galaxy",
+    "incorrect_answers": ["The Mars Galaxy", "The Galaxy Note", "The Black Hole"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "Who painted the painting &quot;Nighthawks&quot;?",
+    "correct_answer": "Edward Hopper",
+    "incorrect_answers": ["Johannes Vermeer", "Vincent van Gogh", "Salvador Dali"]
+  },
+  {
+    "difficulty": "HARD",
+    "question": "What is the approximate value of mathematical constant e?",
+    "correct_answer": "2.72",
+    "incorrect_answers": ["3.14", "1.62", "1.41"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "Which of the following weapons in &quot;Counter-Strike: Global Offensive&quot; does not have a right-click function?",
+    "correct_answer": "XM1014",
+    "incorrect_answers": ["SG553", "R8 Revolver", "USP-S"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "When was the FC Schalke 04 founded?",
+    "correct_answer": "1904",
+    "incorrect_answers": ["1909", "2008", "1999"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "Which movie includes a giant bunny-like spirit who has magic powers including growing trees?",
+    "correct_answer": "My Neighbor Totoro",
+    "incorrect_answers": ["Hop", "Rise of the Guardians", "Alice in Wonderland"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "Moore&#039;s law originally stated that the number of transistors on a microprocessor chip would double every...",
+    "correct_answer": "Year",
+    "incorrect_answers": ["Four Years", "Two Years", "Eight Years"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "What did the Spanish autonomous community of Catalonia ban in 2010, that took effect in 2012?",
+    "correct_answer": "Bullfighting",
+    "incorrect_answers": ["Fiestas", "Flamenco", "Mariachi"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "Who is the protagonist in Dead Rising 3?",
+    "correct_answer": "Nick Ramos",
+    "incorrect_answers": ["Frank West", "Chuck Greene", "Isabela Keyes"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "Which of the following is not a faction in Tom Clancy&#039;s The Division?",
+    "correct_answer": "CDC",
+    "incorrect_answers": ["Cleaners", "Last Man Batallion", "Rikers"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "Which of these book series is by James Patterson?",
+    "correct_answer": "Maximum Ride",
+    "incorrect_answers": ["Harry Potter", "The Legend of Xanth", "The Bartemaeus Trilogy"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "In the original Mega Man series, who is Mega Man&#039;s arch nemesis?",
+    "correct_answer": "Dr. Wily",
+    "incorrect_answers": ["Dr. Light", "Dr. Bad", "Mr. Z"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "What is the capital of British Columbia, Canada?",
+    "correct_answer": "Victoria",
+    "incorrect_answers": ["Vancouver", "Hope", "Kelowna"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "In what year did Kentucky become the 15th state to join the union?",
+    "correct_answer": "1792",
+    "incorrect_answers": ["1782", "1798", "1788"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "What is the world&#039;s first video game console?",
+    "correct_answer": "Magnavox Odyssey",
+    "incorrect_answers": ["Coleco Telstar", "Nintendo Color TV Game", "Atari 2600"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "What alcoholic drink is mainly made from juniper berries?",
+    "correct_answer": "Gin",
+    "incorrect_answers": ["Vodka", "Rum", "Tequila"]
+  },
+  {
+    "difficulty": "HARD",
+    "question": "The key of sharps does the key of G# minor contain?",
+    "correct_answer": "5",
+    "incorrect_answers": ["3", "7", "0"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "Who invented the first ever chocolate bar, in 1847?",
+    "correct_answer": "Joseph Fry",
+    "incorrect_answers": ["Andrew Johnson", "John Cadbury", "John Tyler"]
+  },
+  {
+    "difficulty": "MEDIUM",
+    "question": "What numbers are in the 5th row of Pascal&#039;s Triangle?",
+    "correct_answer": "1 4 6 4 1",
+    "incorrect_answers": ["1 3 3 1", "1 5 10 10 5 1", "1 6 15 20 15 6 1"]
+  },
+  {
+    "difficulty": "HARD",
+    "question": "In Super Smash Bros. for Nintendo 3DS and Nintendo Wii U, who was the sixth fighter to be added to the game post-launch?",
+    "correct_answer": "Corrin",
+    "incorrect_answers": ["Cloud", "Bayonnetta", "Ryu"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "Which Pokemon generation did the fan-named &quot;Masuda Method&quot; first appear in? ",
+    "correct_answer": "Diamond/Pearl",
+    "incorrect_answers": ["Ruby/Sapphire", "Black/White", "X/Y"]
+  },
+  {
+    "difficulty": "EASY",
+    "question": "Which element has the highest melting point?",
+    "correct_answer": "Carbon",
+    "incorrect_answers": ["Tungsten", "Platinum", "Osmium"]
+  }
+]
